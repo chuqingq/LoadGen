@@ -15,8 +15,13 @@ int read_callmodel(ls_callmodel_t* callmodel) {
 }
 
 static void duration_timeout(uv_timer_t* handle, int status) {
-    // 通知worker停止
+    // TODO 通知worker停止
+    // ls_callmodel_t* cm = container_of(handle, ls_callmodel_t, duration_timer);
+    notify_worker("stop");
+
     uv_timer_stop(handle);
+
+    // TODO 呼叫完了，是否要停止？
 }
 
 static void accelerate_per_sec(uv_timer_t* handle, int status) {
@@ -35,7 +40,7 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
         uv_timer_stop(cm->accelerate_timer);
 
         uv_timer_init(uv_default_loop(), &(cm->duration_timer));
-        uv_timer_start(&(cm->duration_timer), cm->duration, 0);
+        uv_timer_start(&(cm->duration_timer), duration_timeout, cm->duration, 0);
     }
 }
 
