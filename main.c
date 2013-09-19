@@ -51,31 +51,63 @@ void reap_workers(ls_worker_t* w, int num) {
 int main() {
     ls_script_t script;
     ls_callmodel_t callmodel;
+    ls_plugin_t plugins;
+    map<string, JsonObj*> settings;
+
 
     master_loop = uv_default_loop();
 
-    if (read_config(&config) < 0) {
+    // -------------- 静态内容
+    // 读取配置
+    if (load_config(&config) < 0) {
         return -1;
     }
 
-    if (read_script(&script) < 0) {
+    // 加载协议
+    if (load_plugins(&plugins) < 0) {
         return -1;
     }
 
-    if (read_callmodel(&callmodel) < 0) {
+    // -------------- 任务相关内容
+    // 读取任务呼叫模型
+    if (load_task_callmodel(&callmodel) < 0) {
         return -1;
     }
 
-    if (init_workers() < 0) {// 启动worker线程
+    // 读取任务设置并交给plugin处理
+    if (load_task_settings(&settings) < 0) {
         return -1;
     }
 
-    if (do_callmodel(CallModel* callmodel) < 0) {
+    if (plugins_load_task_settings(&settings, &plugins) < 0) {// TODO
+        return -1;
+    }
+
+    // 读取任务变量
+    if (load_task_vars(&vars) < 0) {
+        return -1;
+    }
+
+    // 读取任务脚本流程
+    if (load_task_script(&script) < 0) {
+        return -1;
+    }
+
+    // --------------- worker
+    // 启动worker
+    if (start_workers() < 0) {// 启动worker线程
+        return -1;
+    }
+
+    // master按照呼叫模型分配呼叫
+    if (do_callmodel(callmodel) < 0) {
         return -1;
     }
 
     // 2 kinds of message: 1.async_t from worker, 2.callmodel
     uv_run(master_loop, UV_RUN_DEFAULT);
 
-    reap_workers(workers, workers_num);
+    reap_workers();// TODO
+
+    // 卸载协议
 }
