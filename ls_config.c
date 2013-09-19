@@ -2,5 +2,8 @@
 #include "ls_config.h"
 
 int read_config(ls_config_t* config) {
-    return 0;/* TODO */
+    /* TODO */
+    config->port = 7879;
+    config->worker_num = 4;
+    return 0;
 }
