@@ -5,7 +5,7 @@
 #include "ls_task_callmodel.h"
 
 
-int read_callmodel(ls_task_callmodel_t* callmodel) {
+int load_task_callmodel(ls_task_callmodel_t* callmodel) {
     /* TODO 从callmodel.json中读取 */
     callmodel->type = CALLMODEL_VUSER;
 
@@ -21,7 +21,7 @@ int read_callmodel(ls_task_callmodel_t* callmodel) {
 static void duration_timeout(uv_timer_t* handle, int status) {
     // TODO 通知worker停止
     // ls_task_callmodel_t* cm = container_of(handle, ls_task_callmodel_t, duration_timer);
-    notify_worker("stop");
+    // TODO notify_worker("stop");
 
     uv_timer_stop(handle);
 
@@ -49,7 +49,7 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
 }
 
 
-int do_callmodel(ls_task_callmodel_t* cm) {
+int do_task_callmodel(ls_task_callmodel_t* cm) {
     uv_timer_t* t = &(cm->accelerate_timer);
     uv_timer_init(uv_default_loop(), t);
     uv_timer_start(t, accelerate_per_sec, 3000, 1000);

@@ -5,6 +5,8 @@
 #include <map>
 using namespace std;
 
+#include "ls_task_setting.h"
+
 typedef int (*ls_plugin_load_t)();
 typedef int (*ls_plugin_unload_t)();
 
@@ -41,8 +43,8 @@ int unload_plugins(ls_plugin_t* plugins);
 
 // 把master加载的任务设置，分协议加载，转换成自己的类型
 // 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
-int plugins_load_task_settings(map<string, void*> & settings,
-                               ls_plugin_t* plugins);
+int plugins_load_task_setting(ls_task_setting_t* settings,
+                              ls_plugin_t* plugins);
 
 int plugins_unload_task_setting(ls_plugin_t* plugins);
 

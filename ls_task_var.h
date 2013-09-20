@@ -19,8 +19,6 @@ typedef struct {
 
 typedef map<string, ls_task_var_entry_t> ls_task_var_t;// 变量，master读取，master不需要，worker只读
 
-int load_task_vars(ls_task_var_t* vars) {
-    // TODO 可能还要根据type分类
-}
+int load_task_vars(ls_task_var_t* vars);
 
 #endif

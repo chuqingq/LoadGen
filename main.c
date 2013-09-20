@@ -61,12 +61,12 @@ int main() {
     }
 
     // master按照呼叫模型分配呼叫
-    if (do_callmodel(&master) < 0) {
+    if (do_task_callmodel(&(master.callmodel)) < 0) {
         return -1;
     }
 
     // 2 kinds of message: 1.async_t from worker, 2.callmodel
-    uv_run(master_loop, UV_RUN_DEFAULT);
+    uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 
     if (reap_workers(&master) < 0) {
         return -1;
