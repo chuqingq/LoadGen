@@ -1,8 +1,22 @@
+#ifndef LS_PLUGIN_H_
+#define LS_PLUGIN_H_
 
+#include <string>
+#include <map>
+using namespace std;
 
+typedef int (*ls_plugin_load_t)();
+typedef int (*ls_plugin_unload_t)();
 
-// ls_api_t 函数指针
-typedef int ls_api_t(ls_plugin_api_args_t*, void* proto_state);
+typedef int (*ls_plugin_task_init_t)();
+typedef int (*ls_plugin_task_destroy_t)();
+
+// ls_plugin_api_args_t TODO
+typedef void ls_plugin_api_args_t;
+
+// ls_plugin_api_t
+typedef int (*ls_plugin_api_t)(ls_plugin_api_args_t*, void* proto_state);
+
 
 typedef struct {
     ls_plugin_load_t* plugin_load;// master启动时调用
@@ -15,18 +29,21 @@ typedef struct {
 
 } ls_plugin_entry_t;
 
-typedef map<string, ls_plugin_entry_t> ls_plugin_t;// first: plugin_name
+// ls_plugin_t
+typedef map<string/* plugin_name */, ls_plugin_entry_t> ls_plugin_t;
 
-int load_plugins(ls_plugin_t* plugins) {
-}
+// ls_plugin_api_t
+// ls_plugin_api_args_t
 
-int unload_plugins(ls_plugin_t* plugins) {
-}
+int load_plugins(ls_plugin_t* plugins);
+
+int unload_plugins(ls_plugin_t* plugins);
 
 // 把master加载的任务设置，分协议加载，转换成自己的类型
-int plugins_load_task_settings(const map<string, JsonObj*> & settings,
-                               ls_plugin_t* plugins) {
-}
+// 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
+int plugins_load_task_settings(map<string, void*> & settings,
+                               ls_plugin_t* plugins);
 
-int plugins_unload_task_settings(ls_plugin_t* plugins) {
-}
+int plugins_unload_task_setting(ls_plugin_t* plugins);
+
+#endif

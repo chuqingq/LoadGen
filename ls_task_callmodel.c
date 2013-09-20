@@ -1,7 +1,11 @@
+#include <stddef.h>
 
-#include "ls_callmodel.h"
+#include "ls_utils.h"
+#include "ls_config.h"
+#include "ls_task_callmodel.h"
 
-int read_callmodel(ls_callmodel_t* callmodel) {
+
+int read_callmodel(ls_task_callmodel_t* callmodel) {
     /* TODO 从callmodel.json中读取 */
     callmodel->type = CALLMODEL_VUSER;
 
@@ -16,7 +20,7 @@ int read_callmodel(ls_callmodel_t* callmodel) {
 
 static void duration_timeout(uv_timer_t* handle, int status) {
     // TODO 通知worker停止
-    // ls_callmodel_t* cm = container_of(handle, ls_callmodel_t, duration_timer);
+    // ls_task_callmodel_t* cm = container_of(handle, ls_task_callmodel_t, duration_timer);
     notify_worker("stop");
 
     uv_timer_stop(handle);
@@ -25,10 +29,10 @@ static void duration_timeout(uv_timer_t* handle, int status) {
 }
 
 static void accelerate_per_sec(uv_timer_t* handle, int status) {
-    ls_callmodel_t* cm = container_of(handle, struct ls_call_model_s, accelerate_timer);
+    ls_task_callmodel_t* cm = container_of(handle, struct ls_task_callmodel_s, accelerate_timer);
 
     // TODO 每秒钟需要增加的accelerate/CPU分配给worker
-    callmodel_worker(N);
+    // TODO callmodel_worker(config.worker_num);
 
     cm->current += cm->accelerate;
 
@@ -37,7 +41,7 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
         || cm->accelerate > 0 && cm->current > cm->dest
         || cm->accelerate < 0 && cm->current < cm->dest)
     {
-        uv_timer_stop(cm->accelerate_timer);
+        uv_timer_stop(&(cm->accelerate_timer));
 
         uv_timer_init(uv_default_loop(), &(cm->duration_timer));
         uv_timer_start(&(cm->duration_timer), duration_timeout, cm->duration, 0);
@@ -45,7 +49,7 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
 }
 
 
-int do_callmodel(ls_callmodel_t* cm) {
+int do_callmodel(ls_task_callmodel_t* cm) {
     uv_timer_t* t = &(cm->accelerate_timer);
     uv_timer_init(uv_default_loop(), t);
     uv_timer_start(t, accelerate_per_sec, 3000, 1000);

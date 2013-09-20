@@ -1,7 +1,8 @@
-
+#include "ls_utils.h"
 #include "ls_worker.h"
 
-static void worker_async_callback(uv_async_t* handle, int status) {
+static void worker_async_callback(uv_async_t* async, int status) {
+    ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
     // worker收到master的消息
     // TODO 1. 增加/变化呼叫量
     //  读取script，按照逻辑操作
@@ -10,7 +11,7 @@ static void worker_async_callback(uv_async_t* handle, int status) {
 }
 
 static void worker_thread(void* arg) {
-    ls_worker_t* w = arg;
+    ls_worker_t* w = (ls_worker_t*)arg;
 
     w->worker_loop = uv_loop_new();
     uv_async_init(w->worker_loop, &(w->worker_async), worker_async_callback);

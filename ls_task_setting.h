@@ -1,4 +1,14 @@
-// map<string, void*> settings; // proto_type -> proto_setting
+#ifndef LS_TASK_SETTING_H_
+#define LS_TASK_SETTING_H_
 
-// JsonObj -> 协议相关的setting
-// 只需在task_init中把本协议相关的setting传入插件的回调即可，插件自行保存到自己的state中
+#include <string>
+#include <map>
+using namespace std;
+
+#define JsonObj void
+
+typedef map<string/* plugin_type */, JsonObj*> ls_task_setting_t;
+
+int load_task_setting(ls_task_setting_t* setting);
+
+#endif

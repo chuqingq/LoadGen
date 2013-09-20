@@ -1,6 +1,5 @@
+#include "ls_task_script.h"
 
-#include "ls_script.h"
-
-int read_script(ls_script_t* script) {
-    return 0;/* TODO */
+int load_task_script(ls_script_t* script) {
+    return -1;
 }

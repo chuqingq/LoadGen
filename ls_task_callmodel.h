@@ -1,11 +1,18 @@
+#ifndef LS_TASK_CALLMODEL_H_
+#define LS_TASK_CALLMODEL_H_
+
+
+#include "libuv/include/uv.h"
+
+#include "ls_worker.h"
 
 typedef enum {
-    CALLMODEL_VUSER = 0;
-    CALLMODEL_CAPS;
-} ls_callmodel_type;
+    CALLMODEL_VUSER = 0,
+    CALLMODEL_CAPS
+} ls_task_callmodel_type;
 
-typedef struct ls_callmodel_s {
-    ls_callmodel_type type;
+typedef struct ls_task_callmodel_s {
+    ls_task_callmodel_type type;
     int init;       /* 初始数量 */
     int accelerate; /* 每秒变化数量 */
     int dest;       /* 目标值 */
@@ -17,8 +24,10 @@ typedef struct ls_callmodel_s {
 
     ls_worker_t* workers;
     int worker_num;
-} ls_callmodel_t;
+} ls_task_callmodel_t;
 
-int read_callmodel(ls_callmodel_t* callmodel);
+int load_task_callmodel(ls_task_callmodel_t* callmodel);
 
-int do_callmodel(ls_callmodel_t* callmodel);
+int do_task_callmodel(ls_task_callmodel_t* callmodel);
+
+#endif

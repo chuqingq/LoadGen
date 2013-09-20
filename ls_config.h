@@ -1,7 +1,18 @@
+#ifndef LS_CONFIG_H_
+#define LS_CONFIG_H_
 
-typedef struct ls_config_s {
-    short port;
+
+#include <string>
+using namespace std;
+
+typedef struct {
+    // short port;// TODO 暂时不用
+    // string cur_dir;// 当前路径。加载plugin、读取task脚本等都需要
     int worker_num;
 } ls_config_t;
 
-int read_config(ls_config_t* config);
+extern ls_config_t config;
+
+int load_config(ls_config_t* config);
+
+#endif
