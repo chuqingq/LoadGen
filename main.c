@@ -13,6 +13,19 @@
 #include "ls_task_var.h"
 
 int main() {
+    uv_lib_t lib;
+    if (uv_dlopen("plugin/plugin_demo/libplugin_demo.so", &lib) < 0) {
+        printf("Failed to uv_dlopen\n");
+        return -1;
+    }
+
+    void* func = NULL;
+    if (uv_dlsym(&lib, "plugin_declare", &func) < 0)
+    {
+        printf("Failed to uv_dlsym\n");
+        return -1;
+    }
+
     // ls_script_t script;
     // ls_callmodel_t callmodel;
     // ls_plugin_t plugins;

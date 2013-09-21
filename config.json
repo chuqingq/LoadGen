@@ -1,4 +1,8 @@
 {
     // "name": "value"
     // TODO
+    "worker_num": 4,
+    "plugin_paths": [
+        "plugin/plugin_demo/libplugin_demo.so"
+    ]
 }

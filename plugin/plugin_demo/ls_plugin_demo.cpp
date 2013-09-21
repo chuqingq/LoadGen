@@ -32,7 +32,7 @@ static int plugin_demo1_api1(const void* args, void* plugin_state, map<string, s
     return 0;
 }
 
-int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugin_entry) {
+extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugin_entry) {
     *plugin_name = "ls_plugin_demo";
 
     plugin_entry->plugin_load = &plugin_load;

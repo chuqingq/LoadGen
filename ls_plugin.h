@@ -5,7 +5,13 @@
 #include <map>
 using namespace std;
 
+#include "lib/libuv/include/uv.h"
+
 #include "ls_task_setting.h"
+
+struct ls_plugin_entry_s;
+
+typedef int (*ls_plugin_declare_t)(const char** plugin_name, struct ls_plugin_entry_s* plugin_entry);
 
 typedef int (*ls_plugin_load_t)();
 typedef int (*ls_plugin_unload_t)();
@@ -16,7 +22,10 @@ typedef int (*ls_plugin_task_destroy_t)(void** plugin_setting, void** plugin_sta
 typedef int (*ls_plugin_api_t)(const void* args, void* plugin_state, map<string, string> * vars);
 
 
-typedef struct {
+typedef struct ls_plugin_entry_s {
+    uv_lib_t plugin_lib;
+    ls_plugin_declare_t plugin_declare;
+
     ls_plugin_load_t plugin_load;// master启动时调用
     ls_plugin_unload_t plugin_unload;// master退出前调用
 
