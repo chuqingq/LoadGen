@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "libuv/include/uv.h"
 
 #include "ls_master.h"
@@ -21,47 +23,56 @@ int main() {
     // -------------- 静态内容
     // 读取配置
     if (load_config(&(master.config)) < 0) {
+        printf("Failed to load_config.\n");
         return -1;
     }
 
     // 加载协议
     if (load_plugins(&(master.plugins)) < 0) {
+        printf("Failed to load_plugins.\n");
         return -1;
     }
 
     // -------------- 任务相关内容
     // 读取任务呼叫模型
     if (load_task_callmodel(&(master.callmodel)) < 0) {
+        printf("Failed to load_task_callmodel.\n");
         return -1;
     }
 
     // 读取任务设置并交给plugin处理
     if (load_task_setting(&(master.settings)) < 0) {
+        printf("Failed to load_task_setting.\n");
         return -1;
     }
 
     if (plugins_load_task_setting(&(master.settings), &(master.plugins)) < 0) {
+        printf("Failed to plugins_load_task_setting.\n");
         return -1;
     }
 
     // 读取任务变量
     if (load_task_vars(&(master.vars)) < 0) {
+        printf("Failed to load_task_vars.\n");
         return -1;
     }
 
     // 读取任务脚本流程
     if (load_task_script(&(master.script)) < 0) {
+        printf("Failed to load_task_script.\n");
         return -1;
     }
 
     // --------------- worker
     // 启动worker
     if (start_workers(&master) < 0) {// 启动worker线程，注册master和worker的交互方式
+        printf("Failed to start_workers.\n");
         return -1;
     }
 
     // master按照呼叫模型分配呼叫
     if (do_task_callmodel(&(master.callmodel)) < 0) {
+        printf("Failed to do_task_callmodel.\n");
         return -1;
     }
 
