@@ -34,6 +34,7 @@ typedef struct ls_plugin_entry_s {
     
     map<string, ls_plugin_api_t> apis;
 
+    void* plugin_state;
 } ls_plugin_entry_t;
 
 // ls_plugin_t

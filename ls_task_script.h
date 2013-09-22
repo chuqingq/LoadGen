@@ -15,7 +15,7 @@ using namespace std;
 typedef struct {
     // 前两项是从script.json中直接读出来的
     string api_name;
-    string proto_name;
+    string plugin_name;
     JsonObj* args_json;// TODO 使用jsoncpp解析script.json
 
     // 这两项是parse之后的结果

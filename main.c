@@ -13,19 +13,6 @@
 #include "ls_task_var.h"
 
 int main() {
-    uv_lib_t lib;
-    if (uv_dlopen("plugin/plugin_demo/libplugin_demo.so", &lib) < 0) {
-        printf("Failed to uv_dlopen\n");
-        return -1;
-    }
-
-    void* func = NULL;
-    if (uv_dlsym(&lib, "plugin_declare", &func) < 0)
-    {
-        printf("Failed to uv_dlsym\n");
-        return -1;
-    }
-
     // ls_script_t script;
     // ls_callmodel_t callmodel;
     // ls_plugin_t plugins;
@@ -53,6 +40,18 @@ int main() {
         return -1;
     }
 
+    // 读取任务变量
+    if (load_task_vars(&(master.vars)) < 0) {
+        printf("Failed to load_task_vars.\n");
+        return -1;
+    }
+
+    // 读取任务脚本流程
+    if (load_task_script(&(master.script)) < 0) {
+        printf("Failed to load_task_script.\n");
+        return -1;
+    }
+
     // 读取任务设置并交给plugin处理
     if (load_task_setting(&(master.settings)) < 0) {
         printf("Failed to load_task_setting.\n");
@@ -64,15 +63,8 @@ int main() {
         return -1;
     }
 
-    // 读取任务变量
-    if (load_task_vars(&(master.vars)) < 0) {
-        printf("Failed to load_task_vars.\n");
-        return -1;
-    }
-
-    // 读取任务脚本流程
-    if (load_task_script(&(master.script)) < 0) {
-        printf("Failed to load_task_script.\n");
+    if (plugins_load_task_script(&(master.script), &(master.plugins)) < 0)// TODO
+    {
         return -1;
     }
 
