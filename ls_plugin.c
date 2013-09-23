@@ -1,8 +1,5 @@
 #include <stdio.h>
 
-#include <iostream>
-using namespace std;
-
 #include "ls_utils.h"
 #include "ls_master.h"
 #include "ls_plugin.h"

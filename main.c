@@ -2,12 +2,14 @@
 
 #include "libuv/include/uv.h"
 
+#include "ls_task_script.h"
+
 #include "ls_master.h"
 #include "ls_config.h"
 #include "ls_worker.h"
 #include "ls_plugin.h"
 
-#include "ls_task_script.h"
+// #include "ls_task_script.h"
 #include "ls_task_callmodel.h"
 #include "ls_task_setting.h"
 #include "ls_task_var.h"

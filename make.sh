@@ -1,1 +1,1 @@
-g++ -o loadgen *.c -Llib/libuv/lib -luv -lpthread -Ilib
+g++ -o loadgen *.c -Llib/libuv/lib -luv -ljsoncpp -lpthread -ldl -Ilib

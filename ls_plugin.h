@@ -8,6 +8,7 @@ using namespace std;
 #include "lib/libuv/include/uv.h"
 
 #include "ls_task_setting.h"
+#include "ls_task_script.h"
 
 struct ls_plugin_entry_s;
 
@@ -50,5 +51,7 @@ int plugins_load_task_setting(ls_task_setting_t* settings,
                               ls_plugin_t* plugins);
 
 int plugins_unload_task_setting(ls_plugin_t* plugins);
+
+int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins);
 
 #endif
