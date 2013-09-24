@@ -1,18 +1,35 @@
+#include <cassert>
+#include <fstream>
+using namespace std;
+
+#include "jsoncpp/json/json.h"
+
 #include "ls_task_setting.h"
 
 int load_task_setting(ls_task_setting_t* setting) {
-    // TODO
-    map<string, string> * plugin_demo = new map<string, string>();
-    plugin_demo->insert(pair<string, string>("setting_name1", "setting_value1"));
-    plugin_demo->insert(pair<string, string>("setting_name2", "setting_value2"));
+    printf("==== enter load_task_setting()\n");
+    const char* setting_file = "task/setting.json";
+    ifstream ifs;
+    
+    ifs.open(setting_file);
+    assert(ifs.is_open());
 
-    setting->insert(pair<string, void*>("ls_plugin_demo", plugin_demo));
+    Json::Reader reader;
+    Json::Value root;
 
-    // map<string, string> * plugin_demo2 = new map<string, string>();
-    // plugin_demo2->insert(pair<string, string>("setting_name3", "setting_value3"));
-    // plugin_demo2->insert(pair<string, string>("setting_name4", "setting_value4"));
+    assert(reader.parse(ifs, root, false));
+    ifs.close();
 
-    // setting->insert(pair<string, void*>("ls_plugin_demo2", plugin_demo2));
+    printf("setting.size() = %d\n", root.size());
+
+    Json::Value::Members m = root.getMemberNames();
+    for (Json::Value::Members::iterator it = m.begin(); it != m.end(); ++it)
+    {
+        Json::Value *settings = new Json::Value();
+        *settings = root[*it];
+
+        setting->insert(pair<string, void*>(*it, settings));
+    }    
 
     return 0;
 }

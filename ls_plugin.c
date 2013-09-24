@@ -51,7 +51,7 @@ int unload_plugins(ls_plugin_t* plugins) {// TODO
 // 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
 int plugins_load_task_setting(ls_task_setting_t* settings,
                               ls_plugin_t* plugins) {
-    printf("enter plugins_load_task_setting\n");
+    printf("==== enter plugins_load_task_setting\n");
     // 遍历settings，
     ls_task_setting_t plugin_settings;
     ls_task_setting_t::iterator it;
@@ -62,11 +62,12 @@ int plugins_load_task_setting(ls_task_setting_t* settings,
         void* plugin_setting = NULL;
         // 根据plugin_name找到plugin_entry，进一步找到task_init回调
         ls_plugin_entry_t* entry = &((*plugins)[plugin_name]);
-        if (entry == NULL)
+        if (entry->task_init == NULL)
         {
             printf("no plugin [%s] loaded\n", plugin_name.c_str());
             return -1;
         }
+        printf("ls_plugin_entry: %d\n", entry);
         printf("after ls_plugin_entry: %d\n", entry->task_init);
         // 更新plugin_setting，初始化plugin_state
         if ((entry->task_init)(it->second, &plugin_setting, &(entry->plugin_state)) < 0)

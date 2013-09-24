@@ -6,8 +6,6 @@ using namespace std;
 
 #include "ls_config.h"
 
-ls_config_t config;
-
 int load_config(ls_config_t* config) {
     const char* config_file = "config.json";
     ifstream ifs;

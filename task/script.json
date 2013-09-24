@@ -1,7 +1,7 @@
 [
     {
         "api": "plugin_demo1_api1",
-        "proto": "plugin_demo1",
+        "plugin": "plugin_demo1",
         "args": {
             "name1": "value1",
             "name2": "value2"
@@ -10,10 +10,10 @@
 
     {
         "api": "test_api2",
-        "proto": "plugin_demo2",
+        "plugin": "plugin_demo2",
         "args": {
             "name3": "value3",
             "name4": "value4"
         }
-    },
+    }
 ]

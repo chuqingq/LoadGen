@@ -1,15 +1,40 @@
+#include <cassert>
+#include <fstream>
+using namespace std;
+
+#include "jsoncpp/json/json.h"
+
 #include "ls_task_script.h"
 
-int load_task_script(ls_task_script_t* script) {// TODO 需要根据plugin来对script进行处理
-    ls_task_script_entry_t entry;
+int load_task_script(ls_task_script_t* script) {
+    printf("==== enter load_task_script()\n");
+    const char* script_file = "task/script.json";
+    ifstream ifs;
+    
+    ifs.open(script_file);
+    assert(ifs.is_open());
 
-    entry.api_name = "plugin_demo1_api1";
-    entry.plugin_name = "";// TODO 
-    entry.args_json = NULL;
-    entry.api = NULL;// TODO
-    entry.args = NULL;
+    Json::Reader reader;
+    Json::Value root;
 
-    script->push_back(entry);
+    assert(reader.parse(ifs, root, false));
 
-    return -1;
+    printf("script.size() = %d\n", root.size());
+
+    for (int i = 0; i < root.size(); ++i)
+    {
+        ls_task_script_entry_t entry;
+
+        entry.api_name = root[i]["api"].asString();
+        entry.plugin_name = root[i]["plugin"].asString();
+        entry.args_json = root[i]["args"];// 拷贝一份
+
+        script->push_back(entry);
+    }
+
+    ifs.close();
+
+    printf("root[0][\"api\"] = %s\n", root[0]["api"].asString().c_str());
+
+    return 0;
 }

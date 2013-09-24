@@ -2,10 +2,5 @@
     "ls_plugin_demo": {
         "setting_name1": "setting_value1",
         "setting_name2": "setting_value2"
-    },
-
-    "plugin_demo2": {
-        "setting_name3": "setting_value3",
-        "setting_name4": "setting_value4"
     }
 }
