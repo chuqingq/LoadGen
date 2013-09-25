@@ -65,8 +65,8 @@ int main() {
         return -1;
     }
 
-    if (plugins_load_task_script(&(master.script), &(master.plugins)) < 0)// TODO
-    {
+    if (plugins_load_task_script(&(master.script), &(master.plugins)) < 0) {
+        printf("Failed to plugins_load_task_script.\n");
         return -1;
     }
 

@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "ls_master.h"
 #include "ls_worker.h"
 
@@ -11,6 +13,7 @@ static void master_async_callback(uv_async_t* handle, int status) {
 }
 
 int start_workers(ls_master_t* master) {
+    printf("====start_workers()\n");
     int workers_num = master->config.worker_num;
 
     for (int i = 0; i < workers_num; ++i)

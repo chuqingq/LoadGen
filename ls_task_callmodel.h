@@ -13,6 +13,7 @@ typedef enum {
 
 typedef struct ls_task_callmodel_s {
     ls_task_callmodel_type type;
+    
     int init;       /* 初始数量 */
     int accelerate; /* 每秒变化数量 */
     int dest;       /* 目标值 */

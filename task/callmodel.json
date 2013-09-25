@@ -1,4 +1,7 @@
 {
-    // "name": "value"
-    // TODO
+    "type": "CALLMODEL_VUSER",
+    "init": 20,
+    "accelerate": 5,
+    "dest": 100,
+    "duration": 120
 }

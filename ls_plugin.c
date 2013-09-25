@@ -91,5 +91,29 @@ int plugins_unload_task_setting(ls_plugin_t* plugins) {// TODO
 
 // TODO 让plugin对script进行特殊处理。例如明确哪个API是属于自己的，设置好ls_api_t
 int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
-    return -1;
+    printf("====plugins_load_task_script\n");
+
+    for (ls_task_script_t::iterator it = script->begin(); it != script->end(); ++it)
+    {
+        // find plugin_name of script_entry in plugins
+        ls_plugin_t::iterator plugins_it = plugins->find(it->plugin_name);
+        if (plugins_it == plugins->end())
+        {
+            printf("\t plugin_name %s not found\n", it->plugin_name.c_str());
+            return -1;
+        }
+
+        // set api of script_entry in plugins
+        map<string, ls_plugin_api_t>::iterator api_it = plugins_it->second.apis.find(it->api_name);
+        if (api_it == plugins_it->second.apis.end())
+        {
+            printf("\t api %s not found\n", it->api_name.c_str());
+            return -1;
+        }
+        it->api = (void*)api_it->second;
+
+        // TODO 参数没有预处理
+    }
+
+    return 0;
 }
