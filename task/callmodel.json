@@ -1,7 +1,7 @@
 {
     "type": "CALLMODEL_VUSER",
-    "init": 20,
-    "accelerate": 5,
+    "init": 50,
+    "accelerate": 10,
     "dest": 100,
-    "duration": 120
+    "duration": 10
 }

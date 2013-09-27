@@ -46,16 +46,22 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
     printf("\tdest=%d\n", callmodel->dest);
 
     // duration
-    callmodel->duration = root["duration"].asInt();
+    callmodel->duration = root["duration"].asInt() * 1000;
     printf("\tduration=%d\n", callmodel->duration);
+
+    // current 当前设置为0，第一次直接控制时设置为init值
+    callmodel->current = 0;
 
     return 0;
 }
 
 static void duration_timeout(uv_timer_t* handle, int status) {
+    printf("====duration_timeout()\n");
+
     // TODO 通知worker停止
     // ls_task_callmodel_t* cm = container_of(handle, ls_task_callmodel_t, duration_timer);
     // TODO notify_worker("stop");
+    printf("TODO stop_worker()\n");
 
     uv_timer_stop(handle);
 
@@ -69,6 +75,10 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
 
     // TODO 每秒钟需要增加的accelerate/CPU分配给worker
     // TODO callmodel_worker(config.worker_num);
+
+    printf("\taccelerate=%d\n", cm->accelerate);
+    printf("\tcurrent=%d\n", cm->current);
+    printf("\tdest=%d\n", cm->dest);
 
     cm->current += cm->accelerate;
 
@@ -88,9 +98,14 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
 int do_task_callmodel(ls_task_callmodel_t* cm) {
     printf("====do_task_callmodel()\n");
 
+    // 把呼叫模型中current从0改为init
+    // TODO 启动init个session
+
+    cm->current = cm->init;
+
     uv_timer_t* t = &(cm->accelerate_timer);
     uv_timer_init(uv_default_loop(), t);
-    uv_timer_start(t, accelerate_per_sec, 3000, 1000);
+    uv_timer_start(t, accelerate_per_sec, 1000, 1000);
 
     return 0;
 }
