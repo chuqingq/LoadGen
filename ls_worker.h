@@ -62,4 +62,6 @@ int process_session(ls_session_t* session);
 
 int notify_worker(const string& cmd);
 
+int worker_start_new_session(ls_worker_t* w, int num);
+
 #endif

@@ -7,6 +7,7 @@ using namespace std;
 
 #include "ls_utils.h"
 #include "ls_config.h"
+#include "ls_master.h"
 #include "ls_task_callmodel.h"
 
 
@@ -80,6 +81,12 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
     printf("\tcurrent=%d\n", cm->current);
     printf("\tdest=%d\n", cm->dest);
 
+    // 启动cm->accelerate个session
+    if (start_new_session(cm->accelerate) < 0)
+    {
+        printf("Failed to start_new_session()\n");
+        return;// TODO 退出
+    }
     cm->current += cm->accelerate;
 
     // 如果当前值达到dest，则关闭此timer，开启另一个duration_timer
@@ -98,8 +105,15 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
 int do_task_callmodel(ls_task_callmodel_t* cm) {
     printf("====do_task_callmodel()\n");
 
+    // ls_master_t* master = container_of(cm, ls_master_t, callmodel);
+
     // 把呼叫模型中current从0改为init
     // TODO 启动init个session
+    if (start_new_session(cm->init) < 0)
+    {
+        printf("Failed to start_new_session()\n");
+        return -1;
+    }
 
     cm->current = cm->init;
 
