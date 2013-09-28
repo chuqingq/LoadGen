@@ -27,6 +27,7 @@ static void worker_thread(void* arg) {
 }
 
 int init_worker(ls_worker_t* w) {
+    printf("====init_worker()\n");
     // master_async在master中初始化
     return uv_thread_create(&(w->thread), worker_thread, (void*)w);
 }

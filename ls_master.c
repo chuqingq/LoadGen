@@ -26,10 +26,10 @@ int start_workers(ls_master_t* master) {
             return -1;/* TODO */
         }
 
-        // if (start_worker(&w) < 0)
-        // {
-        //     return -1;/* TODO */
-        // }
+        if (init_worker(w) < 0)
+        {
+            return -1;/* TODO */
+        }
     }
 
     return 0;

@@ -57,6 +57,7 @@ typedef struct {
 
 } ls_worker_t;
 
+int init_worker(ls_worker_t* w);
 
 int process_session(ls_session_t* session);
 
