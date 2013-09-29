@@ -1,18 +1,18 @@
 [
     {
-        "api": "plugin_demo1_api1",
+        "api": "ls_think_time",
         "plugin": "ls_plugin_demo",
         "args": {
-            "name1": "value1",
+            "time": "4",
             "name2": "value2"
         }
     },
 
     {
-        "api": "plugin_demo1_api1",
+        "api": "ls_error_message",
         "plugin": "ls_plugin_demo",
         "args": {
-            "name1": "value1",
+            "name1": "hello world",
             "name2": "value2"
         }
     }

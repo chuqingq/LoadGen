@@ -19,7 +19,7 @@ int load_task_script(ls_task_script_t* script) {
 
     assert(reader.parse(ifs, root, false));
 
-    printf("script.size() = %d\n", root.size());
+    printf("  script.size() = %d\n", root.size());
 
     for (int i = 0; i < root.size(); ++i)
     {
@@ -34,7 +34,7 @@ int load_task_script(ls_task_script_t* script) {
 
     ifs.close();
 
-    printf("root[0][\"api\"] = %s\n", root[0]["api"].asString().c_str());
+    printf("  root[0][\"api\"] = %s\n", root[0]["api"].asString().c_str());
 
     return 0;
 }

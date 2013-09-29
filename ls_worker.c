@@ -3,13 +3,13 @@
 #include "ls_utils.h"
 #include "ls_worker.h"
 
-static void worker_async_callback(uv_async_t* async, int status) {\
+static void worker_async_callback(uv_async_t* async, int status) {
     printf("====worker_async_callback()\n");
 
     ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
     // worker收到master的消息
     int delta = *((int*)async->data);
-    printf("\tworker[%d] session_num delta=%d\n", w->thread, delta);
+    printf("  worker[%d] session_num delta=%d\n", w->thread, delta);
 
     // TODO 1. 增加/变化呼叫量
     //  读取script，按照逻辑操作

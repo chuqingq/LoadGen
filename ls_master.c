@@ -45,13 +45,13 @@ int start_new_session(int num) {
     int worker_num = master.config.worker_num;
     int avg = num/worker_num + 1;
     int add = num%worker_num;
-    printf("\t avg=%d,add=%d\n", avg, add);
+    printf("  avg=%d,add=%d\n", avg, add);
 
     for (int i = 0; i < add; ++i)
     {
         if (worker_start_new_session(master.workers[i], avg) < 0)
         {
-            printf("Failed to worker_start_new_session()\n");
+            printf("  Failed to worker_start_new_session()\n");
             return -1;
         }
     }
@@ -60,7 +60,7 @@ int start_new_session(int num) {
     {
         if (worker_start_new_session(master.workers[i], avg-1) < 0)
         {
-            printf("Failed to worker_start_new_session()\n");
+            printf("  Failed to worker_start_new_session()\n");
             return -1;
         }
     }

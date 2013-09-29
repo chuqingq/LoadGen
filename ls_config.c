@@ -7,6 +7,8 @@ using namespace std;
 #include "ls_config.h"
 
 int load_config(ls_config_t* config) {
+    printf("==== enter load_config()\n");
+
     const char* config_file = "config.json";
     ifstream ifs;
     
@@ -20,13 +22,13 @@ int load_config(ls_config_t* config) {
 
     // worker_num
     config->worker_num = root["worker_num"].asInt();
-    printf("worker_num = %d\n", config->worker_num);
+    printf("  worker_num = %d\n", config->worker_num);
 
     // plugin_paths
     Json::Value plugin_paths = root["plugin_paths"];
     for (int i = 0; i < plugin_paths.size(); ++i)
     {
-        printf("plugin_paths[%d] = %s\n", i, plugin_paths[i].asString().c_str());
+        printf("  plugin_paths[%d] = %s\n", i, plugin_paths[i].asString().c_str());
         config->plugin_paths.push_back(plugin_paths[i].asString());
     }
     

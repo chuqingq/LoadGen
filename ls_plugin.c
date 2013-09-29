@@ -5,6 +5,8 @@
 #include "ls_plugin.h"
 
 int load_plugins(ls_plugin_t* plugins) {
+    printf("==== enter load_plugins()\n");
+
     // 加载plugin目录下的插件
     ls_master_t* master = container_of(plugins, ls_master_t, plugins);
     const vector<string> &plugin_paths = master->config.plugin_paths;
@@ -13,22 +15,22 @@ int load_plugins(ls_plugin_t* plugins) {
     {
         ls_plugin_entry_t entry;
         if (uv_dlopen(plugin_paths[i].c_str(), &(entry.plugin_lib)) < 0) {
-            printf("Failed to uv_dlopen\n");
+            printf("  Failed to uv_dlopen\n");
             return -1;
         }
 
         if (uv_dlsym(&(entry.plugin_lib), "plugin_declare", (void**)&(entry.plugin_declare)) < 0) {
-            printf("Failed to uv_dlsym\n");
+            printf("  Failed to uv_dlsym\n");
             return -1;
         }
 
         const char* plugin_name = NULL;
         if ((entry.plugin_declare(&plugin_name, &entry) < 0)) {
-            printf("Failed to plugin_declare\n");
+            printf("  Failed to plugin_declare\n");
             return -1;
         }
 
-        printf("load_plugins: %s task_init=%d\n", plugin_name, entry.task_init);
+        printf("  load_plugins: %s task_init=%d\n", plugin_name, entry.task_init);
 
         plugins->insert(pair<string, ls_plugin_entry_t>(plugin_name, entry));
 
@@ -99,7 +101,7 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
         ls_plugin_t::iterator plugins_it = plugins->find(it->plugin_name);
         if (plugins_it == plugins->end())
         {
-            printf("\t plugin_name %s not found\n", it->plugin_name.c_str());
+            printf("  plugin_name %s not found\n", it->plugin_name.c_str());
             return -1;
         }
 
@@ -107,7 +109,7 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
         map<string, ls_plugin_api_t>::iterator api_it = plugins_it->second.apis.find(it->api_name);
         if (api_it == plugins_it->second.apis.end())
         {
-            printf("\t api %s not found\n", it->api_name.c_str());
+            printf("  api %s not found\n", it->api_name.c_str());
             return -1;
         }
         it->api = (void*)api_it->second;

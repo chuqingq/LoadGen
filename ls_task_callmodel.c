@@ -36,19 +36,19 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
 
     // init // TODO 没有做有效性校验
     callmodel->init = root["init"].asInt();
-    printf("\tinit=%d\n", callmodel->init);
+    printf("  init=%d\n", callmodel->init);
 
     // accelerate
     callmodel->accelerate = root["accelerate"].asInt();
-    printf("\taccelerate=%d\n", callmodel->accelerate);
+    printf("  accelerate=%d\n", callmodel->accelerate);
 
     // dest
     callmodel->dest = root["dest"].asInt();
-    printf("\tdest=%d\n", callmodel->dest);
+    printf("  dest=%d\n", callmodel->dest);
 
     // duration
     callmodel->duration = root["duration"].asInt() * 1000;
-    printf("\tduration=%d\n", callmodel->duration);
+    printf("  duration=%d\n", callmodel->duration);
 
     // current 当前设置为0，第一次直接控制时设置为init值
     callmodel->current = 0;
@@ -57,12 +57,12 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
 }
 
 static void duration_timeout(uv_timer_t* handle, int status) {
-    printf("====duration_timeout()\n");
+    printf("==== duration_timeout()\n");
 
     // TODO 通知worker停止
     // ls_task_callmodel_t* cm = container_of(handle, ls_task_callmodel_t, duration_timer);
     // TODO notify_worker("stop");
-    printf("TODO stop_worker()\n");
+    printf("  TODO stop_worker()\n");
 
     uv_timer_stop(handle);
 
@@ -70,21 +70,21 @@ static void duration_timeout(uv_timer_t* handle, int status) {
 }
 
 static void accelerate_per_sec(uv_timer_t* handle, int status) {
-    printf("==accelerate_per_sec()\n");
+    printf("==== accelerate_per_sec()\n");
 
     ls_task_callmodel_t* cm = container_of(handle, struct ls_task_callmodel_s, accelerate_timer);
 
     // TODO 每秒钟需要增加的accelerate/CPU分配给worker
     // TODO callmodel_worker(config.worker_num);
 
-    printf("\taccelerate=%d\n", cm->accelerate);
-    printf("\tcurrent=%d\n", cm->current);
-    printf("\tdest=%d\n", cm->dest);
+    printf("  accelerate=%d\n", cm->accelerate);
+    printf("  current=%d\n", cm->current);
+    printf("  dest=%d\n", cm->dest);
 
     // 启动cm->accelerate个session
     if (start_new_session(cm->accelerate) < 0)
     {
-        printf("Failed to start_new_session()\n");
+        printf("  Failed to start_new_session()\n");
         return;// TODO 退出
     }
     cm->current += cm->accelerate;
@@ -103,7 +103,7 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
 
 
 int do_task_callmodel(ls_task_callmodel_t* cm) {
-    printf("====do_task_callmodel()\n");
+    printf("==== do_task_callmodel()\n");
 
     // ls_master_t* master = container_of(cm, ls_master_t, callmodel);
 
@@ -111,7 +111,7 @@ int do_task_callmodel(ls_task_callmodel_t* cm) {
     // TODO 启动init个session
     if (start_new_session(cm->init) < 0)
     {
-        printf("Failed to start_new_session()\n");
+        printf("  Failed to start_new_session()\n");
         return -1;
     }
 

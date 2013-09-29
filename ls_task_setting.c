@@ -20,7 +20,7 @@ int load_task_setting(ls_task_setting_t* setting) {
     assert(reader.parse(ifs, root, false));
     ifs.close();
 
-    printf("setting.size() = %d\n", root.size());
+    printf("  setting.size() = %d\n", root.size());
 
     Json::Value::Members m = root.getMemberNames();
     for (Json::Value::Members::iterator it = m.begin(); it != m.end(); ++it)
