@@ -60,27 +60,27 @@ int plugins_load_task_setting(ls_task_setting_t* settings,
     for (it = settings->begin(); it != settings->end(); it++)
     {
         string plugin_name = it->first;
-        printf("load plugin %s:\n", plugin_name.c_str());
+        printf("  load plugin %s:\n", plugin_name.c_str());
         void* plugin_setting = NULL;
         // 根据plugin_name找到plugin_entry，进一步找到task_init回调
         ls_plugin_entry_t* entry = &((*plugins)[plugin_name]);
         if (entry->task_init == NULL)
         {
-            printf("no plugin [%s] loaded\n", plugin_name.c_str());
+            printf("  no plugin [%s] loaded\n", plugin_name.c_str());
             return -1;
         }
-        printf("ls_plugin_entry: %d\n", entry);
-        printf("after ls_plugin_entry: %d\n", entry->task_init);
+        printf("  ls_plugin_entry: %d\n", entry);
+        printf("  after ls_plugin_entry: %d\n", entry->task_init);
         // 更新plugin_setting，初始化plugin_state
         if ((entry->task_init)(it->second, &plugin_setting, &(entry->plugin_state)) < 0)
         {
             return -1;
         }
-        printf("after task_init\n");
+        printf("  after task_init\n");
 
         // TODO 是否能在循环中变化？？
         plugin_settings.insert(pair<string, void*>(plugin_name, plugin_setting));
-        printf("load plugin %s successfully\n", plugin_name.c_str());
+        printf("  load plugin %s successfully\n", plugin_name.c_str());
     }
 
     *settings = plugin_settings;

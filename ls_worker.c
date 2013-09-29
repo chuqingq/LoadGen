@@ -38,7 +38,7 @@ int reap_worker(ls_worker_t* w) {
 
 // 在一个worker上启动num个会话
 int worker_start_new_session(ls_worker_t* w, int num) {
-    printf("====worker_start_new_session(%d, %d)\n", w->thread, num);
+    printf("==== worker_start_new_session(%d, %d)\n", w->thread, num);
     // TODO
     return 0;
 }
