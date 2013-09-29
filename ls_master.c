@@ -40,7 +40,7 @@ int reap_workers(ls_master_t* master) {
 }
 
 int start_new_session(int num) {
-    printf("====start_new_session(%d)\n", num);
+    printf("==== start_new_session(%d)\n", num);
     // 先按简单的方式来：num尽量平均分给每个worker，不考虑worker当前的会话数
     int worker_num = master.config.worker_num;
     int avg = num/worker_num + 1;

@@ -31,14 +31,14 @@ static int plugin_task_destroy(void** plugin_setting, void** plugin_state) {
     return -1;
 }
 
-static int ls_think_time(const void* args, void* plugin_state, map<string, string> * vars) {
+static int ls_think_time(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
     printf(">>>> plugin_demo before ls_think_time(%d)\n", 1);
 
     printf(">>>> plugin_demo after ls_think_time()\n");
     return 0;
 }
 
-static int ls_error_message(const void* args, void* plugin_state, map<string, string> * vars) {
+static int ls_error_message(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
     printf(">>>> plugin_demo before ls_error_message(%d)\n", 1);
 
     printf(">>>> plugin_demo after ls_error_message()\n");

@@ -4,7 +4,7 @@
 #include "ls_worker.h"
 
 static void worker_async_callback(uv_async_t* async, int status) {
-    printf("====worker_async_callback()\n");
+    printf("==== worker_async_callback()\n");
 
     ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
     // worker收到master的消息
@@ -27,7 +27,7 @@ static void worker_thread(void* arg) {
 }
 
 int init_worker(ls_worker_t* w) {
-    printf("====init_worker()\n");
+    printf("==== init_worker()\n");
     // master_async在master中初始化
     return uv_thread_create(&(w->thread), worker_thread, (void*)w);
 }
