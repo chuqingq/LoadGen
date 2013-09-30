@@ -39,6 +39,13 @@ int reap_workers(ls_master_t* master) {
     return -1;
 }
 
+static int notify_worker_start_new_session(ls_worker_t* w, int num) {
+    int* num2 = new int;
+    *num2 = num;
+    w->worker_async.data = num2;
+    return uv_async_send(&(w->worker_async));
+}
+
 int start_new_session(int num) {
     printf("==== start_new_session(%d)\n", num);
     // 先按简单的方式来：num尽量平均分给每个worker，不考虑worker当前的会话数
@@ -49,7 +56,7 @@ int start_new_session(int num) {
 
     for (int i = 0; i < add; ++i)
     {
-        if (worker_start_new_session(master.workers[i], avg) < 0)
+        if (notify_worker_start_new_session(master.workers[i], avg) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");
             return -1;
@@ -58,7 +65,7 @@ int start_new_session(int num) {
 
     for (int i = add; i < worker_num; ++i)
     {
-        if (worker_start_new_session(master.workers[i], avg-1) < 0)
+        if (notify_worker_start_new_session(master.workers[i], avg-1) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");
             return -1;

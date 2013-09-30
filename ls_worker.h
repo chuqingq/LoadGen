@@ -19,7 +19,7 @@ typedef struct {
     uv_async_t master_async;
     uv_async_t worker_async;
 
-    vector<ls_session_t> sessions;
+    vector<ls_session_t*> sessions;
 
 } ls_worker_t;
 

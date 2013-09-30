@@ -77,6 +77,8 @@ int main() {
         return -1;
     }
 
+    printf("==== task will start...\n");
+
     // master按照呼叫模型分配呼叫
     if (do_task_callmodel(&(master.callmodel)) < 0) {
         printf("Failed to do_task_callmodel.\n");

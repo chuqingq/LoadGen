@@ -6,6 +6,7 @@ using namespace std;
 
 #include "ls_plugin.h"
 #include "ls_worker.h"
+#include "ls_session.h"
 
 
 // load，协议加载。和任务无关
@@ -33,12 +34,13 @@ static int plugin_task_destroy(void** plugin_setting, void** plugin_state) {
 }
 
 static void timer_cb(uv_timer_t* handle, int status) {
+    printf(">>>> ls_think_time timer_cb()\n");
     // 根据handle获取到session
     ls_session_t* s = (ls_session_t*) handle->data;
     uv_timer_stop(handle);
     delete handle;
 
-    (s->process_session)(s);// TODO process_session处理下一个api
+    process_session(s);// TODO process_session处理下一个api
 }
 
 // static int ls_think_time(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
@@ -49,7 +51,7 @@ static int ls_think_time(const void* args, ls_session_t* session, map<string, st
     uv_timer_init(session->loop, timer);
 
     timer->data = session;
-    uv_timer_start(timer, timer_cb, 1000, 0);
+    uv_timer_start(timer, timer_cb, 1000, 0);// TODO 时间是写死的
 
     printf(">>>> plugin_demo after ls_think_time()\n");
     return 0;

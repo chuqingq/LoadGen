@@ -21,6 +21,7 @@ typedef struct {
 
     ls_config_t config;// DONE loadgen设置，maste读取，后续只读，worker不使用
     ls_plugin_t plugins;// TODO 保存加载的插件
+    map<string, void*> states;// TODO maste执行plugin_task_init
 
     ls_task_callmodel_t callmodel;// 呼叫模型，master保存，master使用
     ls_task_setting_t settings;// proto_type -> task_setting master读取setting.json并调用plugin的plugin_load_setting解析，后续master不用，worker只读
