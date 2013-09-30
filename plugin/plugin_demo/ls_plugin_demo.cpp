@@ -4,7 +4,8 @@
 #include <map>
 using namespace std;
 
-#include "../../ls_plugin.h"
+#include "ls_plugin.h"
+#include "ls_worker.h"
 
 
 // load，协议加载。和任务无关
@@ -31,14 +32,30 @@ static int plugin_task_destroy(void** plugin_setting, void** plugin_state) {
     return -1;
 }
 
-static int ls_think_time(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
+static void timer_cb(uv_timer_t* handle, int status) {
+    // 根据handle获取到session
+    ls_session_t* s = (ls_session_t*) handle->data;
+    uv_timer_stop(handle);
+    delete handle;
+
+    (s->process_session)(s);// TODO process_session处理下一个api
+}
+
+// static int ls_think_time(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
+static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
     printf(">>>> plugin_demo before ls_think_time(%d)\n", 1);
+
+    uv_timer_t* timer = new uv_timer_t;// TODO 貌似应该动态申请
+    uv_timer_init(session->loop, timer);
+
+    timer->data = session;
+    uv_timer_start(timer, timer_cb, 1000, 0);
 
     printf(">>>> plugin_demo after ls_think_time()\n");
     return 0;
 }
 
-static int ls_error_message(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
+static int ls_error_message(const void* args, ls_session_t* session, map<string, string> * vars) {
     printf(">>>> plugin_demo before ls_error_message(%d)\n", 1);
 
     printf(">>>> plugin_demo after ls_error_message()\n");

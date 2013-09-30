@@ -10,9 +10,13 @@ using namespace std;
 #include "ls_task_setting.h"
 #include "ls_task_var.h"
 
+struct ls_session_s;
+typedef void (*ls_session_process_t)(struct ls_session_s*);
 
-typedef struct {
+typedef struct ls_session_s {
     int session_id;// 暂时无用
+
+    uv_loop_t* loop;// TODO worker启动session时设置
 
     const map<string, void*> *settings;// 引用master的 TODO ？？ 可有可无
 
@@ -20,6 +24,8 @@ typedef struct {
 
     map<string/* plugin_name */, void*> states;
     ls_task_var_t cur_vars;// const map<string, ls_var_t> vars;// session需要根据此初始化变量cur_vars、每次执行API前获取需要的变量更新cur_vars
+
+    ls_session_process_t process_session;
 } ls_session_t;
 
 

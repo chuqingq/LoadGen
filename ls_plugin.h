@@ -7,6 +7,7 @@ using namespace std;
 
 #include "lib/libuv/include/uv.h"
 
+#include "ls_worker.h"
 #include "ls_task_setting.h"
 #include "ls_task_script.h"
 
@@ -24,9 +25,9 @@ typedef int (*ls_plugin_task_init_t)(const void* setting,
 typedef int (*ls_plugin_task_destroy_t)(void** plugin_setting,
                                         void** plugin_state);
 
-typedef int (*ls_plugin_api_t)(uv_loop_t* loop,
-                               const void* args,
-                               void* plugin_state,
+typedef int (*ls_plugin_api_t)(const void* args,
+                               ls_session_t* session,
+                               /* void* plugin_state,*/
                                map<string, string> * vars);
 
 
