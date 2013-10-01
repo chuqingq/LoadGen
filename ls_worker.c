@@ -65,7 +65,14 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s->settings = &(master.settings);// 只读
         s->script = &(master.script);// 只读
         s->script_cur = -1;
-        s->states = master.states;// TODO 拷贝
+        // state从master的plugins中state保存过来
+        for (map<string, ls_plugin_entry_t>::iterator it = master.plugins.begin(); it != master.plugins.end(); ++it)
+        {
+            ls_plugin_entry_t* e = &(it->second);
+            // TODO void* state 需要拷贝一份 ??
+            s->states.insert(pair<string, void*>(it->first, e->plugin_state));
+        }
+
         s->cur_vars = master.vars;// TODO 拷贝
 
         s->process = process_session;
