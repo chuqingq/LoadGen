@@ -29,8 +29,8 @@ typedef struct ls_session_s {
 } ls_session_t;
 
 
-extern "C" int process_session(ls_session_t* session);
+int process_session(ls_session_t* session);
 
-extern "C" int finish_session(ls_session_t* session);
+int finish_session(ls_session_t* session);
 
 #endif
