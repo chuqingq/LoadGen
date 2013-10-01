@@ -5,7 +5,7 @@
 #include "ls_plugin.h"
 
 int load_plugins(ls_plugin_t* plugins) {
-    printf("==== enter load_plugins()\n");
+    printf("==== load_plugins()\n");
 
     // 加载plugin目录下的插件
     ls_master_t* master = container_of(plugins, ls_master_t, plugins);
@@ -53,11 +53,9 @@ int unload_plugins(ls_plugin_t* plugins) {// TODO
 // 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
 int plugins_load_task_setting(ls_task_setting_t* settings,
                               ls_plugin_t* plugins) {
-    printf("==== enter plugins_load_task_setting\n");
-    // 遍历settings，
-    ls_task_setting_t plugin_settings;
-    ls_task_setting_t::iterator it;
-    for (it = settings->begin(); it != settings->end(); it++)
+    printf("==== plugins_load_task_setting\n");
+    // 遍历settings，调用task_init，把返回的setting保存在plugin中
+    for (ls_task_setting_t::iterator it = settings->begin(); it != settings->end(); ++it)
     {
         string plugin_name = it->first;
         printf("  load plugin %s:\n", plugin_name.c_str());
@@ -74,16 +72,13 @@ int plugins_load_task_setting(ls_task_setting_t* settings,
         // 更新plugin_setting，初始化plugin_state
         if ((entry->task_init)(it->second, &plugin_setting, &(entry->plugin_state)) < 0)
         {
+            printf("ERROR task_init error\n");
             return -1;
         }
-        printf("  after task_init\n");
+        printf("  plugin [%s] task_init successfully\n", plugin_name.c_str());
 
-        // TODO 是否能在循环中变化？？
-        plugin_settings.insert(pair<string, void*>(plugin_name, plugin_setting));
-        printf("  load plugin %s successfully\n", plugin_name.c_str());
+        entry->plugin_setting = plugin_setting;
     }
-
-    *settings = plugin_settings;
     return 0;
 }
 

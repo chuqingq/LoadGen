@@ -14,8 +14,8 @@ typedef struct {
     Json::Value args_json;
 
     // content parsed in plugins_load_task_script()
-    void* api;
-    void* args;
+    const void* api;
+    const void* args;
 } ls_task_script_entry_t;
 
 typedef vector<ls_task_script_entry_t> ls_task_script_t;

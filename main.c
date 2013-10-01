@@ -15,11 +15,6 @@
 #include "ls_task_var.h"
 
 int main() {
-    // ls_script_t script;
-    // ls_callmodel_t callmodel;
-    // ls_plugin_t plugins;
-    // map<string, JsonObj*> settings;// TODO 放在ls_master_t中的setting
-
     master.master_loop = uv_default_loop();
 
     // -------------- 静态内容
@@ -42,35 +37,38 @@ int main() {
         return -1;
     }
 
-    // 读取任务变量
-    if (load_task_vars(&(master.vars)) < 0) {
-        printf("Failed to load_task_vars.\n");
-        return -1;
-    }
-
-    // 读取任务脚本流程
-    if (load_task_script(&(master.script)) < 0) {
-        printf("Failed to load_task_script.\n");
-        return -1;
-    }
-
-    // 读取任务设置并交给plugin处理
+    // 1. 读取任务设置并交给plugin处理
     if (load_task_setting(&(master.settings)) < 0) {
         printf("Failed to load_task_setting.\n");
         return -1;
     }
 
+    // 2. 读取任务变量
+    if (load_task_vars(&(master.vars)) < 0) {
+        printf("Failed to load_task_vars.\n");
+        return -1;
+    }
+
+    // 3. 读取任务脚本流程
+    if (load_task_script(&(master.script)) < 0) {
+        printf("Failed to load_task_script.\n");
+        return -1;
+    }
+
+    // -------------- 插件加载
+    // 插件加载任务设置
     if (plugins_load_task_setting(&(master.settings), &(master.plugins)) < 0) {
         printf("Failed to plugins_load_task_setting.\n");
         return -1;
     }
 
+    // 插件加载任务脚本
     if (plugins_load_task_script(&(master.script), &(master.plugins)) < 0) {
         printf("Failed to plugins_load_task_script.\n");
         return -1;
     }
 
-    // --------------- worker
+    // ---------------  启动worker
     // 启动worker
     if (start_workers(&master) < 0) {// 启动worker线程，注册master和worker的交互方式
         printf("Failed to start_workers.\n");
@@ -79,6 +77,7 @@ int main() {
 
     printf("==== task will start...\n");
 
+    // ----------------  启动呼叫
     // master按照呼叫模型分配呼叫
     if (do_task_callmodel(&(master.callmodel)) < 0) {
         printf("Failed to do_task_callmodel.\n");

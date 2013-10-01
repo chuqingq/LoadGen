@@ -7,7 +7,7 @@ using namespace std;
 #include "ls_config.h"
 
 int load_config(ls_config_t* config) {
-    printf("==== enter load_config()\n");
+    printf("==== load_config()\n");
 
     const char* config_file = "config.json";
     ifstream ifs;

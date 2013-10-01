@@ -7,7 +7,7 @@ using namespace std;
 #include "ls_task_script.h"
 
 int load_task_script(ls_task_script_t* script) {
-    printf("==== enter load_task_script()\n");
+    printf("==== load_task_script()\n");
     const char* script_file = "task/script.json";
     ifstream ifs;
     

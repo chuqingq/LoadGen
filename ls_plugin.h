@@ -32,9 +32,6 @@ typedef int (*ls_plugin_api_t)(const void* args,
 
 
 typedef struct ls_plugin_entry_s {
-    uv_lib_t plugin_lib;
-    ls_plugin_declare_t plugin_declare;
-
     ls_plugin_load_t plugin_load;// master启动时调用
     ls_plugin_unload_t plugin_unload;// master退出前调用
 
@@ -43,7 +40,12 @@ typedef struct ls_plugin_entry_s {
     
     map<string, ls_plugin_api_t> apis;
 
-    void* plugin_state;
+    const void* plugin_setting;// 只读，来自task_setting
+    void* plugin_state;// TODO 需要动态变化，其实不需要存在plugin_entry中
+
+    // private
+    uv_lib_t plugin_lib;
+    ls_plugin_declare_t plugin_declare;
 } ls_plugin_entry_t;
 
 // ls_plugin_t

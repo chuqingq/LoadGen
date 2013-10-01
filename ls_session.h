@@ -25,7 +25,7 @@ typedef struct ls_session_s {
     ls_task_var_t cur_vars;// const map<string, ls_var_t> vars;// session需要根据此初始化变量cur_vars、每次执行API前获取需要的变量更新cur_vars
 
     ls_session_process_t process;
-    ls_session_process_t finish;    
+    ls_session_process_t finish;
 } ls_session_t;
 
 
