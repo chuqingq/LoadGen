@@ -40,7 +40,13 @@ static void timer_cb(uv_timer_t* handle, int status) {
     uv_timer_stop(handle);
     delete handle;
 
-    process_session(s);// TODO process_session处理下一个api
+    (s->process)(s);// TODO process_session处理下一个api
+}
+
+static int ls_think_time_prepare(const Json::Value* json_args, void** args) {
+    // TODO
+    *args = (void*)json_args;
+    return 0;
 }
 
 // static int ls_think_time(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
@@ -54,6 +60,13 @@ static int ls_think_time(const void* args, ls_session_t* session, map<string, st
     uv_timer_start(timer, timer_cb, 1000, 0);// TODO 时间是写死的
 
     printf(">>>> plugin_demo after ls_think_time()\n");
+    return 0;
+}
+
+
+static int ls_error_message_prepare(const Json::Value* json_args, void** args) {
+    // TODO
+    *args = (void*)json_args;
     return 0;
 }
 
@@ -73,8 +86,18 @@ extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugi
     plugin_entry->task_init = plugin_task_init;
     plugin_entry->task_destroy = plugin_task_destroy;
 
-    plugin_entry->apis.insert(pair<string, ls_plugin_api_t>("ls_think_time", ls_think_time));
-    plugin_entry->apis.insert(pair<string, ls_plugin_api_t>("ls_error_message", ls_error_message));
+    ls_plugin_api_entry_t api_entry;
+
+    // ls_think_time
+    api_entry.prepare = ls_think_time_prepare;
+    api_entry.api = ls_think_time;
+    plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_think_time", api_entry));
+
+
+    // ls_error_message
+    api_entry.prepare = ls_error_message_prepare;
+    api_entry.api = ls_error_message;
+    plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_error_message", api_entry));
 
     printf(">>>> plugin_declare() task_init=%d\n", plugin_task_init);
     return 0;

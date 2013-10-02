@@ -101,15 +101,23 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
         }
 
         // set api of script_entry in plugins
-        map<string, ls_plugin_api_t>::iterator api_it = plugins_it->second.apis.find(it->api_name);
+        map<string, ls_plugin_api_entry_t>::iterator api_it = plugins_it->second.apis.find(it->api_name);
         if (api_it == plugins_it->second.apis.end())
         {
             printf("  api %s not found\n", it->api_name.c_str());
             return -1;
         }
-        it->api = (void*)api_it->second;
 
-        // TODO 参数没有预处理
+        void* args = NULL;
+        if ((api_it->second.prepare)(&(it->json_args), &args) < 0)
+        {
+            printf("  api %s prepare error\n", it->api_name.c_str());
+            return -1;
+        }
+
+        // 设置api和args
+        it->api = (void*)api_it->second.api;
+        it->args = args;
     }
 
     return 0;

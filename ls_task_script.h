@@ -11,7 +11,7 @@ typedef struct {
     // content direct from 'task/script.json'
     string api_name;
     string plugin_name;
-    Json::Value args_json;
+    Json::Value json_args;
 
     // content parsed in plugins_load_task_script()
     const void* api;

@@ -6,6 +6,7 @@
 using namespace std;
 
 #include "lib/libuv/include/uv.h"
+#include "jsoncpp/json/json.h"
 
 #include "ls_worker.h"
 #include "ls_task_setting.h"
@@ -25,10 +26,18 @@ typedef int (*ls_plugin_task_init_t)(const void* setting,
 typedef int (*ls_plugin_task_destroy_t)(void** plugin_setting,
                                         void** plugin_state);
 
+typedef int (*ls_plugin_api_prepare_t)(const Json::Value* json_args,// JSON::Value
+                                       void** args);
+
 typedef int (*ls_plugin_api_t)(const void* args,
                                ls_session_t* session,
                                /* void* plugin_state,*/
                                map<string, string> * vars);
+
+typedef struct {
+    ls_plugin_api_prepare_t prepare;
+    ls_plugin_api_t api;
+} ls_plugin_api_entry_t;
 
 
 typedef struct ls_plugin_entry_s {
@@ -38,7 +47,7 @@ typedef struct ls_plugin_entry_s {
     ls_plugin_task_init_t task_init;// master在任务启动前调用。加载setting，脚本参数预处理？？ TODO
     ls_plugin_task_destroy_t task_destroy;// master在任务结束后调用。卸载setting
     
-    map<string, ls_plugin_api_t> apis;
+    map<string, ls_plugin_api_entry_t> apis;// TODO 一个api包含两项，第一个prepare，第二个是api
 
     const void* plugin_setting;// 只读，来自task_setting
     void* plugin_state;// TODO 需要动态变化，其实不需要存在plugin_entry中

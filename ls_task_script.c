@@ -27,7 +27,7 @@ int load_task_script(ls_task_script_t* script) {
 
         entry.api_name = root[i]["api"].asString();
         entry.plugin_name = root[i]["plugin"].asString();
-        entry.args_json = root[i]["args"];// 拷贝一份
+        entry.json_args = root[i]["args"];// 拷贝一份
 
         script->push_back(entry);
     }
