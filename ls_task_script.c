@@ -19,8 +19,6 @@ int load_task_script(ls_task_script_t* script) {
 
     assert(reader.parse(ifs, root, false));
 
-    printf("  script.size() = %d\n", root.size());
-
     for (int i = 0; i < root.size(); ++i)
     {
         ls_task_script_entry_t entry;
@@ -30,11 +28,10 @@ int load_task_script(ls_task_script_t* script) {
         entry.json_args = root[i]["args"];// 拷贝一份
 
         script->push_back(entry);
+
+        printf("  api=%s, plugin_name=%s, json_args=xxx\n", entry.api_name.c_str(), entry.plugin_name.c_str());
     }
 
     ifs.close();
-
-    printf("  root[0][\"api\"] = %s\n", root[0]["api"].asString().c_str());
-
     return 0;
 }

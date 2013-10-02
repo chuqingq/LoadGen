@@ -33,14 +33,14 @@ static void worker_thread(void* arg) {
 
     w->worker_loop = uv_loop_new();
     uv_async_init(w->worker_loop, &(w->worker_async), worker_async_callback);
-    printf("==== worker_thread() thread:%d, loop:%d\n", w->thread, w->worker_loop);
+    printf("  worker_thread() thread:%d, loop:%d\n", w->thread, w->worker_loop);
 
     uv_run(w->worker_loop, UV_RUN_DEFAULT);
     printf("==== worker_thread() thread terminate\n");
 }
 
 int init_worker(ls_worker_t* w) {
-    printf("==== init_worker()\n");
+    printf("  init_worker()\n");
     // master_async在master中初始化
     return uv_thread_create(&(w->thread), worker_thread, (void*)w);
 }

@@ -44,6 +44,7 @@ static void timer_cb(uv_timer_t* handle, int status) {
 }
 
 static int ls_think_time_prepare(const Json::Value* json_args, void** args) {
+    printf(">>>> ls_think_time_prepare()\n");
     // TODO
     *args = (void*)json_args;
     return 0;
@@ -59,12 +60,12 @@ static int ls_think_time(const void* args, ls_session_t* session, map<string, st
     timer->data = session;
     uv_timer_start(timer, timer_cb, 1000, 0);// TODO 时间是写死的
 
-    printf(">>>> plugin_demo after ls_think_time()\n");
     return 0;
 }
 
 
 static int ls_error_message_prepare(const Json::Value* json_args, void** args) {
+    printf(">>>> ls_error_message_prepare()\n");
     // TODO
     *args = (void*)json_args;
     return 0;
@@ -73,11 +74,12 @@ static int ls_error_message_prepare(const Json::Value* json_args, void** args) {
 static int ls_error_message(const void* args, ls_session_t* session, map<string, string> * vars) {
     printf(">>>> plugin_demo before ls_error_message(%d)\n", 1);
 
-    printf(">>>> plugin_demo after ls_error_message()\n");
     return 0;
 }
 
 extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugin_entry) {
+    printf(">>>> plugin_declare(%s)\n", plugin_name);
+
     *plugin_name = "ls_plugin_demo";
 
     plugin_entry->plugin_load = &plugin_load;
@@ -99,6 +101,5 @@ extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugi
     api_entry.api = ls_error_message;
     plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_error_message", api_entry));
 
-    printf(">>>> plugin_declare() task_init=%d\n", plugin_task_init);
     return 0;
 }
