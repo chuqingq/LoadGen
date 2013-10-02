@@ -20,8 +20,7 @@ typedef int (*ls_plugin_declare_t)(const char** plugin_name,
 typedef int (*ls_plugin_load_t)();
 typedef int (*ls_plugin_unload_t)();
 
-typedef int (*ls_plugin_task_init_t)(const void* setting,
-                                     void** plugin_setting,
+typedef int (*ls_plugin_task_init_t)(const Json::Value* setting,
                                      void** plugin_state);
 typedef int (*ls_plugin_task_destroy_t)(void** plugin_setting,
                                         void** plugin_state);

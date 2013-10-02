@@ -16,7 +16,7 @@ typedef struct ls_session_s {
 
     uv_loop_t* loop;
 
-    const map<string, void*> *settings;// 引用master的 TODO ？？ 可有可无
+    // const map<string, void*> *settings;// 引用master的 TODO ？？ 可有可无
 
     const ls_task_script_t* script;// TODO script只读
     int script_cur;

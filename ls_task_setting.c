@@ -28,7 +28,7 @@ int load_task_setting(ls_task_setting_t* setting) {
         Json::Value *settings = new Json::Value();
         *settings = root[*it];
 
-        setting->insert(pair<string, void*>(*it, settings));
+        setting->insert(pair<string, Json::Value*>(*it, settings));
     }
 
     return 0;

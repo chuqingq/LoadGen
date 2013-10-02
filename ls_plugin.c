@@ -58,8 +58,7 @@ int plugins_load_task_setting(ls_task_setting_t* settings,
     for (ls_task_setting_t::iterator it = settings->begin(); it != settings->end(); ++it)
     {
         string plugin_name = it->first;
-        printf("  load plugin %s:\n", plugin_name.c_str());
-        void* plugin_setting = NULL;
+        printf("  plugin=%s\n", plugin_name.c_str());
         // 根据plugin_name找到plugin_entry，进一步找到task_init回调
         ls_plugin_entry_t* entry = &((*plugins)[plugin_name]);
         if (entry->task_init == NULL)
@@ -67,17 +66,13 @@ int plugins_load_task_setting(ls_task_setting_t* settings,
             printf("  no plugin [%s] loaded\n", plugin_name.c_str());
             return -1;
         }
-        printf("  ls_plugin_entry: %d\n", entry);
-        printf("  after ls_plugin_entry: %d\n", entry->task_init);
+        
         // 更新plugin_setting，初始化plugin_state
-        if ((entry->task_init)(it->second, &plugin_setting, &(entry->plugin_state)) < 0)
+        if ((entry->task_init)(it->second, &(entry->plugin_state)) < 0)
         {
             printf("ERROR task_init error\n");
             return -1;
         }
-        printf("  plugin [%s] task_init successfully\n", plugin_name.c_str());
-
-        entry->plugin_setting = plugin_setting;
     }
     return 0;
 }

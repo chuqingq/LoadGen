@@ -62,7 +62,7 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s->session_id = 0;// TODO
         s->loop = w->worker_loop;
         printf("\tworker_start_new_session() thread:%d, loop:%d\n", w->thread, s->loop);
-        s->settings = &(master.settings);// 只读
+        // s->settings = &(master.settings);// 只读
         s->script = &(master.script);// 只读
         s->script_cur = -1;
         // state从master的plugins中state保存过来

@@ -1,6 +1,5 @@
 {
     "ls_plugin_demo": {
-        "setting_name1": "setting_value1",
-        "setting_name2": "setting_value2"
+        "ignore_think_time": false
     }
 }

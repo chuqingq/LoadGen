@@ -2,12 +2,18 @@
 
 #include <string>
 #include <map>
+#include <iostream>
 using namespace std;
 
 #include "ls_plugin.h"
 #include "ls_worker.h"
 #include "ls_session.h"
 
+typedef struct {
+    bool ignore_think_time;
+} ls_plugin_demo_setting_t;
+
+ls_plugin_demo_setting_t plugin_demo_setting;
 
 // load，协议加载。和任务无关
 static int plugin_load() {
@@ -20,10 +26,10 @@ static int plugin_unload() {
     return 0;
 }
 
-static int plugin_task_init(const void* setting, void** plugin_setting, void** plugin_state) {
+static int plugin_task_init(const Json::Value* setting, void** plugin_state) {
     printf(">>>> plugin_demo plugin_task_init()\n");
-    // TODO setting  -> plugin_setting
-    // new plugin_state
+
+    plugin_demo_setting.ignore_think_time = (*setting)["ignore_think_time"].asBool();
     return 0;
 }
 
@@ -53,6 +59,8 @@ static int ls_think_time_prepare(const Json::Value* json_args, void** args) {
 // static int ls_think_time(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
 static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
     printf(">>>> plugin_demo before ls_think_time(%d)\n", 1);
+
+    printf("  ignore_think_time=%d\n", (int)plugin_demo_setting.ignore_think_time);
 
     uv_timer_t* timer = new uv_timer_t;// TODO 貌似应该动态申请
     uv_timer_init(session->loop, timer);
