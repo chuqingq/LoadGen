@@ -24,7 +24,7 @@ int main() {
         return -1;
     }
 
-    // 加载协议
+    // 加载协议 // plugin_load
     if (load_plugins(&(master.plugins)) < 0) {
         printf("Failed to load_plugins.\n");
         return -1;
@@ -56,7 +56,7 @@ int main() {
     }
 
     // -------------- 插件加载
-    // 插件加载任务设置
+    // 插件加载任务设置 // task_init()
     if (plugins_load_task_setting(&(master.settings), &(master.plugins)) < 0) {
         printf("Failed to plugins_load_task_setting.\n");
         return -1;
@@ -88,8 +88,26 @@ int main() {
     uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 
     if (reap_workers(&master) < 0) {
+        printf("ERROR failed to reap_workers()\n");
         return -1;
     }
 
+    if (plugins_unload_task_script(&(master.plugins)) < 0)
+    {
+        printf("ERROR failed to plugins_unload_task_script()\n");
+        return -1;
+    }
+
+    if (plugins_unload_task_setting(&(master.plugins)) < 0) // task_terminate()
+    {
+        printf("ERROR failed to plugins_unload_task_setting()\n");
+        return -1;
+    }
+
+    if (unload_plugins(&(master.plugins)) < 0) // plugin_unload
+    {
+        printf("ERROR failed to unload_plugins()\n");
+        return -1;
+    }
     // 卸载协议
 }

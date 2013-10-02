@@ -43,7 +43,17 @@ int load_plugins(ls_plugin_t* plugins) {
     return 0;
 }
 
-int unload_plugins(ls_plugin_t* plugins) {// TODO
+int unload_plugins(ls_plugin_t* plugins) {
+    printf("==== unload_plugins()\n");
+
+    for (ls_plugin_t::iterator it = plugins->begin(); it != plugins->end(); ++it)
+    {
+        printf("  plugin=%s\n", it->first.c_str());
+
+        uv_dlclose(&(it->second.plugin_lib));
+    }
+
+    plugins->clear();
     return -1;
 }
 
@@ -51,9 +61,10 @@ int unload_plugins(ls_plugin_t* plugins) {// TODO
 
 // 把master加载的任务设置，分协议加载，转换成自己的类型
 // 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
-int plugins_load_task_setting(ls_task_setting_t* settings,
-                              ls_plugin_t* plugins) {
+// TODO task_init
+int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins) {
     printf("==== plugins_load_task_setting\n");
+
     // 遍历settings，调用task_init，把返回的setting保存在plugin中
     for (ls_task_setting_t::iterator it = settings->begin(); it != settings->end(); ++it)
     {
@@ -77,12 +88,23 @@ int plugins_load_task_setting(ls_task_setting_t* settings,
     return 0;
 }
 
-int plugins_unload_task_setting(ls_plugin_t* plugins) {// TODO
-    return -1;
+int plugins_unload_task_setting(ls_plugin_t* plugins) {// TODO task_terminate()
+    printf("==== plugins_unload_task_setting()\n");
+
+    for (ls_plugin_t::iterator it = plugins->begin(); it != plugins->end(); ++it)
+    {
+        ls_plugin_entry_t* entry = &(it->second);
+        if ((entry->task_destroy)(&(entry->plugin_setting), &(entry->plugin_state)) < 0) {
+            printf("ERROR failed to task_destroy()\n");
+            return -1;
+        }
+    }
+
+    return 0;
 }
 
 // TODO 让plugin对script进行特殊处理。例如明确哪个API是属于自己的，设置好ls_api_t
-int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
+int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {// TODO 调用api_init（原prepare）
     printf("====plugins_load_task_script\n");
 
     for (ls_task_script_t::iterator it = script->begin(); it != script->end(); ++it)
@@ -116,4 +138,8 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
     }
 
     return 0;
+}
+
+int plugins_unload_task_script(ls_plugin_t* plugins) {// TODO 调用api_terminate
+    return -1;
 }

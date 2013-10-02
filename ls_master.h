@@ -34,6 +34,7 @@ typedef struct {
 extern ls_master_t master;
 
 int start_workers(ls_master_t* master);
+int stop_workers(ls_master_t* master);
 int reap_workers(ls_master_t* master);
 
 int start_new_session(int num);

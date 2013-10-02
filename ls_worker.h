@@ -24,6 +24,7 @@ typedef struct {
 } ls_worker_t;
 
 int init_worker(ls_worker_t* w);
+int reap_worker(ls_worker_t* w);
 int notify_worker(const string& cmd);
 
 

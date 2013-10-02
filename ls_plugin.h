@@ -25,7 +25,7 @@ typedef int (*ls_plugin_task_init_t)(const Json::Value* setting,
 typedef int (*ls_plugin_task_destroy_t)(void** plugin_setting,
                                         void** plugin_state);
 
-typedef int (*ls_plugin_api_prepare_t)(const Json::Value* json_args,// JSON::Value
+typedef int (*ls_plugin_api_prepare_t)(const Json::Value* json_args,
                                        void** args);
 
 typedef int (*ls_plugin_api_t)(const void* args,
@@ -48,7 +48,7 @@ typedef struct ls_plugin_entry_s {
     
     map<string, ls_plugin_api_entry_t> apis;// TODO 一个api包含两项，第一个prepare，第二个是api
 
-    const void* plugin_setting;// 只读，来自task_setting
+    void* plugin_setting;// 只读，在task_init中来自task_setting
     void* plugin_state;// TODO 需要动态变化，其实不需要存在plugin_entry中
 
     // private
@@ -56,20 +56,16 @@ typedef struct ls_plugin_entry_s {
     ls_plugin_declare_t plugin_declare;
 } ls_plugin_entry_t;
 
-// ls_plugin_t
-typedef map<string/* plugin_name */, ls_plugin_entry_t> ls_plugin_t;
+// plugin_name -> ls_plugin_entry_t
+typedef map<string, ls_plugin_entry_t> ls_plugin_t;
 
 int load_plugins(ls_plugin_t* plugins);
-
 int unload_plugins(ls_plugin_t* plugins);
 
-// 把master加载的任务设置，分协议加载，转换成自己的类型
-// 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
-int plugins_load_task_setting(ls_task_setting_t* settings,
-                              ls_plugin_t* plugins);
-
+int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins);
 int plugins_unload_task_setting(ls_plugin_t* plugins);
 
 int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins);
+int plugins_unload_task_script(ls_plugin_t* plugins);
 
 #endif

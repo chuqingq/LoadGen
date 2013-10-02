@@ -13,7 +13,8 @@ static void master_async_callback(uv_async_t* handle, int status) {
 }
 
 int start_workers(ls_master_t* master) {
-    printf("====start_workers()\n");
+    printf("==== start_workers()\n");
+
     int workers_num = master->config.worker_num;
 
     for (int i = 0; i < workers_num; ++i)
@@ -35,8 +36,43 @@ int start_workers(ls_master_t* master) {
     return 0;
 }
 
+int stop_workers(ls_master_t* master) {
+    printf("==== stop_workers()\n");
+
+    for (int i = 0; i < master->workers.size(); ++i)
+    {
+        // uv_stop(master->workers[i]->worker_loop);
+        // 不能直接用uv_stop这种方式，需要通过async发给worker，由它自己uv_stop
+        ls_worker_t* w = master->workers[i];
+
+        int* num = new int;
+        *num = -1;
+        w->worker_async.data = num;
+
+        if (uv_async_send(&(w->worker_async)) < 0)
+        {
+            printf("ERROR failed to uv_async_send()\n");
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 int reap_workers(ls_master_t* master) {
-    return -1;
+    printf("==== reap_workers()\n");
+
+    vector<ls_worker_t*>& workers = master->workers;
+    for (int i = 0; i< workers.size(); ++i)
+    {
+        printf("  before reap_workers(%d)\n", i);
+        if (reap_worker(workers[i]) < 0) {
+            printf("ERROR failed to read_worker(%d)\n", i);
+            return -1;
+        }
+    }
+
+    return 0;
 }
 
 static int notify_worker_start_new_session(ls_worker_t* w, int num) {
