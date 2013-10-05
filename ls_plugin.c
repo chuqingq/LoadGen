@@ -54,7 +54,7 @@ int unload_plugins(ls_plugin_t* plugins) {
     }
 
     plugins->clear();
-    return -1;
+    return 0;
 }
 
 // 让plugin对自己的setting进行特殊处理
@@ -141,5 +141,5 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {//
 }
 
 int plugins_unload_task_script(ls_plugin_t* plugins) {// TODO 调用api_terminate
-    return -1;
+    return 0;
 }
