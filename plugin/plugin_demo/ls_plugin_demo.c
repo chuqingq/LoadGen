@@ -15,6 +15,12 @@ typedef struct {
 
 ls_plugin_demo_setting_t plugin_demo_setting;
 
+typedef struct {
+    // TODO
+} ls_plugin_demo_state_t;
+
+ls_plugin_demo_state_t plugin_demo_state;
+
 // load，协议加载。和任务无关
 static int plugin_load() {
     printf(">>>> plugin_demo plugin_load()\n");
@@ -26,16 +32,14 @@ static int plugin_unload() {
     return 0;
 }
 
-static int plugin_task_init(const Json::Value* setting, void** plugin_state) {
+static int plugin_task_init(const Json::Value* setting) {
     printf(">>>> plugin_demo plugin_task_init()\n");
-
-    // TODO plugin_state可以由plugin自己维护，因为一个进程中只能有一个任务，因此只能有一个这个协议的plugin_state
 
     plugin_demo_setting.ignore_think_time = (*setting)["ignore_think_time"].asBool();
     return 0;
 }
 
-static int plugin_task_destroy(void** plugin_setting, void** plugin_state) {
+static int plugin_task_destroy() {
     printf(">>>> plugin_demo plugin_task_destroy()\n");
     // TODO plugin_state
     return 0;

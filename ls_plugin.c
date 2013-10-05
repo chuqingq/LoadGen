@@ -79,7 +79,7 @@ int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins)
         }
         
         // 更新plugin_setting，初始化plugin_state
-        if ((entry->task_init)(it->second, &(entry->plugin_state)) < 0)
+        if ((entry->task_init)(it->second) < 0)
         {
             printf("ERROR task_init error\n");
             return -1;
@@ -94,7 +94,7 @@ int plugins_unload_task_setting(ls_plugin_t* plugins) {// TODO task_terminate()
     for (ls_plugin_t::iterator it = plugins->begin(); it != plugins->end(); ++it)
     {
         ls_plugin_entry_t* entry = &(it->second);
-        if ((entry->task_destroy)(&(entry->plugin_setting), &(entry->plugin_state)) < 0) {
+        if ((entry->task_destroy)() < 0) {
             printf("ERROR failed to task_destroy()\n");
             return -1;
         }
