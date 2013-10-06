@@ -43,7 +43,7 @@ int load_plugins(ls_plugin_t* plugins) {
     return 0;
 }
 
-int unload_plugins(ls_plugin_t* plugins) {
+int unload_plugins(ls_plugin_t* plugins) {// TODO plugin_unload
     printf("==== unload_plugins()\n");
 
     for (ls_plugin_t::iterator it = plugins->begin(); it != plugins->end(); ++it)

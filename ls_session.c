@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "ls_master.h"
 #include "ls_session.h"
 #include "ls_plugin.h"
 
@@ -29,10 +30,23 @@ int process_session(ls_session_t* s) {
     return handle_session(s);
 }
 
-int finish_session(ls_session_t* session) {
+int finish_session(ls_session_t* s) {
     printf("==== finish_session()\n");
 
-    // TODO 停止一个session，并从worker的sessions中删除。flag表示结果成功还是失败
-    delete session;
-    return -1;
+    // 调用session中相关的所有plugin的session_destroy()
+    for (map<string, void*>::iterator it = s->states.begin(); it != s->states.end(); ++it)
+    {
+        ls_plugin_entry_t* e = &(master.plugins[it->first]);
+
+        if ((e->session_destroy)(&(it->second)) < 0)
+        {
+            printf("ERROR failed to session_destroy()\n");
+            return -1;
+        }
+
+        return 0;
+    }
+
+    delete s;
+    return 0;
 }

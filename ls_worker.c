@@ -4,6 +4,20 @@
 #include "ls_master.h"
 #include "ls_worker.h"
 
+static int worker_stop_all_sessions(ls_worker_t* w) {
+    printf("==== worker_stop_all_sessions()\n");
+
+    for (int i = 0; i < w->sessions.size(); ++i)
+    {
+        if (finish_session(w->sessions[i]) < 0) {
+            printf("ERROR failed to finish_session()\n");
+            // return -1;// 确保所有session都执行了session_destroy()
+        }
+    }
+
+    return 0;
+}
+
 static void worker_async_callback(uv_async_t* async, int status) {
     printf("==== worker_async_callback()\n");
 
@@ -17,6 +31,11 @@ static void worker_async_callback(uv_async_t* async, int status) {
 
     if (delta == -1)
     {
+        // worker停止自己的所有session
+        if (worker_stop_all_sessions(w) < 0) {
+            printf("ERROR failed to worker_stop_all_sessions()\n");
+        }
+
         // -1表示master要停止worker
         uv_stop(w->worker_loop);
         return;
@@ -69,8 +88,15 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         for (map<string, ls_plugin_entry_t>::iterator it = master.plugins.begin(); it != master.plugins.end(); ++it)
         {
             ls_plugin_entry_t* e = &(it->second);
-            // TODO void* state 需要拷贝一份 ??
-            s->states.insert(pair<string, void*>(it->first, e->plugin_state));
+
+            void* state = NULL;
+            if ((e->session_init)(&state) < 0)// TODO
+            {
+                printf("ERROR failed to session_init()\n");
+                return -1;
+            }
+
+            s->states.insert(pair<string, void*>(it->first, state));// TODO 改为数组
         }
 
         s->cur_vars = master.vars;// TODO 拷贝

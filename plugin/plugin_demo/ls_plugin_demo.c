@@ -41,7 +41,19 @@ static int plugin_task_init(const Json::Value* setting) {
 
 static int plugin_task_destroy() {
     printf(">>>> plugin_demo plugin_task_destroy()\n");
-    // TODO plugin_state
+    
+    return 0;
+}
+
+static int plugin_session_init(void** state) {
+    printf(">>>> plugin_demo plugin_session_init()\n");
+
+    return 0;
+}
+
+static int plugin_session_destroy(void** state) {
+    printf(">>>> plugin_demo plugin_session_destroy()\n");
+
     return 0;
 }
 
@@ -62,7 +74,6 @@ static int ls_think_time_prepare(const Json::Value* json_args, void** args) {
     return 0;
 }
 
-// static int ls_think_time(uv_loop_t* loop, const void* args, void* plugin_state, map<string, string> * vars) {
 static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
     printf(">>>> plugin_demo before ls_think_time(%d)\n", 1);
 
@@ -101,6 +112,9 @@ extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugi
 
     plugin_entry->task_init = plugin_task_init;
     plugin_entry->task_destroy = plugin_task_destroy;
+
+    plugin_entry->session_init = plugin_session_init;
+    plugin_entry->session_destroy = plugin_session_destroy;
 
     ls_plugin_api_entry_t api_entry;
 
