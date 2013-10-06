@@ -92,9 +92,9 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
     cm->current += cm->accelerate;
 
     // 如果当前值达到dest，则关闭此timer，开启另一个duration_timer
-    if (cm->current == cm->dest
-        || cm->accelerate > 0 && cm->current > cm->dest
-        || cm->accelerate < 0 && cm->current < cm->dest)
+    if ((cm->current == cm->dest)
+        || (cm->accelerate > 0 && cm->current > cm->dest)
+        || (cm->accelerate < 0 && cm->current < cm->dest))
     {
         uv_timer_stop(&(cm->accelerate_timer));
 

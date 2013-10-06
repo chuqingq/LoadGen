@@ -11,7 +11,7 @@ int load_plugins(ls_plugin_t* plugins) {
     ls_master_t* master = container_of(plugins, ls_master_t, plugins);
     const vector<string> &plugin_paths = master->config.plugin_paths;
 
-    for (int i = 0; i < plugin_paths.size(); ++i)
+    for (size_t i = 0; i < plugin_paths.size(); ++i)
     {
         ls_plugin_entry_t entry;
         if (uv_dlopen(plugin_paths[i].c_str(), &(entry.plugin_lib)) < 0) {
@@ -30,7 +30,7 @@ int load_plugins(ls_plugin_t* plugins) {
             return -1;
         }
 
-        printf("  load_plugins: %s task_init=%d\n", plugin_name, entry.task_init);
+        // printf("  load_plugins: %s task_init=%ul\n", plugin_name, entry.task_init);
 
         plugins->insert(pair<string, ls_plugin_entry_t>(plugin_name, entry));
 

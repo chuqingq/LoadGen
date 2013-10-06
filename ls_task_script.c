@@ -19,7 +19,7 @@ int load_task_script(ls_task_script_t* script) {
 
     assert(reader.parse(ifs, root, false));
 
-    for (int i = 0; i < root.size(); ++i)
+    for (size_t i = 0; i < root.size(); ++i)
     {
         ls_task_script_entry_t entry;
 

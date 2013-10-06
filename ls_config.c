@@ -26,7 +26,7 @@ int load_config(ls_config_t* config) {
 
     // plugin_paths
     Json::Value plugin_paths = root["plugin_paths"];
-    for (int i = 0; i < plugin_paths.size(); ++i)
+    for (size_t i = 0; i < plugin_paths.size(); ++i)
     {
         printf("  plugin_paths[%d] = %s\n", i, plugin_paths[i].asString().c_str());
         config->plugin_paths.push_back(plugin_paths[i].asString());

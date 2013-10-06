@@ -39,7 +39,7 @@ int start_workers(ls_master_t* master) {
 int stop_workers(ls_master_t* master) {
     printf("==== stop_workers()\n");
 
-    for (int i = 0; i < master->workers.size(); ++i)
+    for (size_t i = 0; i < master->workers.size(); ++i)
     {
         // uv_stop(master->workers[i]->worker_loop);
         // 不能直接用uv_stop这种方式，需要通过async发给worker，由它自己uv_stop
@@ -63,7 +63,7 @@ int reap_workers(ls_master_t* master) {
     printf("==== reap_workers()\n");
 
     vector<ls_worker_t*>& workers = master->workers;
-    for (int i = 0; i< workers.size(); ++i)
+    for (size_t i = 0; i< workers.size(); ++i)
     {
         printf("  before reap_workers(%d)\n", i);
         if (reap_worker(workers[i]) < 0) {
