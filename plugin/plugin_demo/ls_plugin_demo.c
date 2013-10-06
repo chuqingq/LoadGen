@@ -57,6 +57,20 @@ static int plugin_session_destroy(void** state) {
     return 0;
 }
 
+// ls_think_time
+static int ls_think_time_init(const Json::Value* json_args, void** args) {
+    printf(">>>> ls_think_time_init()\n");
+    // TODO
+    *args = (void*)json_args;
+    return 0;
+}
+
+static int ls_think_time_destroy(void** args) {
+    printf(">>>> ls_think_time_destroy()\n");
+
+    return 0;
+}
+
 static void timer_cb(uv_timer_t* handle, int status) {
     printf(">>>> ls_think_time timer_cb()\n");
     // 根据handle获取到session
@@ -65,13 +79,6 @@ static void timer_cb(uv_timer_t* handle, int status) {
     delete handle;
 
     (s->process)(s);// TODO process_session处理下一个api
-}
-
-static int ls_think_time_prepare(const Json::Value* json_args, void** args) {
-    printf(">>>> ls_think_time_prepare()\n");
-    // TODO
-    *args = (void*)json_args;
-    return 0;
 }
 
 static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
@@ -88,11 +95,17 @@ static int ls_think_time(const void* args, ls_session_t* session, map<string, st
     return 0;
 }
 
-
-static int ls_error_message_prepare(const Json::Value* json_args, void** args) {
-    printf(">>>> ls_error_message_prepare()\n");
+// ls_error_message
+static int ls_error_message_init(const Json::Value* json_args, void** args) {
+    printf(">>>> ls_error_message_init()\n");
     // TODO
     *args = (void*)json_args;
+    return 0;
+}
+
+static int ls_error_message_destroy(void** args) {
+    printf(">>>> ls_error_message_destroy()\n");
+
     return 0;
 }
 
@@ -119,14 +132,16 @@ extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugi
     ls_plugin_api_entry_t api_entry;
 
     // ls_think_time
-    api_entry.prepare = ls_think_time_prepare;
+    api_entry.init = ls_think_time_init;
     api_entry.api = ls_think_time;
+    api_entry.destroy = ls_think_time_destroy;
     plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_think_time", api_entry));
 
 
     // ls_error_message
-    api_entry.prepare = ls_error_message_prepare;
+    api_entry.init = ls_error_message_init;
     api_entry.api = ls_error_message;
+    api_entry.destroy = ls_error_message_destroy;
     plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_error_message", api_entry));
 
     return 0;

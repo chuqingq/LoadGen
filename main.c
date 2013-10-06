@@ -92,7 +92,7 @@ int main() {
         return -1;
     }
 
-    if (plugins_unload_task_script(&(master.plugins)) < 0)
+    if (plugins_unload_task_script(&(master.script), &(master.plugins)) < 0)
     {
         printf("ERROR failed to plugins_unload_task_script()\n");
         return -1;

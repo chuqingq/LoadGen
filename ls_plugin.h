@@ -27,8 +27,9 @@ typedef int (*ls_plugin_task_destroy_t)();
 typedef int (*ls_plugin_session_init_t)(void** state);
 typedef int (*ls_plugin_session_destroy_t)(void** state);
 
-typedef int (*ls_plugin_api_prepare_t)(const Json::Value* json_args,
-                                       void** args);
+typedef int (*ls_plugin_api_init_t)(const Json::Value* json_args,
+                                    void** args);
+typedef int (*ls_plugin_api_destroy_t)(void** args);
 
 typedef int (*ls_plugin_api_t)(const void* args,
                                ls_session_t* session,
@@ -36,8 +37,9 @@ typedef int (*ls_plugin_api_t)(const void* args,
                                map<string, string> * vars);
 
 typedef struct {
-    ls_plugin_api_prepare_t prepare;
+    ls_plugin_api_init_t init;
     ls_plugin_api_t api;
+    ls_plugin_api_destroy_t destroy;
 } ls_plugin_api_entry_t;
 
 
@@ -71,6 +73,6 @@ int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins)
 int plugins_unload_task_setting(ls_plugin_t* plugins);
 
 int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins);
-int plugins_unload_task_script(ls_plugin_t* plugins);
+int plugins_unload_task_script(ls_task_script_t* script, ls_plugin_t* plugins);
 
 #endif
