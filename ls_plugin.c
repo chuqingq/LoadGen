@@ -49,7 +49,14 @@ int unload_plugins(ls_plugin_t* plugins) {// TODO plugin_unload
     for (ls_plugin_t::iterator it = plugins->begin(); it != plugins->end(); ++it)
     {
         printf("  plugin=%s\n", it->first.c_str());
+        ls_plugin_entry_t* entry = &(it->second);
 
+        // 1. 调用plugin_unload()
+        if ((entry->plugin_unload)() < 0)
+        {
+            printf("ERROR failed to plugin_unload()\n");
+            // return -1;// 确保所有插件都正常卸载
+        }
         uv_dlclose(&(it->second.plugin_lib));
     }
 
