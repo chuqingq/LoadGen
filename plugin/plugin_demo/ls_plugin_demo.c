@@ -116,7 +116,7 @@ static int ls_error_message(const void* args, ls_session_t* session, map<string,
 }
 
 extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugin_entry) {
-    printf(">>>> plugin_declare(%s)\n", plugin_name);
+    printf(">>>> plugin_declare(%s)\n", (char*) plugin_name);
 
     *plugin_name = "ls_plugin_demo";
 
