@@ -35,3 +35,9 @@ int load_config(ls_config_t* config) {
     ifs.close();
     return 0;
 }
+
+int unload_config(ls_config_t* config) {
+    printf("==== unload_config()\n");
+    
+    return 0;
+}

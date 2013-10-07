@@ -109,5 +109,12 @@ int main() {
         printf("ERROR failed to unload_plugins()\n");
         return -1;
     }
-    // 卸载协议
+
+    if (unload_config(&master.config) < 0)
+    {
+        printf("ERROR failed to unload_config()\n");
+        return -1;
+    }
+
+    return 0;
 }
