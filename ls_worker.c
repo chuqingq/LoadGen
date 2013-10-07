@@ -5,7 +5,7 @@
 #include "ls_worker.h"
 
 static int worker_stop_all_sessions(ls_worker_t* w) {
-    printf("==== worker_stop_all_sessions()\n");
+    printf("  ==== worker_stop_all_sessions()\n");
 
     for (size_t i = 0; i < w->sessions.size(); ++i)
     {
@@ -19,7 +19,7 @@ static int worker_stop_all_sessions(ls_worker_t* w) {
 }
 
 static void worker_async_callback(uv_async_t* async, int status) {
-    printf("==== worker_async_callback()\n");
+    printf("  ==== worker_async_callback()\n");
 
     ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
     // worker收到master的消息
@@ -61,11 +61,11 @@ static void worker_thread(void* arg) {
     // printf("  worker_thread() thread:%d, loop:%d\n", w->thread, w->worker_loop);
 
     uv_run(w->worker_loop, UV_RUN_DEFAULT);
-    printf("==== worker_thread() thread terminate\n");
+    printf("  ==== worker_thread() thread terminate\n");
 }
 
 int init_worker(ls_worker_t* w) {
-    printf("  init_worker()\n");
+    printf("  init_worker(%lu)\n", (unsigned long)w);
     // master_async在master中初始化
     return uv_thread_create(&(w->thread), worker_thread, (void*)w);
 }
@@ -76,7 +76,7 @@ int reap_worker(ls_worker_t* w) {
 
 // 在一个worker上启动num个会话
 int worker_start_new_session(ls_worker_t* w, int num) {
-    printf("==== worker_start_new_session(%d)\n", num);
+    printf("  ==== worker_start_new_session(%d)\n", num);
 
     ls_session_t* s;
 

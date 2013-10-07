@@ -22,7 +22,7 @@ int start_workers(ls_master_t* master) {
     for (int i = 0; i < workers_num; ++i)
     {
         ls_worker_t* w = new ls_worker_t();
-        printf("  worker[i]=%lu\n", (unsigned long)w);
+        // printf("  worker[i]=%lu\n", (unsigned long)w);
 
         master->workers.push_back(w);
 
@@ -88,7 +88,7 @@ int reap_workers(ls_master_t* master) {
 }
 
 static int notify_worker_start_new_session(ls_worker_t* w, int num) {
-    printf("==== notify_worker_start_new_session(%lu, %d)\n", (unsigned long)w, num);
+    printf("  ==== notify_worker_start_new_session(%lu, %d)\n", (unsigned long)w, num);
 
     // int* num2 = new int;
     // *num2 = num;
@@ -103,7 +103,7 @@ static int notify_worker_start_new_session(ls_worker_t* w, int num) {
 }
 
 int start_new_session(int num) {
-    printf("==== start_new_session(%d)\n", num);
+    printf("  ==== start_new_session(%d)\n", num);
     
     // 先按简单的方式来：num尽量平均分给每个worker，不考虑worker当前的会话数
     int worker_num = master.config.worker_num;
@@ -113,7 +113,7 @@ int start_new_session(int num) {
 
     for (int i = 0; i < add; ++i)
     {
-        printf("  1.worker[%d]=%lu\n", i, (unsigned long)master.workers[i]);
+        // printf("  1.worker[%d]=%lu\n", i, (unsigned long)master.workers[i]);
         if (notify_worker_start_new_session(master.workers[i], avg) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");
@@ -121,9 +121,14 @@ int start_new_session(int num) {
         }
     }
 
+    if ((avg - 1) == 0)
+    {
+        return 0;
+    }
+
     for (int i = add; i < worker_num; ++i)
     {
-        printf("  2.worker[%d]=%lu\n", i, (unsigned long)master.workers[i]);
+        // printf("  2.worker[%d]=%lu\n", i, (unsigned long)master.workers[i]);
         if (notify_worker_start_new_session(master.workers[i], avg-1) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");

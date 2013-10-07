@@ -23,7 +23,7 @@ int load_task_setting(ls_task_setting_t* setting) {
     Json::Value::Members m = root.getMemberNames();
     for (Json::Value::Members::iterator it = m.begin(); it != m.end(); ++it)
     {
-        printf("  setting=%s\n", it->c_str());
+        printf("  setting of plugin = %s\n", it->c_str());
 
         Json::Value *settings = new Json::Value();
         *settings = root[*it];

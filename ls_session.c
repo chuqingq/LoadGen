@@ -31,7 +31,7 @@ int process_session(ls_session_t* s) {
 }
 
 int finish_session(ls_session_t* s) {
-    printf("==== finish_session()\n");
+    printf("  ==== finish_session()\n");
 
     // 调用session中相关的所有plugin的session_destroy()
     for (map<string, void*>::iterator it = s->states.begin(); it != s->states.end(); ++it)

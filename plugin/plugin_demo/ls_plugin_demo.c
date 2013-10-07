@@ -23,56 +23,56 @@ ls_plugin_demo_state_t plugin_demo_state;
 
 // load，协议加载。和任务无关
 static int plugin_load() {
-    printf(">>>> plugin_demo plugin_load()\n");
+    printf("  >>>> plugin_demo plugin_load()\n");
     return 0;
 }
 
 static int plugin_unload() {
-    printf(">>>> plugin_demo plugin_unload()\n");
+    printf("  >>>> plugin_demo plugin_unload()\n");
     return 0;
 }
 
 static int plugin_task_init(const Json::Value* setting) {
-    printf(">>>> plugin_demo plugin_task_init()\n");
+    printf("  >>>> plugin_demo plugin_task_init()\n");
 
     plugin_demo_setting.ignore_think_time = (*setting)["ignore_think_time"].asBool();
     return 0;
 }
 
 static int plugin_task_destroy() {
-    printf(">>>> plugin_demo plugin_task_destroy()\n");
+    printf("  >>>> plugin_demo plugin_task_destroy()\n");
     
     return 0;
 }
 
 static int plugin_session_init(void** state) {
-    printf(">>>> plugin_demo plugin_session_init()\n");
+    printf("  >>>> plugin_demo plugin_session_init()\n");
 
     return 0;
 }
 
 static int plugin_session_destroy(void** state) {
-    printf(">>>> plugin_demo plugin_session_destroy()\n");
+    printf("  >>>> plugin_demo plugin_session_destroy()\n");
 
     return 0;
 }
 
 // ls_think_time
 static int ls_think_time_init(const Json::Value* json_args, void** args) {
-    printf(">>>> plugin_demo ls_think_time init()\n");
+    printf("  >>>> plugin_demo ls_think_time init()\n");
     // TODO
     *args = (void*)json_args;
     return 0;
 }
 
 static int ls_think_time_destroy(void** args) {
-    printf(">>>> plugin_demo ls_think_time destroy()\n");
+    printf("  >>>> plugin_demo ls_think_time destroy()\n");
 
     return 0;
 }
 
 static void timer_cb(uv_timer_t* handle, int status) {
-    printf(">>>> plugin_demo ls_think_time timer_cb()\n");
+    printf("  >>>> plugin_demo ls_think_time timer_cb()\n");
     // 根据handle获取到session
     ls_session_t* s = (ls_session_t*) handle->data;
     uv_timer_stop(handle);
@@ -82,7 +82,7 @@ static void timer_cb(uv_timer_t* handle, int status) {
 }
 
 static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
-    printf(">>>> plugin_demo ls_think_time(%d)\n", 1);
+    printf("  >>>> plugin_demo ls_think_time(%d)\n", 1);
 
     printf("  ignore_think_time=%d\n", (int)plugin_demo_setting.ignore_think_time);
 
@@ -97,26 +97,26 @@ static int ls_think_time(const void* args, ls_session_t* session, map<string, st
 
 // ls_error_message
 static int ls_error_message_init(const Json::Value* json_args, void** args) {
-    printf(">>>> plugin_demo ls_error_message init()\n");
+    printf("  >>>> plugin_demo ls_error_message init()\n");
     // TODO
     *args = (void*)json_args;
     return 0;
 }
 
 static int ls_error_message_destroy(void** args) {
-    printf(">>>> plugin_demo ls_error_message destroy()\n");
+    printf("  >>>> plugin_demo ls_error_message destroy()\n");
 
     return 0;
 }
 
 static int ls_error_message(const void* args, ls_session_t* session, map<string, string> * vars) {
-    printf(">>>> plugin_demo ls_error_message(%d)\n", 1);
+    printf("  >>>> plugin_demo ls_error_message(%d)\n", 1);
 
     return 0;
 }
 
 extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugin_entry) {
-    printf(">>>> plugin_declare(%s)\n", (char*) plugin_name);
+    printf("  >>>> plugin_declare(%s)\n", (char*) plugin_name);
 
     *plugin_name = "ls_plugin_demo";
 

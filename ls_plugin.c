@@ -112,7 +112,7 @@ int plugins_unload_task_setting(ls_plugin_t* plugins) {// TODO task_terminate()
 
 // TODO 让plugin对script进行特殊处理。例如明确哪个API是属于自己的，设置好ls_api_t
 int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
-    printf("====plugins_load_task_script\n");
+    printf("==== plugins_load_task_script\n");
 
     for (ls_task_script_t::iterator it = script->begin(); it != script->end(); ++it)
     {

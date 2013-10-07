@@ -57,7 +57,7 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
 }
 
 static void duration_timeout(uv_timer_t* handle, int status) {
-    printf("==== duration_timeout()\n");
+    printf("==== duration_timeout(): callmodel end\n");
 
     // TODO 通知worker停止
     // ls_task_callmodel_t* cm = container_of(handle, ls_task_callmodel_t, duration_timer);
@@ -72,7 +72,7 @@ static void duration_timeout(uv_timer_t* handle, int status) {
 }
 
 static void accelerate_per_sec(uv_timer_t* handle, int status) {
-    printf("==== accelerate_per_sec()\n");
+    printf("  ==== accelerate_per_sec()\n");
 
     ls_task_callmodel_t* cm = container_of(handle, struct ls_task_callmodel_s, accelerate_timer);
 
