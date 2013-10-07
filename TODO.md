@@ -24,7 +24,12 @@ DONE 确保unload_plugins调用plugin_unload()
 DONE 一个api有3个操作init/run/destory，master在plugins_load_task_script时执行init，master在plugins_unload_task_script时执行destroy
     plugins_unload_task_script增加第一个script参数
 
+DONE recompile libuv, and then compile loadgen and run test
+
 ## TODO
+
+TODO make sure master async_send after worker_thread async_init
+  current: sleep(3)
 
 TODO master.workers改为数组，动态申请
 TODO plugin从vector改为数组，states也改为数组

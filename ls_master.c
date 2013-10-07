@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include <unistd.h>
+
 #include "ls_master.h"
 #include "ls_worker.h"
 
@@ -20,18 +22,23 @@ int start_workers(ls_master_t* master) {
     for (int i = 0; i < workers_num; ++i)
     {
         ls_worker_t* w = new ls_worker_t();
+        printf("  worker[i]=%lu\n", (unsigned long)w);
 
         master->workers.push_back(w);
 
         if (uv_async_init(master->master_loop, &(w->master_async), master_async_callback) < 0) {
+            printf("ERROR failed to uv_async_init(master)\n");
             return -1;/* TODO */
         }
 
-        if (init_worker(w) < 0)
+        if (init_worker(w) < 0)// start worker thread
         {
-            return -1;/* TODO */
+            printf("ERROR failed to init_worker()\n");
+            return -1;
         }
     }
+
+    sleep(3);// TODO make sure worker thread ready, so master can do_callmodel with worker_async
 
     return 0;
 }
@@ -76,14 +83,17 @@ int reap_workers(ls_master_t* master) {
 }
 
 static int notify_worker_start_new_session(ls_worker_t* w, int num) {
+    printf("==== notify_worker_start_new_session(%lu, %d)\n", (unsigned long)w, num);
+
     int* num2 = new int;
     *num2 = num;
-    w->worker_async.data = num2;
+    w->worker_async.data = (void*)num2;
     return uv_async_send(&(w->worker_async));
 }
 
 int start_new_session(int num) {
     printf("==== start_new_session(%d)\n", num);
+    
     // 先按简单的方式来：num尽量平均分给每个worker，不考虑worker当前的会话数
     int worker_num = master.config.worker_num;
     int avg = num/worker_num + 1;
@@ -92,6 +102,7 @@ int start_new_session(int num) {
 
     for (int i = 0; i < add; ++i)
     {
+        printf("  1.worker[%d]=%lu\n", i, (unsigned long)master.workers[i]);
         if (notify_worker_start_new_session(master.workers[i], avg) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");
@@ -101,6 +112,7 @@ int start_new_session(int num) {
 
     for (int i = add; i < worker_num; ++i)
     {
+        printf("  2.worker[%d]=%lu\n", i, (unsigned long)master.workers[i]);
         if (notify_worker_start_new_session(master.workers[i], avg-1) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");
