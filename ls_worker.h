@@ -18,6 +18,8 @@ typedef struct {
 
     uv_async_t master_async;
     uv_async_t worker_async;
+    int callmodel_delta;
+    uv_rwlock_t callmodel_delta_lock;
 
     vector<ls_session_t*> sessions;
 
@@ -30,5 +32,7 @@ int notify_worker(const string& cmd);
 
 int worker_start_new_session(ls_worker_t* w, int num);
 
+int worker_set_callmodel_delta(ls_worker_t* w, int delta);
+int worker_get_callmodel_delta(ls_worker_t* w, int* delta);
 
 #endif

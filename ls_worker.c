@@ -23,11 +23,17 @@ static void worker_async_callback(uv_async_t* async, int status) {
 
     ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
     // worker收到master的消息
-    int delta = *((int*)async->data);
-    delete (int*)async->data;
-    async->data = NULL;
+    // int delta = *((int*)async->data);
+    // delete (int*)async->data;
+    // async->data = NULL;
+    int delta = 0;
+    if (worker_get_callmodel_delta(w, &delta) < 0)
+    {
+        printf("ERROR failed to worker_get_callmodel_delta()\n");
+        return;
+    }
 
-    // printf("  worker[%d] session_num delta=%d\n", w->thread, delta);
+    printf("  worker[%lu] session_num delta=%d\n", w->thread, delta);
 
     if (delta == -1)
     {
@@ -107,6 +113,23 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         w->sessions.push_back(s);
         process_session(s);
     }
+
+    return 0;
+}
+
+
+int worker_set_callmodel_delta(ls_worker_t* w, int delta) {
+    uv_rwlock_wrlock(&w->callmodel_delta_lock);
+    w->callmodel_delta = delta;
+    uv_rwlock_wrunlock(&w->callmodel_delta_lock);
+
+    return 0;
+}
+
+int worker_get_callmodel_delta(ls_worker_t* w, int* delta) {
+    uv_rwlock_rdlock(&w->callmodel_delta_lock);
+    *delta = w->callmodel_delta;
+    uv_rwlock_rdunlock(&w->callmodel_delta_lock);
 
     return 0;
 }

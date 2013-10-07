@@ -52,9 +52,14 @@ int stop_workers(ls_master_t* master) {
         // 不能直接用uv_stop这种方式，需要通过async发给worker，由它自己uv_stop
         ls_worker_t* w = master->workers[i];
 
-        int* num = new int;
-        *num = -1;
-        w->worker_async.data = num;
+        // int* num = new int;
+        // *num = -1;
+        // w->worker_async.data = num;
+        if (worker_set_callmodel_delta(w, -1) < 0)
+        {
+            printf("ERROR failed to worker_set_callmodel_delta()\n");
+            return -1;
+        }
 
         if (uv_async_send(&(w->worker_async)) < 0)
         {
@@ -85,9 +90,15 @@ int reap_workers(ls_master_t* master) {
 static int notify_worker_start_new_session(ls_worker_t* w, int num) {
     printf("==== notify_worker_start_new_session(%lu, %d)\n", (unsigned long)w, num);
 
-    int* num2 = new int;
-    *num2 = num;
-    w->worker_async.data = (void*)num2;
+    // int* num2 = new int;
+    // *num2 = num;
+    // w->worker_async.data = (void*)num2;
+    if (worker_set_callmodel_delta(w, num) < 0)
+    {
+        printf("ERROR failed to worker_set_callmodel_delta()\n");
+        return -1;
+    }
+
     return uv_async_send(&(w->worker_async));
 }
 
