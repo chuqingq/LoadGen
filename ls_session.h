@@ -12,13 +12,10 @@ struct ls_session_s;
 typedef int (*ls_session_process_t)(struct ls_session_s*);
 
 typedef struct ls_session_s {
-    int session_id;// TODO
-
+    // int session_id;// TODO not used for now
     uv_loop_t* loop;
 
-    // const map<string, void*> *settings;// 引用master的 TODO ？？ 可有可无
-
-    const ls_task_script_t* script;// TODO script只读
+    const ls_task_script_t* script;
     size_t script_cur;
 
     map<string/* plugin_name */, void*> states;
