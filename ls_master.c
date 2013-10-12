@@ -8,10 +8,10 @@
 ls_master_t master;
 
 static void master_async_callback(uv_async_t* handle, int status) {
-    // TODO master接收worker发来的消息
+    // TODO master接收worker发来的消息 statistics
     // 1. worker上报的统计信息：暂时直接打印
     // printf("master recv worker async msg\n");
-    // 2. 线程退出会如何？？ TODO
+    // 2. worker线程退出会如何？？ TODO
 }
 
 int start_workers(ls_master_t* master) {
@@ -22,13 +22,15 @@ int start_workers(ls_master_t* master) {
     for (int i = 0; i < workers_num; ++i)
     {
         ls_worker_t* w = new ls_worker_t();
+        w->worker_started = 0;
+        // w->next_session_id = 0;
         // printf("  worker[i]=%lu\n", (unsigned long)w);
 
         master->workers.push_back(w);
 
         if (uv_async_init(master->master_loop, &(w->master_async), master_async_callback) < 0) {
             printf("ERROR failed to uv_async_init(master)\n");
-            return -1;/* TODO */
+            return -1;
         }
 
         if (init_worker(w) < 0)// start worker thread
@@ -36,9 +38,9 @@ int start_workers(ls_master_t* master) {
             printf("ERROR failed to init_worker()\n");
             return -1;
         }
-    }
 
-    sleep(3);// TODO make sure worker thread ready, so master can do_callmodel with worker_async
+        while (w->worker_started == 0) ;
+    }
 
     return 0;
 }
