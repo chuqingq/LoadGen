@@ -58,6 +58,7 @@ static void worker_thread(void* arg) {
 
     w->worker_loop = uv_loop_new();
     uv_async_init(w->worker_loop, &(w->worker_async), worker_async_callback);
+    w->worker_started = 1;
     // printf("  worker_thread() thread:%d, loop:%d\n", w->thread, w->worker_loop);
 
     uv_run(w->worker_loop, UV_RUN_DEFAULT);
@@ -84,25 +85,24 @@ int worker_start_new_session(ls_worker_t* w, int num) {
     {
         s = new ls_session_t;
 
-        s->session_id = 0;// TODO
+        // s->session_id = w->next_session_id + i;
         s->loop = w->worker_loop;
-        // printf("  worker_start_new_session() thread:%d, loop:%d\n", w->thread, s->loop);
-        // s->settings = &(master.settings);// 只读
+        // printf("  worker_start_new_session(): worker:%lu, session_id:%d\n", (unsigned long)w, s->session_id);
         s->script = &(master.script);// 只读
         s->script_cur = -1;
-        // state从master的plugins中state保存过来
+        
         for (map<string, ls_plugin_entry_t>::iterator it = master.plugins.begin(); it != master.plugins.end(); ++it)
         {
             ls_plugin_entry_t* e = &(it->second);
 
             void* state = NULL;
-            if ((e->session_init)(&state) < 0)// TODO
+            if ((e->session_init)(&state) < 0)
             {
                 printf("ERROR failed to session_init()\n");
                 return -1;
             }
 
-            s->states.insert(pair<string, void*>(it->first, state));// TODO 改为数组
+            s->states.insert(pair<string, void*>(it->first, state));
         }
 
         s->cur_vars = master.vars;// TODO 拷贝
@@ -113,6 +113,7 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         w->sessions.push_back(s);
         process_session(s);
     }
+    // w->next_session_id += num;
 
     return 0;
 }
