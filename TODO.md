@@ -1,5 +1,4 @@
-﻿# TODO
-
+﻿
 ## DONE
 
 HUNG 暂时不处理。有了plugin_declare()貌似就不用plugin_demo plugin_load()了
@@ -28,9 +27,13 @@ DONE recompile libuv, and then compile loadgen and run test
 
 ## TODO
 
-TODO make sure master async_send after worker_thread async_init
+DONE make sure master async_send after worker_thread async_init
   current: sleep(3)
-
+  make a worker_started for each worker, set it after async_init
+TODO callmodel avg
+TODO callmodel complex
+TODO statistics
+TODO UI
 TODO master.workers改为数组，动态申请
 TODO plugin从vector改为数组，states也改为数组
         
@@ -43,7 +46,7 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
 ## static
 
     master
-        config // TODO vector<string>改为char*。需要unload_config时释放
+        config // DONE vector<string>改为char*。需要unload_config时释放
         plugins // 回调、api、状态
 
         task_callmodel // 只有master关注
