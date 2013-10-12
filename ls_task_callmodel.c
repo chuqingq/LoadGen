@@ -59,16 +59,10 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
 static void duration_timeout(uv_timer_t* handle, int status) {
     printf("==== duration_timeout(): callmodel end\n");
 
-    // TODO 通知worker停止
-    // ls_task_callmodel_t* cm = container_of(handle, ls_task_callmodel_t, duration_timer);
-    // TODO notify_worker("stop");
-
     uv_timer_stop(handle);
+    stop_workers(&master);
 
-    stop_workers(&master);// TODO
-
-    // TODO 呼叫完了，是否要停止？
-    uv_stop(handle->loop);
+    uv_stop(handle->loop);/* 呼叫完了，停止 */
 }
 
 static void accelerate_per_sec(uv_timer_t* handle, int status) {
