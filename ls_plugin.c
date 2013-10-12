@@ -9,12 +9,14 @@ int load_plugins(ls_plugin_t* plugins) {
 
     // 加载plugin目录下的插件
     ls_master_t* master = container_of(plugins, ls_master_t, plugins);
-    const vector<string> &plugin_paths = master->config.plugin_paths;
+    // const vector<string> &plugin_paths = master->config.plugin_paths;
 
-    for (size_t i = 0; i < plugin_paths.size(); ++i)
+    // for (size_t i = 0; i < plugin_paths.size(); ++i)
+    for (size_t i = 0; i < master->config.plugins_num; ++i)
     {
         ls_plugin_entry_t entry;
-        if (uv_dlopen(plugin_paths[i].c_str(), &(entry.plugin_lib)) < 0) {
+        // if (uv_dlopen(plugin_paths[i].c_str(), &(entry.plugin_lib)) < 0) {
+        if (uv_dlopen(master->config.plugin_paths[i], &(entry.plugin_lib)) < 0) {
             printf("  Failed to uv_dlopen\n");
             return -1;
         }
@@ -43,7 +45,7 @@ int load_plugins(ls_plugin_t* plugins) {
     return 0;
 }
 
-int unload_plugins(ls_plugin_t* plugins) {// TODO plugin_unload
+int unload_plugins(ls_plugin_t* plugins) {
     printf("==== unload_plugins()\n");
 
     for (ls_plugin_t::iterator it = plugins->begin(); it != plugins->end(); ++it)
@@ -68,7 +70,6 @@ int unload_plugins(ls_plugin_t* plugins) {// TODO plugin_unload
 
 // 把master加载的任务设置，分协议加载，转换成自己的类型
 // 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
-// TODO task_init
 int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins) {
     printf("==== plugins_load_task_setting\n");
 
@@ -95,7 +96,7 @@ int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins)
     return 0;
 }
 
-int plugins_unload_task_setting(ls_plugin_t* plugins) {// TODO task_terminate()
+int plugins_unload_task_setting(ls_plugin_t* plugins) {
     printf("==== plugins_unload_task_setting()\n");
 
     for (ls_plugin_t::iterator it = plugins->begin(); it != plugins->end(); ++it)
@@ -110,7 +111,7 @@ int plugins_unload_task_setting(ls_plugin_t* plugins) {// TODO task_terminate()
     return 0;
 }
 
-// TODO 让plugin对script进行特殊处理。例如明确哪个API是属于自己的，设置好ls_api_t
+// 让plugin对script进行特殊处理。例如明确哪个API是属于自己的，设置好ls_api_t
 int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
     printf("==== plugins_load_task_script\n");
 
@@ -147,7 +148,7 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
     return 0;
 }
 
-int plugins_unload_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {// TODO 调用api_terminate
+int plugins_unload_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
     printf("==== plugins_unload_task_script()\n");
 
     for (ls_task_script_t::iterator it = script->begin(); it != script->end(); ++it)
