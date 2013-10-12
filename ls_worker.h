@@ -13,6 +13,7 @@ using namespace std;
 
 
 typedef struct {
+    int worker_started;
     uv_thread_t thread;
     uv_loop_t* worker_loop;
 
@@ -22,6 +23,7 @@ typedef struct {
     uv_rwlock_t callmodel_delta_lock;
 
     vector<ls_session_t*> sessions;
+    int next_session_id;
 
 } ls_worker_t;
 
