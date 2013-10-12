@@ -16,7 +16,6 @@ typedef struct {
 ls_plugin_demo_setting_t plugin_demo_setting;
 
 typedef struct {
-    // TODO
 } ls_plugin_demo_state_t;
 
 ls_plugin_demo_state_t plugin_demo_state;
@@ -60,14 +59,14 @@ static int plugin_session_destroy(void** state) {
 // ls_think_time
 static int ls_think_time_init(const Json::Value* json_args, void** args) {
     printf("  >>>> plugin_demo ls_think_time init()\n");
-    // TODO
-    *args = (void*)json_args;
+    int time = (*json_args)["time"].asInt();
+    *args = (void*)time;
+    printf("    time=%d\n", time);
     return 0;
 }
 
 static int ls_think_time_destroy(void** args) {
     printf("  >>>> plugin_demo ls_think_time destroy()\n");
-
     return 0;
 }
 
@@ -78,19 +77,20 @@ static void timer_cb(uv_timer_t* handle, int status) {
     uv_timer_stop(handle);
     delete handle;
 
-    (s->process)(s);// TODO process_session处理下一个api
+    (s->process)(s);
 }
 
 static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
-    printf("  >>>> plugin_demo ls_think_time(%d)\n", 1);
+    int time = (int)args;
+    printf("  >>>> plugin_demo ls_think_time(%d)\n", time);
 
     printf("  ignore_think_time=%d\n", (int)plugin_demo_setting.ignore_think_time);
 
-    uv_timer_t* timer = new uv_timer_t;// TODO 貌似应该动态申请
+    uv_timer_t* timer = new uv_timer_t;// delete at line 77
     uv_timer_init(session->loop, timer);
 
     timer->data = session;
-    uv_timer_start(timer, timer_cb, 1000, 0);// TODO 时间是写死的
+    uv_timer_start(timer, timer_cb, time, 0);
 
     return 0;
 }
@@ -98,7 +98,6 @@ static int ls_think_time(const void* args, ls_session_t* session, map<string, st
 // ls_error_message
 static int ls_error_message_init(const Json::Value* json_args, void** args) {
     printf("  >>>> plugin_demo ls_error_message init()\n");
-    // TODO
     *args = (void*)json_args;
     return 0;
 }
@@ -111,7 +110,8 @@ static int ls_error_message_destroy(void** args) {
 
 static int ls_error_message(const void* args, ls_session_t* session, map<string, string> * vars) {
     printf("  >>>> plugin_demo ls_error_message(%d)\n", 1);
-
+    Json::Value* json_args = (Json::Value*)args;
+    printf("    ls_error_message(): %s\n", (*json_args)["message"].asString().c_str());
     return 0;
 }
 
