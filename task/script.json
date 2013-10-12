@@ -3,8 +3,7 @@
         "api": "ls_think_time",
         "plugin": "ls_plugin_demo",
         "args": {
-            "time": "4",
-            "name2": "value2"
+            "time": 3000
         }
     },
 
@@ -12,8 +11,7 @@
         "api": "ls_error_message",
         "plugin": "ls_plugin_demo",
         "args": {
-            "name1": "hello world",
-            "name2": "value2"
+            "message": "hello world"
         }
     }
 ]
