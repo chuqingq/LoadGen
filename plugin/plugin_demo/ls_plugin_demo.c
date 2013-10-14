@@ -115,13 +115,15 @@ static int ls_error_message(const void* args, ls_session_t* session, map<string,
     return 0;
 }
 
-extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugin_entry) {
-    printf("  >>>> plugin_declare(%s)\n", (char*) plugin_name);
+extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_entry_t* plugin_entry) {
+    char* plugin_name = (char*)"ls_plugin_demo";
+    printf("  >>>> plugin_declare(%s)\n", plugin_name);
 
-    *plugin_name = "ls_plugin_demo";
+    // *plugin_name = "ls_plugin_demo";
+    plugin_entry->plugin_name = plugin_name;
 
-    plugin_entry->plugin_load = &plugin_load;
-    plugin_entry->plugin_unload = &plugin_unload;
+    plugin_entry->plugin_load = plugin_load;
+    plugin_entry->plugin_unload = plugin_unload;
 
     plugin_entry->task_init = plugin_task_init;
     plugin_entry->task_destroy = plugin_task_destroy;
@@ -129,14 +131,16 @@ extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugi
     plugin_entry->session_init = plugin_session_init;
     plugin_entry->session_destroy = plugin_session_destroy;
 
+    plugin_entry->apis = map<string, ls_plugin_api_entry_t>();// TODO
+
     ls_plugin_api_entry_t api_entry;
 
     // ls_think_time
     api_entry.init = ls_think_time_init;
     api_entry.api = ls_think_time;
     api_entry.destroy = ls_think_time_destroy;
+    
     plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_think_time", api_entry));
-
 
     // ls_error_message
     api_entry.init = ls_error_message_init;
@@ -144,5 +148,6 @@ extern "C" int plugin_declare(const char** plugin_name, ls_plugin_entry_t* plugi
     api_entry.destroy = ls_error_message_destroy;
     plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_error_message", api_entry));
 
+    printf("  >>>> end plugin_declare()\n");
     return 0;
 }

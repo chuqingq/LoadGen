@@ -14,7 +14,7 @@ using namespace std;
 
 struct ls_plugin_entry_s;
 
-typedef int (*ls_plugin_declare_t)(const char** plugin_name,
+typedef int (*ls_plugin_declare_t)(/* const char** plugin_name, */
                                    struct ls_plugin_entry_s* plugin_entry);
 
 typedef int (*ls_plugin_load_t)();
@@ -26,8 +26,7 @@ typedef int (*ls_plugin_task_destroy_t)();
 typedef int (*ls_plugin_session_init_t)(void** state);
 typedef int (*ls_plugin_session_destroy_t)(void** state);
 
-typedef int (*ls_plugin_api_init_t)(const Json::Value* json_args,
-                                    void** args);
+typedef int (*ls_plugin_api_init_t)(const Json::Value* json_args, void** args);
 typedef int (*ls_plugin_api_destroy_t)(void** args);
 
 typedef int (*ls_plugin_api_t)(const void* args,
@@ -43,6 +42,8 @@ typedef struct {
 
 
 typedef struct ls_plugin_entry_s {
+    char* plugin_name;
+
     ls_plugin_load_t plugin_load;// master启动时调用
     ls_plugin_unload_t plugin_unload;// master退出前调用
 
@@ -62,9 +63,14 @@ typedef struct ls_plugin_entry_s {
 } ls_plugin_entry_t;
 
 // plugin_name -> ls_plugin_entry_t
-typedef map<string, ls_plugin_entry_t> ls_plugin_t;
+// typedef map<string, ls_plugin_entry_t> ls_plugin_t;
+typedef struct {
+    size_t entries_num;
+    ls_plugin_entry_t* entries;
+} ls_plugin_t;
 
 int load_plugins(ls_plugin_t* plugins);
+// int load_plugins(ls_plugin_entry_t** plugins);
 int unload_plugins(ls_plugin_t* plugins);
 
 int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins);

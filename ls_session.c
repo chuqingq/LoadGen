@@ -33,10 +33,12 @@ int process_session(ls_session_t* s) {
 int finish_session(ls_session_t* s) {
     printf("  ==== finish_session()\n");
 
+    size_t i = 0;
     // 调用session中相关的所有plugin的session_destroy()
-    for (map<string, void*>::iterator it = s->states.begin(); it != s->states.end(); ++it)
+    for (map<string, void*>::iterator it = s->states.begin(); it != s->states.end(); ++it, ++i)
     {
-        ls_plugin_entry_t* e = &(master.plugins[it->first]);
+        // ls_plugin_entry_t* e = &(master.plugins[it->first]);
+        ls_plugin_entry_t* e = &master.plugins.entries[i];
 
         if ((e->session_destroy)(&(it->second)) < 0)
         {

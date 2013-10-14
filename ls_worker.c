@@ -91,9 +91,10 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s->script = &(master.script);// 只读
         s->script_cur = -1;
         
-        for (map<string, ls_plugin_entry_t>::iterator it = master.plugins.begin(); it != master.plugins.end(); ++it)
+        // for (map<string, ls_plugin_entry_t>::iterator it = master.plugins.begin(); it != master.plugins.end(); ++it)
+        for (size_t i = 0; i < master.plugins.entries_num; ++i)
         {
-            ls_plugin_entry_t* e = &(it->second);
+            ls_plugin_entry_t* e = &master.plugins.entries[i];
 
             void* state = NULL;
             if ((e->session_init)(&state) < 0)
@@ -102,7 +103,7 @@ int worker_start_new_session(ls_worker_t* w, int num) {
                 return -1;
             }
 
-            s->states.insert(pair<string, void*>(it->first, state));
+            s->states.insert(pair<string, void*>(e->plugin_name, state));
         }
 
         s->cur_vars = master.vars;// TODO 拷贝
