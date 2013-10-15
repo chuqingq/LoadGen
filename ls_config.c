@@ -23,12 +23,12 @@ int load_config(ls_config_t* config) {
 
     assert(reader.parse(ifs, root, false));
 
-    // worker_num
-    config->worker_num = root["worker_num"].asInt();
-    printf("  worker_num = %d\n", config->worker_num);
+    // workers_num
+    config->workers_num = root["workers_num"].asInt();
+    printf("  workers_num = %d\n", config->workers_num);
 
     // allocate plugin_paths
-    config->plugin_paths = (char**) malloc((config->worker_num + 1) * sizeof(char*));
+    config->plugin_paths = (char**) malloc((config->workers_num + 1) * sizeof(char*));
     if (config->plugin_paths == NULL)
     {
         printf("ERROR failed to malloc plugin_paths.\n");

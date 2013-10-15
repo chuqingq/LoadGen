@@ -28,7 +28,8 @@ typedef struct {
     ls_task_var_t vars;// 变量，master读取，master不需要，worker只读
     ls_task_script_t script;// 脚本，master保存，worker只读
     
-    vector<ls_worker_t*> workers;
+    // vector<ls_worker_t*> workers;
+    ls_worker_t* workers;
 } ls_master_t;
 
 extern ls_master_t master;

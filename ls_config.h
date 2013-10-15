@@ -6,7 +6,7 @@
 // using namespace std;
 
 typedef struct {
-    int worker_num;
+    int workers_num;
     // vector<string> plugin_paths;
     size_t plugins_num;
     char** plugin_paths;

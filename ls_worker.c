@@ -80,6 +80,8 @@ int worker_start_new_session(ls_worker_t* w, int num) {
     printf("  ==== worker_start_new_session(%d)\n", num);
 
     ls_session_t* s;
+    // TODO
+    w->sessions = vector<ls_session_t*>();
 
     for (int i = 0; i < num; ++i)
     {
