@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <string>
 #include <map>
@@ -131,22 +132,26 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_entry_t* 
     plugin_entry->session_init = plugin_session_init;
     plugin_entry->session_destroy = plugin_session_destroy;
 
-    plugin_entry->apis = map<string, ls_plugin_api_entry_t>();// TODO
+    plugin_entry->apis.entries_num = 2;
+    // plugin_entry->apis = map<string, ls_plugin_api_entry_t>();// TODO
+    plugin_entry->apis.entries = (ls_plugin_api_entry_t*)malloc(plugin_entry->apis.entries_num * sizeof(ls_plugin_api_entry_t));
 
-    ls_plugin_api_entry_t api_entry;
+    // ls_plugin_api_entry_t api_entry;
 
     // ls_think_time
-    api_entry.init = ls_think_time_init;
-    api_entry.api = ls_think_time;
-    api_entry.destroy = ls_think_time_destroy;
+    plugin_entry->apis.entries[0].name = (char*)"ls_think_time";
+    plugin_entry->apis.entries[0].init = ls_think_time_init;
+    plugin_entry->apis.entries[0].run = ls_think_time;
+    plugin_entry->apis.entries[0].destroy = ls_think_time_destroy;
     
-    plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_think_time", api_entry));
+    // plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_think_time", api_entry));
 
     // ls_error_message
-    api_entry.init = ls_error_message_init;
-    api_entry.api = ls_error_message;
-    api_entry.destroy = ls_error_message_destroy;
-    plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_error_message", api_entry));
+    plugin_entry->apis.entries[1].name = (char*)"ls_error_message";
+    plugin_entry->apis.entries[1].init = ls_error_message_init;
+    plugin_entry->apis.entries[1].run = ls_error_message;
+    plugin_entry->apis.entries[1].destroy = ls_error_message_destroy;
+    // plugin_entry->apis.insert(pair<string, ls_plugin_api_entry_t>("ls_error_message", api_entry));
 
     printf("  >>>> end plugin_declare()\n");
     return 0;

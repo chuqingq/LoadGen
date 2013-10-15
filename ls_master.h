@@ -1,11 +1,6 @@
 #ifndef LS_MASTER_H_
 #define LS_MASTER_H_
 
-#include <string>
-#include <map>
-#include <vector>
-using namespace std;
-
 #include "libuv/include/uv.h"
 
 #include "ls_worker.h"

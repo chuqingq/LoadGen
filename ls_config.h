@@ -1,13 +1,8 @@
 #ifndef LS_CONFIG_H_
 #define LS_CONFIG_H_
 
-// #include <string>
-// #include <vector>
-// using namespace std;
-
 typedef struct {
     int workers_num;
-    // vector<string> plugin_paths;
     size_t plugins_num;
     char** plugin_paths;
 } ls_config_t;

@@ -29,16 +29,22 @@ typedef int (*ls_plugin_session_destroy_t)(void** state);
 typedef int (*ls_plugin_api_init_t)(const Json::Value* json_args, void** args);
 typedef int (*ls_plugin_api_destroy_t)(void** args);
 
-typedef int (*ls_plugin_api_t)(const void* args,
+typedef int (*ls_plugin_api_run_t)(const void* args,
                                ls_session_t* session,
                                /* void* plugin_state,*/
                                map<string, string> * vars);
 
 typedef struct {
+    char* name;
     ls_plugin_api_init_t init;
-    ls_plugin_api_t api;
+    ls_plugin_api_run_t run;
     ls_plugin_api_destroy_t destroy;
 } ls_plugin_api_entry_t;
+
+typedef struct {
+    ls_plugin_api_entry_t* entries;
+    size_t entries_num;
+} ls_plugin_api_t;
 
 
 typedef struct ls_plugin_entry_s {
@@ -53,7 +59,10 @@ typedef struct ls_plugin_entry_s {
     ls_plugin_session_init_t session_init;
     ls_plugin_session_destroy_t session_destroy;
     
-    map<string, ls_plugin_api_entry_t> apis;
+    // map<string, ls_plugin_api_entry_t> apis;
+    // ls_plugin_api_entry_t* apis;
+    // size_t apis_num;
+    ls_plugin_api_t apis;
 
     void* plugin_setting;// 只读，在task_init中来自task_setting
 
