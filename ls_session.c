@@ -5,7 +5,8 @@
 #include "ls_plugin.h"
 
 static int handle_session(ls_session_t* s) {
-    const ls_task_script_entry_t* e = &(*s->script)[s->script_cur];
+    // const ls_task_script_entry_t* e = &(*s->script)[s->script_cur];
+    const ls_task_script_entry_t* e = s->script->entries + s->script_cur;
     ls_plugin_api_run_t api_run = (ls_plugin_api_run_t) e->api;
     map<string, string> vars;
     if ((api_run)(e->args, s, &vars) < 0)
@@ -20,7 +21,7 @@ static int handle_session(ls_session_t* s) {
 
 int process_session(ls_session_t* s) {
     // printf("==== process_session()\n");
-    if (s->script_cur == s->script->size()-1)
+    if (s->script_cur == s->script->entries_num-1)
     {
         s->script_cur = -1;
     }

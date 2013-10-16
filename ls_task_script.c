@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include <cassert>
 #include <fstream>
 using namespace std;
@@ -8,6 +10,7 @@ using namespace std;
 
 int load_task_script(ls_task_script_t* script) {
     printf("==== load_task_script()\n");
+    
     const char* script_file = "task/script.json";
     ifstream ifs;
     
@@ -19,19 +22,31 @@ int load_task_script(ls_task_script_t* script) {
 
     assert(reader.parse(ifs, root, false));
 
-    for (size_t i = 0; i < root.size(); ++i)
+    script->script = root;
+    script->entries_num = script->script.size();
+    script->entries = new ls_task_script_entry_t[script->entries_num];
+
+    ls_task_script_entry_t* entry;
+    for (size_t i = 0; i < script->entries_num; ++i)
     {
-        ls_task_script_entry_t entry;
+        entry = script->entries + i;
 
-        entry.api_name = root[i]["api"].asString();
-        entry.plugin_name = root[i]["plugin"].asString();
-        entry.json_args = root[i]["args"];// 拷贝一份
+        entry->api_name = root[i]["api"].asString();
+        entry->plugin_name = root[i]["plugin"].asString();
+        entry->json_args = root[i]["args"];
 
-        script->push_back(entry);
-
-        printf("  api=%s, plugin_name=%s, json_args=xxx\n", entry.api_name.c_str(), entry.plugin_name.c_str());
+        printf("  api=%s, plugin_name=%s, json_args=xxx\n", entry->api_name.c_str(), entry->plugin_name.c_str());
     }
 
-    ifs.close();
+    ifs.close();// should after parsing
+    return 0;
+}
+
+int unload_task_script(ls_task_script_t* script) {
+    printf("==== unload_task_script()\n");
+
+    delete[] script->entries;
+    script->entries = NULL;
+
     return 0;
 }

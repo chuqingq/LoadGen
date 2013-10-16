@@ -9,7 +9,6 @@
 #include "ls_worker.h"
 #include "ls_plugin.h"
 
-// #include "ls_task_script.h"
 #include "ls_task_callmodel.h"
 #include "ls_task_setting.h"
 #include "ls_task_var.h"
@@ -101,6 +100,12 @@ int main() {
     if (plugins_unload_task_setting(&(master.plugins)) < 0) // task_terminate()
     {
         printf("ERROR failed to plugins_unload_task_setting()\n");
+        return -1;
+    }
+
+    if (unload_task_script(&master.script) < 0)
+    {
+        printf("ERROR failed to unload_task_script()\n");
         return -1;
     }
 

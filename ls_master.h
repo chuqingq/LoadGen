@@ -16,9 +16,8 @@ typedef struct {
 
     ls_config_t config;
     ls_plugin_t plugins;
-    // ls_plugin_entry_t* plugins;// num = master.config.plugins_num // TODO to delete
 
-    ls_task_callmodel_t callmodel;// 呼叫模型，master保存，master使用
+    ls_task_callmodel_t callmodel;
     ls_task_setting_t settings;// proto_type -> task_setting master读取setting.json并调用plugin的plugin_load_setting解析，后续master不用，worker只读
     ls_task_var_t vars;// 变量，master读取，master不需要，worker只读
     ls_task_script_t script;// 脚本，master保存，worker只读
