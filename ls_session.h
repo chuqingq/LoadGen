@@ -12,13 +12,13 @@ struct ls_session_s;
 typedef int (*ls_session_process_t)(struct ls_session_s*);
 
 typedef struct ls_session_s {
-    // int session_id;// TODO not used for now
-    uv_loop_t* loop;
+    uv_loop_t* loop;// ref to worker's loop
 
     const ls_task_script_t* script;
     size_t script_cur;
 
-    map<string/* plugin_name */, void*> states;
+    // map<string/* plugin_name */, void*> states;
+    void** states;// states of plugins, one by one
     ls_task_var_t cur_vars;// const map<string, ls_var_t> vars;// session需要根据此初始化变量cur_vars、每次执行API前获取需要的变量更新cur_vars
 
     ls_session_process_t process;

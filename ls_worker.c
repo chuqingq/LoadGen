@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ls_utils.h"
 #include "ls_master.h"
@@ -86,6 +87,7 @@ int worker_start_new_session(ls_worker_t* w, int num) {
     for (int i = 0; i < num; ++i)
     {
         s = new ls_session_t;
+        s->states = (void**)malloc(master.config.plugins_num * sizeof(void*));
 
         // s->session_id = w->next_session_id + i;
         s->loop = w->worker_loop;
@@ -98,14 +100,15 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         {
             ls_plugin_entry_t* e = &master.plugins.entries[i];
 
-            void* state = NULL;
-            if ((e->session_init)(&state) < 0)
+            // void* state = NULL;
+            // if ((e->session_init)(&state) < 0)
+            if ((e->session_init)(s->states + i) < 0)
             {
                 printf("ERROR failed to session_init()\n");
                 return -1;
             }
 
-            s->states.insert(pair<string, void*>(e->plugin_name, state));
+            // s->states.insert(pair<string, void*>(e->plugin_name, state));
         }
 
         s->cur_vars = master.vars;// TODO 拷贝
