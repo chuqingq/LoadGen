@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ls_master.h"
 #include "ls_session.h"
@@ -54,7 +55,7 @@ int finish_session(ls_session_t* s) {
 
     free(s->states);
     s->states = NULL;
-    
+
     delete s;
     s = NULL;
 
