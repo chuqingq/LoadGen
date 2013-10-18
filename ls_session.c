@@ -6,7 +6,6 @@
 #include "ls_plugin.h"
 
 static int handle_session(ls_session_t* s) {
-    // const ls_task_script_entry_t* e = &(*s->script)[s->script_cur];
     const ls_task_script_entry_t* e = s->script->entries + s->script_cur;
     ls_plugin_api_run_t api_run = (ls_plugin_api_run_t) e->api;
     map<string, string> vars;
@@ -21,7 +20,6 @@ static int handle_session(ls_session_t* s) {
 }
 
 int process_session(ls_session_t* s) {
-    // printf("==== process_session()\n");
     if (s->script_cur == s->script->entries_num-1)
     {
         s->script_cur = -1;
@@ -37,11 +35,8 @@ int finish_session(ls_session_t* s) {
 
     ls_plugin_entry_t* e;
     // 调用session中相关的所有plugin的session_destroy()
-    // for (map<string, void*>::iterator it = s->states.begin(); it != s->states.end(); ++it, ++i)
     for (size_t i = 0; i < master.config.plugins_num; ++i)
     {
-        // ls_plugin_entry_t* e = &(master.plugins[it->first]);
-        // ls_plugin_entry_t* e = &master.plugins.entries[i];
         e = master.plugins.entries + i;
 
         if ((e->session_destroy)(s->states + i) < 0)

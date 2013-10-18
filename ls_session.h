@@ -17,9 +17,8 @@ typedef struct ls_session_s {
     const ls_task_script_t* script;
     size_t script_cur;
 
-    // map<string/* plugin_name */, void*> states;
     void** states;// states of plugins, one by one
-    ls_task_var_t cur_vars;// const map<string, ls_var_t> vars;// session需要根据此初始化变量cur_vars、每次执行API前获取需要的变量更新cur_vars
+    ls_task_var_t cur_vars;
 
     ls_session_process_t process;
     ls_session_process_t finish;

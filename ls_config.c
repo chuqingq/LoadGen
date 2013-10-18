@@ -42,7 +42,7 @@ int load_config(ls_config_t* config) {
     for (i = 0; i < config->plugins_num; ++i)
     {
         printf("  plugin_paths[%d] = %s\n", i, plugin_paths[i].asString().c_str());
-        // config->plugin_paths.push_back(plugin_paths[i].asString());
+        
         string path = plugin_paths[i].asString();
         int len = path.length();
 

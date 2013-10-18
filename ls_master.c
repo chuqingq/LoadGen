@@ -30,10 +30,6 @@ int start_workers(ls_master_t* master) {
     {
         ls_worker_t* w = master->workers + i;
         w->worker_started = 0;
-        // w->next_session_id = 0;
-        // printf("  worker[i]=%lu\n", (unsigned long)w);
-
-        // master->workers.push_back(w);
 
         if (uv_async_init(master->master_loop, &(w->master_async), master_async_callback) < 0) {
             printf("ERROR failed to uv_async_init(master)\n");
@@ -55,17 +51,10 @@ int start_workers(ls_master_t* master) {
 int stop_workers(ls_master_t* master) {
     printf("==== stop_workers()\n");
 
-    // for (size_t i = 0; i < master->workers.size(); ++i)
     for (int i = 0; i < master->config.workers_num; ++i)
     {
-        // uv_stop(master->workers[i]->worker_loop);
-        // 不能直接用uv_stop这种方式，需要通过async发给worker，由它自己uv_stop
-        // ls_worker_t* w = master->workers[i];
         ls_worker_t* w = master->workers + i;
 
-        // int* num = new int;
-        // *num = -1;
-        // w->worker_async.data = num;
         if (worker_set_callmodel_delta(w, -1) < 0)
         {
             printf("ERROR failed to worker_set_callmodel_delta()\n");
@@ -85,12 +74,10 @@ int stop_workers(ls_master_t* master) {
 int reap_workers(ls_master_t* master) {
     printf("==== reap_workers()\n");
 
-    // vector<ls_worker_t*>& workers = master->workers;
-    // for (size_t i = 0; i< workers.size(); ++i)
     for (int i = 0; i< master->config.workers_num; ++i)
     {
         printf("  before reap_workers(%d)\n", i);
-        // if (reap_worker(workers[i]) < 0) {
+
         if (reap_worker(master->workers + i) < 0) {
             printf("ERROR failed to read_worker(%d)\n", i);
             return -1;
@@ -103,9 +90,6 @@ int reap_workers(ls_master_t* master) {
 static int notify_worker_start_new_session(ls_worker_t* w, int num) {
     printf("  ==== notify_worker_start_new_session(%lu, %d)\n", (unsigned long)w, num);
 
-    // int* num2 = new int;
-    // *num2 = num;
-    // w->worker_async.data = (void*)num2;
     if (worker_set_callmodel_delta(w, num) < 0)
     {
         printf("ERROR failed to worker_set_callmodel_delta()\n");
@@ -126,8 +110,6 @@ int start_new_session(int num) {
 
     for (int i = 0; i < add; ++i)
     {
-        // printf("  1.worker[%d]=%lu\n", i, (unsigned long)master.workers[i]);
-        // if (notify_worker_start_new_session(master.workers[i], avg) < 0)
         if (notify_worker_start_new_session(master.workers + i, avg) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");
@@ -142,8 +124,6 @@ int start_new_session(int num) {
 
     for (int i = add; i < workers_num; ++i)
     {
-        // printf("  2.worker[%d]=%lu\n", i, (unsigned long)master.workers[i]);
-        // if (notify_worker_start_new_session(master.workers[i], avg-1) < 0)
         if (notify_worker_start_new_session(master.workers + i, avg-1) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");

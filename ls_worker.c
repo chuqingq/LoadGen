@@ -89,26 +89,19 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s = new ls_session_t;
         s->states = (void**)malloc(master.config.plugins_num * sizeof(void*));
 
-        // s->session_id = w->next_session_id + i;
         s->loop = w->worker_loop;
-        // printf("  worker_start_new_session(): worker:%lu, session_id:%d\n", (unsigned long)w, s->session_id);
         s->script = &(master.script);// 只读
         s->script_cur = -1;
         
-        // for (map<string, ls_plugin_entry_t>::iterator it = master.plugins.begin(); it != master.plugins.end(); ++it)
         for (size_t i = 0; i < master.plugins.entries_num; ++i)
         {
             ls_plugin_entry_t* e = &master.plugins.entries[i];
 
-            // void* state = NULL;
-            // if ((e->session_init)(&state) < 0)
             if ((e->session_init)(s->states + i) < 0)
             {
                 printf("ERROR failed to session_init()\n");
                 return -1;
             }
-
-            // s->states.insert(pair<string, void*>(e->plugin_name, state));
         }
 
         s->cur_vars = master.vars;// TODO 拷贝
@@ -119,7 +112,6 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         w->sessions.push_back(s);
         process_session(s);
     }
-    // w->next_session_id += num;
 
     return 0;
 }
