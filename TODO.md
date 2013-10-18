@@ -108,3 +108,21 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
     unload_plugins
     unload_config
     
+## loadgen_stats
+
+统计模块的设计
+
+master模块的统计
+1、master加载plugin时
+plugin注册：a、stats_id，b、结构void*，c、callback接收worker数据如何处理
+
+2、master定时打印/上报统计信息
+TODO 可能也要回调
+
+3、master接收到worker的stats_id消息
+调用注册的callback，来改变结构void*
+
+plugin模块的统计
+
+1、declare时向master注册上面三项
+2、执行API时发送消息给master
