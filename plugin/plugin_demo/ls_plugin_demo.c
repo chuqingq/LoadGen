@@ -9,6 +9,7 @@ using namespace std;
 #include "ls_plugin.h"
 #include "ls_worker.h"
 #include "ls_session.h"
+#include "ls_stats.h"
 
 typedef struct {
     bool ignore_think_time;
@@ -116,12 +117,67 @@ static int ls_error_message(const void* args, ls_session_t* session, map<string,
     return 0;
 }
 
+
+// ls_start_transaction
+static int ls_start_transaction_init(const Json::Value* json_args, void** args) {
+    printf("  >>>> plugin_demo ls_start_transaction init()\n");
+    *args = (void*)json_args;
+    return 0;
+}
+
+static int ls_start_transaction_destroy(void** args) {
+    printf("  >>>> plugin_demo ls_start_transaction destroy()\n");
+
+    return 0;
+}
+
+static int ls_start_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
+    printf("  >>>> plugin_demo ls_start_transaction(%d)\n", 1);
+    // Json::Value* json_args = (Json::Value*)args;
+    // printf("    ls_start_transaction(): %s\n", (*json_args)["message"].asString().c_str());
+    return 0;
+}
+
+// ls_end_transaction
+static int ls_end_transaction_init(const Json::Value* json_args, void** args) {
+    printf("  >>>> plugin_demo ls_end_transaction init()\n");
+    // *args = (void*)json_args;
+    return 0;
+}
+
+static int ls_end_transaction_destroy(void** args) {
+    printf("  >>>> plugin_demo ls_end_transaction destroy()\n");
+
+    return 0;
+}
+
+static int ls_end_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
+    printf("  >>>> plugin_demo ls_end_transaction(%d)\n", 1);
+    // Json::Value* json_args = (Json::Value*)args;
+    // printf("    ls_end_transaction(): %s\n", (*json_args)["message"].asString().c_str());
+    return 0;
+}
+
+static int plugin_demo_stats_handle(void* one_data, void* state) {
+    printf("  >>>> plugin_demo_stats_handle()\n");
+    // TODO
+    return 0;
+}
+
+static int plugin_demo_stats_output(void* state) {
+    printf("  >>>> plugin_demo_stats_output()\n");
+    // TODO
+    return 0;
+}
+
 extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_entry_t* plugin_entry) {
     char* plugin_name = (char*)"ls_plugin_demo";
     printf("  >>>> plugin_declare(%s)\n", plugin_name);
 
+    // 1.plugin_name
     plugin_entry->plugin_name = plugin_name;
 
+    // 2.callbacks
     plugin_entry->plugin_load = plugin_load;
     plugin_entry->plugin_unload = plugin_unload;
 
@@ -131,7 +187,20 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_entry_t* 
     plugin_entry->session_init = plugin_session_init;
     plugin_entry->session_destroy = plugin_session_destroy;
 
-    plugin_entry->apis.entries_num = 2;
+    // 3.stats
+    plugin_entry->stats_num = 1;
+    plugin_entry->stats = (ls_stats_entry_t*)malloc(plugin_entry->stats_num * sizeof(ls_stats_entry_t));
+    if (plugin_entry->stats == NULL) {
+        printf("  ERRROR plugin_demo failed to malloc stats\n");
+        return -1;
+    }
+
+    plugin_entry->stats[0].state = NULL;
+    plugin_entry->stats[0].handler = plugin_demo_stats_handle;
+    plugin_entry->stats[0].output = plugin_demo_stats_output;
+
+    // 4.apis
+    plugin_entry->apis.entries_num = 4;
     plugin_entry->apis.entries = (ls_plugin_api_entry_t*)malloc(plugin_entry->apis.entries_num * sizeof(ls_plugin_api_entry_t));
 
     // ls_think_time
@@ -145,6 +214,18 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_entry_t* 
     plugin_entry->apis.entries[1].init = ls_error_message_init;
     plugin_entry->apis.entries[1].run = ls_error_message;
     plugin_entry->apis.entries[1].destroy = ls_error_message_destroy;
+
+    // ls_start_transaction
+    plugin_entry->apis.entries[2].name = (char*)"ls_start_transaction";
+    plugin_entry->apis.entries[2].init = ls_start_transaction_init;
+    plugin_entry->apis.entries[2].run = ls_start_transaction;
+    plugin_entry->apis.entries[2].destroy = ls_start_transaction_destroy;
+
+    // ls_end_transaction
+    plugin_entry->apis.entries[3].name = (char*)"ls_end_transaction";
+    plugin_entry->apis.entries[3].init = ls_end_transaction_init;
+    plugin_entry->apis.entries[3].run = ls_end_transaction;
+    plugin_entry->apis.entries[3].destroy = ls_end_transaction_destroy;
 
     printf("  >>>> end plugin_declare()\n");
     return 0;

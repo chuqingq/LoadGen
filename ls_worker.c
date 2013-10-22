@@ -8,9 +8,9 @@
 static int worker_stop_all_sessions(ls_worker_t* w) {
     printf("  ==== worker_stop_all_sessions()\n");
 
-    for (size_t i = 0; i < w->sessions.size(); ++i)
+    for (size_t i = 0; i < w->sessions->size(); ++i)
     {
-        if (finish_session(w->sessions[i]) < 0) {
+        if (finish_session((*w->sessions)[i]) < 0) {
             printf("ERROR failed to finish_session()\n");
             // return -1;// 确保所有session都执行了session_destroy()
         }
@@ -68,6 +68,10 @@ static void worker_thread(void* arg) {
 
 int init_worker(ls_worker_t* w) {
     printf("  init_worker(%lu)\n", (unsigned long)w);
+
+    uv_rwlock_init(&w->callmodel_delta_lock);
+    w->sessions = new vector<ls_session_t*>();// TODO
+
     // master_async在master中初始化
     return uv_thread_create(&(w->thread), worker_thread, (void*)w);
 }
@@ -81,9 +85,6 @@ int worker_start_new_session(ls_worker_t* w, int num) {
     printf("  ==== worker_start_new_session(%d)\n", num);
 
     ls_session_t* s;
-    // TODO
-    w->sessions = vector<ls_session_t*>();
-
     for (int i = 0; i < num; ++i)
     {
         s = new ls_session_t;
@@ -109,7 +110,8 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s->process = process_session;
         s->finish = finish_session;
 
-        w->sessions.push_back(s);
+        w->sessions->push_back(s);
+
         process_session(s);
     }
 
@@ -118,7 +120,9 @@ int worker_start_new_session(ls_worker_t* w, int num) {
 
 
 int worker_set_callmodel_delta(ls_worker_t* w, int delta) {
+    printf("    worker_set_callmodel_delta()\n");
     uv_rwlock_wrlock(&w->callmodel_delta_lock);
+    printf("    after wrlock()\n");
     w->callmodel_delta = delta;
     uv_rwlock_wrunlock(&w->callmodel_delta_lock);
 

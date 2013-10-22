@@ -22,6 +22,7 @@ typedef struct ls_session_s {
 
     ls_session_process_t process;
     ls_session_process_t finish;
+    // TODO report_stats()
 } ls_session_t;
 
 

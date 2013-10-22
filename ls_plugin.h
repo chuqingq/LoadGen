@@ -11,6 +11,7 @@ using namespace std;
 #include "ls_worker.h"
 #include "ls_task_setting.h"
 #include "ls_task_script.h"
+#include "ls_stats.h"
 
 struct ls_plugin_entry_s;
 
@@ -42,10 +43,11 @@ typedef struct {
     size_t entries_num;
 } ls_plugin_api_t;
 
-
 typedef struct ls_plugin_entry_s {
+    // 1.plugin_name
     char* plugin_name;
 
+    // 2.callbacks
     ls_plugin_load_t plugin_load;// master启动时调用
     ls_plugin_unload_t plugin_unload;// master退出前调用
 
@@ -55,7 +57,12 @@ typedef struct ls_plugin_entry_s {
     ls_plugin_session_init_t session_init;
     ls_plugin_session_destroy_t session_destroy;
 
+    // 3.APIs
     ls_plugin_api_t apis;
+
+    // 4.stats
+    ls_stats_entry_t* stats;
+    size_t stats_num;
 
     void* plugin_setting;// 只读，在task_init中来自task_setting
 

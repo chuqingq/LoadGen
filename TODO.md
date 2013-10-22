@@ -47,18 +47,18 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
 
     master
         config // DONE vector<string>改为char*。需要unload_config时释放
-        plugins // 回调、api、状态
+        plugins // name, 回调、api、统计项, setting. all readonly
 
         task_callmodel // 只有master关注
 
-        task_setting // plugins_load_task_setting时调用分发到plugin的task_setting中
+        task_setting // plugins_load_task_setting时调用plugin_task_init分发到plugin->settings
         task_vars // TODO 9
         task_script // plugins_load_task_script时设置api、及args（调用prepare）
 
-    plugin[i]    // TODO 2
-        plugin_name
+    plugin[i]
+        plugin_name // 1.
   
-        callbacks
+        callbacks  //2.
             plugin_load
             plugin_unload
 
@@ -67,22 +67,21 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
     
             session_init
             session_terminate
-        apis
+        apis  // 3.
             api_init
             api_run
             api_destroy
-
+        stats // 4.
         task_setting // TODO 不需要了，task_init/destroy中plugin自己维护
-        state // TODO 不放在这里，放在session中，作为动态内容维护
+        // state // 不放在这里，放在session中，作为动态内容维护
 
     worker[i]
         async // 和master交互
         sessions
 
     session[i]
-        // 只读，直接使用master的task_script、plugins等
-        cur_task_script // TODO 只保存下标即可
-        states // TODO map<string/* plugin_name */, void*> session_init/destroy维护
+        script_cur // 只保存下标即可
+        states // plugin_states. session_init/destroy
         cur_task_vars // TODO 9
 
 ## dynamic

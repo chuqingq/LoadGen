@@ -9,10 +9,27 @@
 ls_master_t master;
 
 static void master_async_callback(uv_async_t* handle, int status) {
-    // TODO master接收worker发来的消息 statistics
-    // 1. worker上报的统计信息：暂时直接打印
-    // printf("master recv worker async msg\n");
-    // 2. worker线程退出会如何？？ TODO
+    printf("  master_async_callback()\n");
+
+    ls_master_notify_type type = *(ls_master_notify_type*)(handle->data);
+
+    
+    switch (type) {
+        case NOTIFY_STATS:
+        {
+            ls_stats_notify_t* stats_notify = (ls_stats_notify_t*)handle->data;
+            if (handle_stats(stats_notify->data, stats_notify->entry) < 0) {
+                printf("ERROR failed to handle_stats()\n");
+            }
+        }
+        break;
+        default:
+            printf("  unknown master async\n");
+            break;
+    }
+
+    free(handle->data);
+    handle->data = NULL;
 }
 
 int start_workers(ls_master_t* master) {
@@ -96,6 +113,7 @@ static int notify_worker_start_new_session(ls_worker_t* w, int num) {
         return -1;
     }
 
+    printf("  before master uv_async_send()\n");
     return uv_async_send(&(w->worker_async));
 }
 
@@ -130,6 +148,38 @@ int start_new_session(int num) {
             return -1;
         }
     }
+
+    return 0;
+}
+
+// 遍历master的所有plugin，执行他们的统计output
+static void do_stats_per_sec(uv_timer_t* handle, int status) {
+    printf("  do_stats_per_sec()\n");
+
+    ls_plugin_entry_t* entry;
+    for (size_t i = 0; i < master.config.plugins_num; ++i)
+    {
+        entry = master.plugins.entries + i;
+
+        ls_stats_entry_t* stats_entry;
+        for (size_t i = 0; i < entry->stats_num; ++i)
+        {
+            stats_entry = entry->stats + i;
+
+            if ((stats_entry->output)(stats_entry->state) < 0)
+            {
+                printf("ERROR failed to stats_entry->output()\n");
+                // make sure do all output
+            }
+        }
+    }
+}
+
+
+int start_stats() {
+    uv_timer_t* t = &master.stats_timer;
+    uv_timer_init(master.master_loop, t);
+    uv_timer_start(t, do_stats_per_sec, 1000, 1000);
 
     return 0;
 }

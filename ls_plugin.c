@@ -38,6 +38,7 @@ int load_plugins(ls_plugin_t* plugins) {
 
         if ((entry->plugin_load)() < 0)
         {
+            printf("ERROR failed to plugin_load()\n");
             return -1;
         }
     }

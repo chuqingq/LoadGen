@@ -21,8 +21,11 @@ typedef struct {
     uv_async_t worker_async;
     int callmodel_delta;
     uv_rwlock_t callmodel_delta_lock;
+    int a;
+    int b;// TODO
 
-    vector<ls_session_t*> sessions;
+    vector<ls_session_t*>* sessions;
+    int c;
     int next_session_id;
 
 } ls_worker_t;

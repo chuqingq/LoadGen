@@ -23,6 +23,8 @@ typedef struct {
     ls_task_script_t script;// 脚本，master保存，worker只读
     
     ls_worker_t* workers;
+
+    uv_timer_t stats_timer;
 } ls_master_t;
 
 extern ls_master_t master;
@@ -32,5 +34,16 @@ int stop_workers(ls_master_t* master);
 int reap_workers(ls_master_t* master);
 
 int start_new_session(int num);
+
+
+typedef enum ls_master_notify_type {
+    NOTIFY_STATS = 0,
+    NOTIFY_OTHER
+} ls_master_notify_type;
+
+int notify_master();
+int do_notify();
+
+int start_stats();
 
 #endif
