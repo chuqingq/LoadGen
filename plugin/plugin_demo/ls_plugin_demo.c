@@ -201,7 +201,7 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_entry_t* 
 
     // 4.apis
     plugin_entry->num_apis = 4;
-    plugin_entry->apis = (ls_plugin_api_entry_t*)malloc(plugin_entry->num_apis * sizeof(ls_plugin_api_entry_t));
+    plugin_entry->apis = (ls_plugin_api_t*)malloc(plugin_entry->num_apis * sizeof(ls_plugin_api_t));
 
     // ls_think_time
     plugin_entry->apis[0].name = (char*)"ls_think_time";

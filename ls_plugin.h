@@ -33,7 +33,7 @@ typedef struct {
     ls_plugin_api_init_t init;
     ls_plugin_api_run_t run;
     ls_plugin_api_destroy_t destroy;
-} ls_plugin_api_entry_t;
+} ls_plugin_api_t;
 
 typedef struct ls_plugin_entry_s {
     // 1.plugin_name
@@ -50,7 +50,7 @@ typedef struct ls_plugin_entry_s {
     ls_plugin_session_destroy_t session_destroy;
 
     // 3.APIs
-    ls_plugin_api_entry_t* apis;
+    ls_plugin_api_t* apis;
     size_t num_apis;
 
     // 4.stats
