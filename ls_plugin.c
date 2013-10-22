@@ -84,35 +84,54 @@ ls_plugin_entry_t* find_entry_by_name(const char* plugin_name, ls_plugin_t* plug
     return NULL;
 }
 
-// 让plugin对自己的setting进行特殊处理
-
-// 把master加载的任务设置，分协议加载，转换成自己的类型
-// 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
 int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins) {
     printf("==== plugins_load_task_setting\n");
 
-    // 遍历settings，调用task_init，把返回的setting保存在plugin中
-    for (ls_task_setting_t::iterator it = settings->begin(); it != settings->end(); ++it)
+    ls_plugin_entry_t* entry;
+    for (size_t i = 0; i < plugins->entries_num; ++i)
     {
-        string plugin_name = it->first;
-        printf("  plugin=%s\n", plugin_name.c_str());
-        // 根据plugin_name找到plugin_entry，进一步找到task_init回调
-        ls_plugin_entry_t* entry = find_entry_by_name(plugin_name.c_str(), plugins);
-        if (entry == NULL)
-        {
-            printf("  no plugin [%s] loaded\n", plugin_name.c_str());
-            return -1;
-        }
-        
-        // 更新plugin_setting，初始化plugin_state
-        if ((entry->task_init)(it->second) < 0)
-        {
+        entry = plugins->entries + i;
+
+        Json::Value* setting = &(*setting)[entry->plugin_name];
+        // maybe Json::Value::null
+        if ((entry->task_init)(setting) < 0) {
             printf("ERROR task_init error\n");
             return -1;
         }
     }
+
     return 0;
 }
+
+// // 让plugin对自己的setting进行特殊处理
+
+// // 把master加载的任务设置，分协议加载，转换成自己的类型
+// // 直接对settings中的void*进行修改，原来是JsonObj，改为自己的类型
+// int plugins_load_task_setting1(ls_task_setting_t* settings, ls_plugin_t* plugins) {
+//     printf("==== plugins_load_task_setting\n");
+
+//     // 遍历settings，调用task_init，把返回的setting保存在plugin中
+//     for (ls_task_setting_t::iterator it = settings->begin(); it != settings->end(); ++it)
+//     {
+//         string plugin_name = it->first;
+//         printf("  plugin=%s\n", plugin_name.c_str());
+//         // 根据plugin_name找到plugin_entry，进一步找到task_init回调
+//         ls_plugin_entry_t* entry = find_entry_by_name(plugin_name.c_str(), plugins);
+//         if (entry == NULL)
+//         {
+//             printf("  no plugin [%s] loaded\n", plugin_name.c_str());
+//             return -1;
+//         }
+        
+//         // 更新plugin_setting，初始化plugin_state
+//         if ((entry->task_init)(it->second) < 0)
+//         {
+//             printf("ERROR task_init error\n");
+//             return -1;
+//         }
+//     }
+//     return 0;
+// }
 
 int plugins_unload_task_setting(ls_plugin_t* plugins) {
     printf("==== plugins_unload_task_setting()\n");

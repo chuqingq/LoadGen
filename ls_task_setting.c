@@ -20,16 +20,23 @@ int load_task_setting(ls_task_setting_t* setting) {
     assert(reader.parse(ifs, root, false));
     ifs.close();
 
-    Json::Value::Members m = root.getMemberNames();
-    for (Json::Value::Members::iterator it = m.begin(); it != m.end(); ++it)
-    {
-        printf("  setting of plugin = %s\n", it->c_str());
+    *setting = root;
+    // Json::Value::Members m = root.getMemberNames();
+    // for (Json::Value::Members::iterator it = m.begin(); it != m.end(); ++it)
+    // {
+    //     printf("  setting of plugin = %s\n", it->c_str());
 
-        Json::Value *settings = new Json::Value();
-        *settings = root[*it];
+    //     Json::Value *settings = new Json::Value();
+    //     *settings = root[*it];
 
-        setting->insert(pair<string, Json::Value*>(*it, settings));
-    }
+    //     setting->insert(pair<string, Json::Value*>(*it, settings));
+    // }
 
     return 0;
+}
+
+int unload_task_setting(ls_task_setting_t* setting) {
+    // TODO not called
+    return -1;
+
 }
