@@ -170,7 +170,7 @@ static int plugin_demo_stats_output(void* state) {
     return 0;
 }
 
-extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_entry_t* plugin_entry) {
+extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_t* plugin_entry) {
     char* plugin_name = (char*)"ls_plugin_demo";
     printf("  >>>> plugin_declare(%s)\n", plugin_name);
 

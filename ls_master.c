@@ -156,7 +156,7 @@ int start_new_session(int num) {
 static void do_stats_per_sec(uv_timer_t* handle, int status) {
     printf("  do_stats_per_sec()\n");
 
-    ls_plugin_entry_t* entry;
+    ls_plugin_t* entry;
     for (size_t i = 0; i < master.num_plugins; ++i)
     {
         entry = master.plugins + i;

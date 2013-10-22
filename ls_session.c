@@ -33,7 +33,7 @@ int process_session(ls_session_t* s) {
 int finish_session(ls_session_t* s) {
     printf("  ==== finish_session()\n");
 
-    ls_plugin_entry_t* e;
+    ls_plugin_t* e;
     // 调用session中相关的所有plugin的session_destroy()
     for (size_t i = 0; i < master.config.plugins_num; ++i)
     {

@@ -94,9 +94,10 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s->script = &(master.script);// 只读
         s->script_cur = -1;
         
+        ls_plugin_t* e;
         for (size_t i = 0; i < master.num_plugins; ++i)
         {
-            ls_plugin_entry_t* e = master.plugins + i;
+            e = master.plugins + i;
 
             if ((e->session_init)(s->states + i) < 0)
             {

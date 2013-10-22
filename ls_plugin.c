@@ -12,9 +12,9 @@ int load_plugins() {
     master.num_plugins = master.config.plugins_num;
 
     // allocate master.plugins
-    master.plugins = (ls_plugin_entry_t*)malloc(master.num_plugins * sizeof(ls_plugin_entry_t));
+    master.plugins = (ls_plugin_t*)malloc(master.num_plugins * sizeof(ls_plugin_t));
 
-    ls_plugin_entry_t* entry;
+    ls_plugin_t* entry;
     for (size_t i = 0; i < master.num_plugins; ++i)
     {
         entry = master.plugins + i;
@@ -46,7 +46,7 @@ int load_plugins() {
 int unload_plugins() {
     printf("==== unload_plugins()\n");
 
-    ls_plugin_entry_t* entry;
+    ls_plugin_t* entry;
     for (size_t i = 0; i < master.num_plugins; ++i)
     {
         entry = master.plugins + i;
@@ -69,8 +69,8 @@ int unload_plugins() {
 }
 
 
-ls_plugin_entry_t* find_entry_by_name(const char* plugin_name, ls_plugin_entry_t* plugins, size_t num_plugins) {
-    ls_plugin_entry_t* entry;
+ls_plugin_t* find_entry_by_name(const char* plugin_name, ls_plugin_t* plugins, size_t num_plugins) {
+    ls_plugin_t* entry;
     for (size_t i = 0; i < num_plugins; ++i)
     {
         entry = plugins + i;
@@ -83,10 +83,10 @@ ls_plugin_entry_t* find_entry_by_name(const char* plugin_name, ls_plugin_entry_t
     return NULL;
 }
 
-int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_entry_t* plugins, size_t num_plugins) {
+int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins, size_t num_plugins) {
     printf("==== plugins_load_task_setting\n");
 
-    ls_plugin_entry_t* entry;
+    ls_plugin_t* entry;
     for (size_t i = 0; i < num_plugins; ++i)
     {
         entry = plugins + i;
@@ -102,10 +102,10 @@ int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_entry_t* pl
     return 0;
 }
 
-int plugins_unload_task_setting(ls_plugin_entry_t* plugins, size_t num_plugins) {
+int plugins_unload_task_setting(ls_plugin_t* plugins, size_t num_plugins) {
     printf("==== plugins_unload_task_setting()\n");
 
-    ls_plugin_entry_t* entry;
+    ls_plugin_t* entry;
     for (size_t i = 0; i < num_plugins; ++i)
     {
         entry = plugins + i;
@@ -135,7 +135,7 @@ ls_plugin_api_t* find_api_entry_by_name(const char* name, ls_plugin_api_t* apis,
 
 // master.plugins, master.num_plugins
 // 让plugin对script进行特殊处理。例如明确哪个API是属于自己的，设置好ls_api_t
-int plugins_load_task_script(ls_task_script_t* script, ls_plugin_entry_t* plugins, size_t num_plugins) {
+int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins, size_t num_plugins) {
     printf("==== plugins_load_task_script\n");
 
     ls_task_script_entry_t* script_entry;
@@ -144,7 +144,7 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_entry_t* plugin
     {
         // find plugin_name of script_entry in plugins
         script_entry = script->entries + i;
-        ls_plugin_entry_t* entry = find_entry_by_name(script_entry->plugin_name.c_str(), plugins, num_plugins);
+        ls_plugin_t* entry = find_entry_by_name(script_entry->plugin_name.c_str(), plugins, num_plugins);
         if (entry == NULL)
         {
             printf("  plugin_name %s not found\n", script_entry->plugin_name.c_str());
@@ -174,10 +174,10 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_entry_t* plugin
     return 0;
 }
 
-int plugins_unload_task_script(ls_task_script_t* script, ls_plugin_entry_t* plugins, size_t num_plugins) {
+int plugins_unload_task_script(ls_task_script_t* script, ls_plugin_t* plugins, size_t num_plugins) {
     printf("==== plugins_unload_task_script()\n");
 
-    ls_plugin_entry_t* entry;
+    ls_plugin_t* entry;
     ls_task_script_entry_t* script_entry;
     for (size_t i = 0; i < script->entries_num; ++i)
     {
