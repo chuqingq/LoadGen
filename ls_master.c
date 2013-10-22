@@ -156,15 +156,15 @@ int start_new_session(int num) {
 static void do_stats_per_sec(uv_timer_t* handle, int status) {
     printf("  do_stats_per_sec()\n");
 
-    ls_plugin_t* entry;
+    ls_plugin_t* plugin;
     for (size_t i = 0; i < master.num_plugins; ++i)
     {
-        entry = master.plugins + i;
+        plugin = master.plugins + i;
 
         ls_stats_entry_t* stats_entry;
-        for (size_t i = 0; i < entry->stats_num; ++i)
+        for (size_t i = 0; i < plugin->stats_num; ++i)
         {
-            stats_entry = entry->stats + i;
+            stats_entry = plugin->stats + i;
 
             if ((stats_entry->output)(stats_entry->state) < 0)
             {
