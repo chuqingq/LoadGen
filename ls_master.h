@@ -25,17 +25,21 @@ typedef struct {
     ls_task_script_t script;// 脚本，master保存，worker只读
     
     ls_worker_t* workers;
+    size_t num_workers;
 
     uv_timer_t stats_timer;
 } ls_master_t;
 
 extern ls_master_t master;
 
-int start_workers(ls_master_t* master);
+int start_workers(ls_master_t* master);// TODO copy num_workers from config to master.num_workers
 int stop_workers(ls_master_t* master);
 int reap_workers(ls_master_t* master);
 
 int start_new_session(int num);
+
+int load_plugins(ls_master_t* master);
+int unload_plugins(ls_master_t* master);
 
 // TODO
 typedef enum ls_master_notify_type {

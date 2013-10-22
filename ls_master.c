@@ -8,6 +8,69 @@
 
 ls_master_t master;
 
+int load_plugins(ls_master_t* master) {
+    printf("==== load_plugins()\n");
+
+    master->num_plugins = master->config.plugins_num;
+
+    // allocate master->plugins
+    master->plugins = (ls_plugin_t*)malloc(master->num_plugins * sizeof(ls_plugin_t));
+
+    ls_plugin_t* plugin;
+    for (size_t i = 0; i < master->num_plugins; ++i)
+    {
+        plugin = master->plugins + i;
+        if (uv_dlopen(master->config.plugin_paths[i], &(plugin->plugin_lib)) < 0) {
+            printf("  Failed to uv_dlopen\n");
+            return -1;
+        }
+
+        if (uv_dlsym(&(plugin->plugin_lib), "plugin_declare", (void**)&(plugin->plugin_declare)) < 0) {
+            printf("  Failed to uv_dlsym\n");
+            return -1;
+        }
+
+        if ((plugin->plugin_declare(plugin) < 0)) {
+            printf("  Failed to plugin_declare\n");
+            return -1;
+        }
+
+        if ((plugin->plugin_load)() < 0)
+        {
+            printf("ERROR failed to plugin_load()\n");
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+int unload_plugins(ls_master_t* master) {
+    printf("==== unload_plugins()\n");
+
+    ls_plugin_t* plugin;
+    for (size_t i = 0; i < master->num_plugins; ++i)
+    {
+        plugin = master->plugins + i;
+        printf("  plugin=%s\n", plugin->plugin_name);
+
+        // 1. 调用plugin_unload()
+        if ((plugin->plugin_unload)() < 0)
+        {
+            printf("ERROR failed to plugin_unload()\n");
+            // return -1;// 确保所有插件都正常卸载
+        }
+        uv_dlclose(&plugin->plugin_lib);
+    }
+
+    free(master->plugins);
+    master->plugins = NULL;
+    master->num_plugins = 0;
+
+    return 0;
+}
+
+
 static void master_async_callback(uv_async_t* handle, int status) {
     printf("  master_async_callback()\n");
 

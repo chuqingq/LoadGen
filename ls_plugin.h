@@ -62,9 +62,8 @@ typedef struct ls_plugin_entry_s {
     ls_plugin_declare_t plugin_declare;
 } ls_plugin_t;
 
-
-int load_plugins();
-int unload_plugins();
+// int load_plugins();
+// int unload_plugins();
 
 int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins, size_t num_plugins);
 int plugins_unload_task_setting(ls_plugin_t* plugins, size_t num_plugins);
