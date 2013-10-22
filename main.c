@@ -24,7 +24,7 @@ int main() {
     }
 
     // 加载协议 // plugin_load
-    if (load_plugins(&(master.plugins)) < 0) {
+    if (load_plugins() < 0) {
         printf("Failed to load_plugins.\n");
         return -1;
     }
@@ -56,13 +56,13 @@ int main() {
 
     // -------------- 插件加载
     // 插件加载任务设置 // task_init()
-    if (plugins_load_task_setting(&(master.settings), &(master.plugins)) < 0) {
+    if (plugins_load_task_setting(&(master.settings), master.plugins, master.num_plugins) < 0) {
         printf("Failed to plugins_load_task_setting.\n");
         return -1;
     }
 
     // 插件加载任务脚本
-    if (plugins_load_task_script(&(master.script), &(master.plugins)) < 0) {
+    if (plugins_load_task_script(&(master.script), master.plugins, master.num_plugins) < 0) {
         printf("Failed to plugins_load_task_script.\n");
         return -1;
     }
@@ -97,13 +97,13 @@ int main() {
         return -1;
     }
 
-    if (plugins_unload_task_script(&(master.script), &(master.plugins)) < 0)
+    if (plugins_unload_task_script(&(master.script), master.plugins, master.num_plugins) < 0)
     {
         printf("ERROR failed to plugins_unload_task_script()\n");
         return -1;
     }
 
-    if (plugins_unload_task_setting(&(master.plugins)) < 0) // task_terminate()
+    if (plugins_unload_task_setting(master.plugins, master.num_plugins) < 0) // task_terminate()
     {
         printf("ERROR failed to plugins_unload_task_setting()\n");
         return -1;
@@ -115,7 +115,7 @@ int main() {
         return -1;
     }
 
-    if (unload_plugins(&(master.plugins)) < 0) // plugin_unload
+    if (unload_plugins() < 0) // plugin_unload
     {
         printf("ERROR failed to unload_plugins()\n");
         return -1;

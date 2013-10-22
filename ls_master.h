@@ -15,7 +15,9 @@ typedef struct {
     uv_loop_t* master_loop;
 
     ls_config_t config;
-    ls_plugin_t plugins;
+    
+    ls_plugin_entry_t* plugins;
+    size_t num_plugins;
 
     ls_task_callmodel_t callmodel;
     ls_task_setting_t settings;

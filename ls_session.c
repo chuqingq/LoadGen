@@ -37,7 +37,7 @@ int finish_session(ls_session_t* s) {
     // 调用session中相关的所有plugin的session_destroy()
     for (size_t i = 0; i < master.config.plugins_num; ++i)
     {
-        e = master.plugins.entries + i;
+        e = master.plugins + i;
 
         if ((e->session_destroy)(s->states + i) < 0)
         {

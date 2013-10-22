@@ -157,9 +157,9 @@ static void do_stats_per_sec(uv_timer_t* handle, int status) {
     printf("  do_stats_per_sec()\n");
 
     ls_plugin_entry_t* entry;
-    for (size_t i = 0; i < master.config.plugins_num; ++i)
+    for (size_t i = 0; i < master.num_plugins; ++i)
     {
-        entry = master.plugins.entries + i;
+        entry = master.plugins + i;
 
         ls_stats_entry_t* stats_entry;
         for (size_t i = 0; i < entry->stats_num; ++i)
