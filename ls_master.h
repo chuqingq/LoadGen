@@ -32,7 +32,7 @@ typedef struct {
 
 extern ls_master_t master;
 
-int start_workers(ls_master_t* master);// TODO copy num_workers from config to master.num_workers
+int start_workers(ls_master_t* master);
 int stop_workers(ls_master_t* master);
 int reap_workers(ls_master_t* master);
 

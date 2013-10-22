@@ -98,15 +98,15 @@ static void master_async_callback(uv_async_t* handle, int status) {
 int start_workers(ls_master_t* master) {
     printf("==== start_workers()\n");
 
-    int workers_num = master->config.workers_num;
-    master->workers = (ls_worker_t*)malloc(workers_num * sizeof(ls_worker_t));
+    master->num_workers = master->config.workers_num;
+    master->workers = (ls_worker_t*)malloc(master->num_workers * sizeof(ls_worker_t));
     if (master->workers == NULL)
     {
         printf("ERROR failed to malloc workers\n");
         return -1;
     }
 
-    for (int i = 0; i < workers_num; ++i)
+    for (size_t i = 0; i < master->num_workers; ++i)
     {
         ls_worker_t* w = master->workers + i;
         w->worker_started = 0;
@@ -131,7 +131,7 @@ int start_workers(ls_master_t* master) {
 int stop_workers(ls_master_t* master) {
     printf("==== stop_workers()\n");
 
-    for (int i = 0; i < master->config.workers_num; ++i)
+    for (size_t i = 0; i < master->num_workers; ++i)
     {
         ls_worker_t* w = master->workers + i;
 
@@ -154,7 +154,7 @@ int stop_workers(ls_master_t* master) {
 int reap_workers(ls_master_t* master) {
     printf("==== reap_workers()\n");
 
-    for (int i = 0; i< master->config.workers_num; ++i)
+    for (size_t i = 0; i< master->num_workers; ++i)
     {
         printf("  before reap_workers(%d)\n", i);
 
@@ -184,7 +184,7 @@ int start_new_session(int num) {
     printf("  ==== start_new_session(%d)\n", num);
     
     // 先按简单的方式来：num尽量平均分给每个worker，不考虑worker当前的会话数
-    int workers_num = master.config.workers_num;
+    int workers_num = master.num_workers;
     int avg = num/workers_num + 1;
     int add = num%workers_num;
     printf("  avg=%d,add=%d\n", avg, add);
