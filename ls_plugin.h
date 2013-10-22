@@ -19,16 +19,13 @@ typedef int (*ls_plugin_declare_t)(struct ls_plugin_entry_s* plugin_entry);
 
 typedef int (*ls_plugin_load_t)();
 typedef int (*ls_plugin_unload_t)();
-
 typedef int (*ls_plugin_task_init_t)(const Json::Value* setting);
 typedef int (*ls_plugin_task_destroy_t)();
-
 typedef int (*ls_plugin_session_init_t)(void** state);
 typedef int (*ls_plugin_session_destroy_t)(void** state);
 
 typedef int (*ls_plugin_api_init_t)(const Json::Value* json_args, void** args);
 typedef int (*ls_plugin_api_destroy_t)(void** args);
-
 typedef int (*ls_plugin_api_run_t)(const void* args, ls_session_t* session, map<string, string> * vars);
 
 typedef struct {
@@ -37,11 +34,6 @@ typedef struct {
     ls_plugin_api_run_t run;
     ls_plugin_api_destroy_t destroy;
 } ls_plugin_api_entry_t;
-
-typedef struct {
-    ls_plugin_api_entry_t* entries;
-    size_t entries_num;
-} ls_plugin_api_t;
 
 typedef struct ls_plugin_entry_s {
     // 1.plugin_name
@@ -58,13 +50,12 @@ typedef struct ls_plugin_entry_s {
     ls_plugin_session_destroy_t session_destroy;
 
     // 3.APIs
-    ls_plugin_api_t apis;
+    ls_plugin_api_entry_t* apis;
+    size_t num_apis;
 
     // 4.stats
     ls_stats_entry_t* stats;
     size_t stats_num;
-
-    void* plugin_setting;// 只读，在task_init中来自task_setting
 
     // private
     uv_lib_t plugin_lib;
@@ -72,8 +63,8 @@ typedef struct ls_plugin_entry_s {
 } ls_plugin_entry_t;
 
 typedef struct {
-    size_t entries_num;
     ls_plugin_entry_t* entries;
+    size_t entries_num;
 } ls_plugin_t;
 
 int load_plugins(ls_plugin_t* plugins);

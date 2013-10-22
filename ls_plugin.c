@@ -149,11 +149,11 @@ int plugins_unload_task_setting(ls_plugin_t* plugins) {
     return 0;
 }
 
-ls_plugin_api_entry_t* find_api_entry_by_name(const char* name, const ls_plugin_api_t* apis) {
+ls_plugin_api_entry_t* find_api_entry_by_name(const char* name, ls_plugin_api_entry_t* apis, size_t num_apis) {
     ls_plugin_api_entry_t* entry;
-    for (size_t i = 0; i < apis->entries_num; ++i)
+    for (size_t i = 0; i < num_apis; ++i)
     {
-        entry = &apis->entries[i];
+        entry = apis + i;
         if (strcmp(name, entry->name) == 0)
         {
             return entry;
@@ -179,7 +179,7 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
         }
 
         // set api of script_entry in plugins
-        ls_plugin_api_entry_t* api_entry = find_api_entry_by_name(script_entry->api_name.c_str(), &entry->apis);
+        ls_plugin_api_entry_t* api_entry = find_api_entry_by_name(script_entry->api_name.c_str(), entry->apis, entry->num_apis);
         if (api_entry == NULL)
         {
             printf("  api %s not found\n", script_entry->api_name.c_str());
@@ -217,7 +217,7 @@ int plugins_unload_task_script(ls_task_script_t* script, ls_plugin_t* plugins) {
             return -1;
         }
 
-        ls_plugin_api_entry_t* api_entry = find_api_entry_by_name(script_entry->api_name.c_str(), &entry->apis);
+        ls_plugin_api_entry_t* api_entry = find_api_entry_by_name(script_entry->api_name.c_str(), entry->apis, entry->num_apis);
         if (api_entry == NULL)
         {
             printf("  api %s not found\n", script_entry->api_name.c_str());

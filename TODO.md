@@ -1,41 +1,18 @@
 ﻿
-## DONE
+## plan
 
 HUNG 暂时不处理。有了plugin_declare()貌似就不用plugin_demo plugin_load()了
-DONE plugins_load_task_setting // TODO 具体实现
+TODO The plugins need worker's notify_master() to report stats in API
+TODO async interface between worker and master
 
-DONE plugins_unload_task_setting/script
-
-DONE task_init/destroy中只传入Json::Value setting，自己的setting和state自行维护
-    OK 去掉entry中的plugin_setting
-    TODO 去掉entry中的plugin_state：！！！需要在session_init/destroy中补充
-DONE session_init/session_terminate
-    DONE plugin中增加这两个回调接口
-    DONE plugin_demo中增加实现
-    DONE worker_start_new_session中调用session_init
-        finish_session中调用session_tereminate
-
-DONE 没有走到plugin_session_destroy
-    需要worker停掉自己的所有session
-
-DONE 确保unload_plugins调用plugin_unload()
-
-DONE 一个api有3个操作init/run/destory，master在plugins_load_task_script时执行init，master在plugins_unload_task_script时执行destroy
-    plugins_unload_task_script增加第一个script参数
-
-DONE recompile libuv, and then compile loadgen and run test
-
-## TODO
-
-DONE make sure master async_send after worker_thread async_init
-  current: sleep(3)
-  make a worker_started for each worker, set it after async_init
 TODO callmodel avg
 TODO callmodel complex
 TODO statistics
 TODO UI
 TODO master.workers改为数组，动态申请
 TODO plugin从vector改为数组，states也改为数组
+
+TODO vars
         
 worker中区分只读和改动的内容，只读的内容尽量使用master的；改动的内容按session保存，plugin的个数固定
 
@@ -51,13 +28,12 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
 
         task_callmodel // 只有master关注
 
-        task_setting // plugins_load_task_setting时调用plugin_task_init分发到plugin->settings
+        task_setting // Json::Value.plugins_load_task_setting时调用plugin_task_init分发到plugin->settings
         task_vars // TODO 9
         task_script // plugins_load_task_script时设置api、及args（调用prepare）
 
     plugin[i]
         plugin_name // 1.
-  
         callbacks  //2.
             plugin_load
             plugin_unload
@@ -72,7 +48,7 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
             api_run
             api_destroy
         stats // 4.
-        task_setting // TODO 不需要了，task_init/destroy中plugin自己维护
+        // task_setting // 不需要了，task_init/destroy中plugin自己维护
         // state // 不放在这里，放在session中，作为动态内容维护
 
     worker[i]

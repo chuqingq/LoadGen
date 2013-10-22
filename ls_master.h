@@ -35,7 +35,7 @@ int reap_workers(ls_master_t* master);
 
 int start_new_session(int num);
 
-
+// TODO
 typedef enum ls_master_notify_type {
     NOTIFY_STATS = 0,
     NOTIFY_OTHER

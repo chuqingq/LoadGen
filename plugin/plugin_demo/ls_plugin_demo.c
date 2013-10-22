@@ -200,32 +200,32 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_entry_t* 
     plugin_entry->stats[0].output = plugin_demo_stats_output;
 
     // 4.apis
-    plugin_entry->apis.entries_num = 4;
-    plugin_entry->apis.entries = (ls_plugin_api_entry_t*)malloc(plugin_entry->apis.entries_num * sizeof(ls_plugin_api_entry_t));
+    plugin_entry->num_apis = 4;
+    plugin_entry->apis = (ls_plugin_api_entry_t*)malloc(plugin_entry->num_apis * sizeof(ls_plugin_api_entry_t));
 
     // ls_think_time
-    plugin_entry->apis.entries[0].name = (char*)"ls_think_time";
-    plugin_entry->apis.entries[0].init = ls_think_time_init;
-    plugin_entry->apis.entries[0].run = ls_think_time;
-    plugin_entry->apis.entries[0].destroy = ls_think_time_destroy;
+    plugin_entry->apis[0].name = (char*)"ls_think_time";
+    plugin_entry->apis[0].init = ls_think_time_init;
+    plugin_entry->apis[0].run = ls_think_time;
+    plugin_entry->apis[0].destroy = ls_think_time_destroy;
 
     // ls_error_message
-    plugin_entry->apis.entries[1].name = (char*)"ls_error_message";
-    plugin_entry->apis.entries[1].init = ls_error_message_init;
-    plugin_entry->apis.entries[1].run = ls_error_message;
-    plugin_entry->apis.entries[1].destroy = ls_error_message_destroy;
+    plugin_entry->apis[1].name = (char*)"ls_error_message";
+    plugin_entry->apis[1].init = ls_error_message_init;
+    plugin_entry->apis[1].run = ls_error_message;
+    plugin_entry->apis[1].destroy = ls_error_message_destroy;
 
     // ls_start_transaction
-    plugin_entry->apis.entries[2].name = (char*)"ls_start_transaction";
-    plugin_entry->apis.entries[2].init = ls_start_transaction_init;
-    plugin_entry->apis.entries[2].run = ls_start_transaction;
-    plugin_entry->apis.entries[2].destroy = ls_start_transaction_destroy;
+    plugin_entry->apis[2].name = (char*)"ls_start_transaction";
+    plugin_entry->apis[2].init = ls_start_transaction_init;
+    plugin_entry->apis[2].run = ls_start_transaction;
+    plugin_entry->apis[2].destroy = ls_start_transaction_destroy;
 
     // ls_end_transaction
-    plugin_entry->apis.entries[3].name = (char*)"ls_end_transaction";
-    plugin_entry->apis.entries[3].init = ls_end_transaction_init;
-    plugin_entry->apis.entries[3].run = ls_end_transaction;
-    plugin_entry->apis.entries[3].destroy = ls_end_transaction_destroy;
+    plugin_entry->apis[3].name = (char*)"ls_end_transaction";
+    plugin_entry->apis[3].init = ls_end_transaction_init;
+    plugin_entry->apis[3].run = ls_end_transaction;
+    plugin_entry->apis[3].destroy = ls_end_transaction_destroy;
 
     printf("  >>>> end plugin_declare()\n");
     return 0;
