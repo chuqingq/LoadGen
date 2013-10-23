@@ -19,7 +19,7 @@ typedef struct ls_master_s {
     ls_plugin_t* plugins;
     size_t num_plugins;
 
-    void** plugin_stats;// TODO
+    void** plugin_stats;// plugin在master_init/terminate中自行维护
     size_t num_plugin_stats;
 
     ls_task_callmodel_t callmodel;
@@ -30,7 +30,7 @@ typedef struct ls_master_s {
     ls_worker_t* workers;
     size_t num_workers;
 
-    uv_timer_t stats_timer;
+    
 } ls_master_t;
 
 extern ls_master_t master;

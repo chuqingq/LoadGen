@@ -7,9 +7,9 @@
 
 static int handle_session(ls_session_t* s) {
     const ls_task_script_entry_t* e = s->script->entries + s->script_cur;
-    ls_plugin_api_run_t api_run = (ls_plugin_api_run_t) e->api;
+    ls_plugin_api_t* api = (ls_plugin_api_t*) e->api;
     map<string, string> vars;
-    if ((api_run)(e->args, s, &vars) < 0)
+    if ((api->run)(e->args, s, &vars) < 0)
     {
         printf("==== API [%s] error\n", e->api_name.c_str());
         return -1;

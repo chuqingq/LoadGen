@@ -18,7 +18,7 @@ int main() {
 
     // -------------- 静态内容
     // 读取配置
-    if (load_config(&(master.config)) < 0) {
+    if (load_config(&master.config) < 0) {
         printf("Failed to load_config.\n");
         return -1;
     }
@@ -31,41 +31,46 @@ int main() {
 
     // -------------- 任务相关内容
     // 读取任务呼叫模型
-    if (load_task_callmodel(&(master.callmodel)) < 0) {
+    if (load_task_callmodel(&master.callmodel) < 0) {
         printf("Failed to load_task_callmodel.\n");
         return -1;
     }
 
     // 1. 读取任务设置并交给plugin处理
-    if (load_task_setting(&(master.settings)) < 0) {
+    if (load_task_setting(&master.settings) < 0) {
         printf("Failed to load_task_setting.\n");
         return -1;
     }
 
     // 2. 读取任务变量
-    if (load_task_vars(&(master.vars)) < 0) {
+    if (load_task_vars(&master.vars) < 0) {
         printf("Failed to load_task_vars.\n");
         return -1;
     }
 
     // 3. 读取任务脚本流程
-    if (load_task_script(&(master.script)) < 0) {
+    if (load_task_script(&master.script) < 0) {
         printf("Failed to load_task_script.\n");
         return -1;
     }
 
     // -------------- 插件加载
     // 插件加载任务设置 // task_init()
-    if (plugins_load_task_setting(&(master.settings), master.plugins, master.num_plugins) < 0) {
+    if (plugins_load_task_setting(&master.settings, master.plugins, master.num_plugins) < 0) {
         printf("Failed to plugins_load_task_setting.\n");
         return -1;
     }
 
     // 插件加载任务脚本
-    if (plugins_load_task_script(&(master.script), master.plugins, master.num_plugins) < 0) {
+    if (plugins_load_task_script(&master.script, master.plugins, master.num_plugins) < 0) {
         printf("Failed to plugins_load_task_script.\n");
         return -1;
     }
+    // if (plugins_load_task(&master.settings, &master.script, master.plugins, master.num_plugins) < 0)
+    // {
+    //     printf("Failed to plugins_load_task.\n");
+    //     return -1;
+    // }
 
     // ---------------  启动worker
     // 启动worker
@@ -84,7 +89,7 @@ int main() {
 
     // ----------------  启动呼叫
     // master按照呼叫模型分配呼叫
-    if (do_task_callmodel(&(master.callmodel)) < 0) {
+    if (do_task_callmodel(&master.callmodel) < 0) {
         printf("Failed to do_task_callmodel.\n");
         return -1;
     }
@@ -97,17 +102,22 @@ int main() {
         return -1;
     }
 
-    if (plugins_unload_task_script(&(master.script), master.plugins, master.num_plugins) < 0)
+    if (plugins_unload_task_script(&master.script, master.plugins, master.num_plugins) < 0)
     {
         printf("ERROR failed to plugins_unload_task_script()\n");
         return -1;
     }
 
-    if (plugins_unload_task_setting(master.plugins, master.num_plugins) < 0) // task_terminate()
+    if (plugins_unload_task_setting(&master.settings, master.plugins, master.num_plugins) < 0) // task_terminate()
     {
         printf("ERROR failed to plugins_unload_task_setting()\n");
         return -1;
     }
+    // if (plugins_unload_task(&master.settings, &master.script, master.plugins, master.num_plugins) < 0)
+    // {
+    //     printf("Failed to plugins_unload_task.\n");
+    //     return -1;
+    // }
 
     if (unload_task_script(&master.script) < 0)
     {

@@ -13,21 +13,22 @@ using namespace std;
 
 
 typedef struct ls_worker_s {
-    int worker_started;// specify worker already started
     uv_thread_t thread;
     uv_loop_t* worker_loop;
 
+    vector<ls_session_t*>* sessions;// TODO reuse. use QUEUE
+
+    void** plugin_stats;// plugin在worker_init/terminate中自行维护
+    size_t num_plugin_stats;
+
+    /* private */
+    int worker_started;// specify worker already started
+
+    // worker和master的通信
     uv_async_t master_async;
     uv_async_t worker_async;
     int callmodel_delta;
     uv_rwlock_t callmodel_delta_lock;
-
-    vector<ls_session_t*>* sessions;// TODO reuse. use QUEUE
-
-    void** plugin_stats;
-    size_t num_plugin_stats;
-
-    // int next_session_id;
 } ls_worker_t;
 
 int init_worker(ls_worker_t* w);// create thread

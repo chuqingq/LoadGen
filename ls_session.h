@@ -9,6 +9,8 @@ using namespace std;
 #include "ls_task_var.h"
 #include "libuv/include/uv.h"
 
+struct ls_task_script_s;
+
 struct ls_session_s;
 typedef int (*ls_session_process_t)(struct ls_session_s*);
 
@@ -16,7 +18,7 @@ typedef struct ls_session_s {
     // uv_loop_t* loop;// ref to worker's loop
     void* worker;// ls_worker_t*
 
-    const ls_task_script_t* script;
+    const struct ls_task_script_s* script;
     size_t script_cur;
 
     void** states;// states of plugins, one by one

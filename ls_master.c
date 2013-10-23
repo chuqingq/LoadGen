@@ -222,34 +222,34 @@ int start_new_session(int num) {
     return 0;
 }
 
-// 遍历master的所有plugin，执行他们的统计output
-static void do_stats_per_sec(uv_timer_t* handle, int status) {
-    printf("  do_stats_per_sec()\n");
+// // 遍历master的所有plugin，执行他们的统计output
+// static void do_stats_per_sec(uv_timer_t* handle, int status) {
+//     printf("  do_stats_per_sec()\n");
 
-    ls_plugin_t* plugin;
-    for (size_t i = 0; i < master.num_plugins; ++i)
-    {
-        plugin = master.plugins + i;
+//     ls_plugin_t* plugin;
+//     for (size_t i = 0; i < master.num_plugins; ++i)
+//     {
+//         plugin = master.plugins + i;
 
-        ls_stats_entry_t* stats_entry;
-        for (size_t i = 0; i < plugin->stats_num; ++i)
-        {
-            stats_entry = plugin->stats + i;
+//         ls_stats_entry_t* stats_entry;
+//         for (size_t i = 0; i < plugin->stats_num; ++i)
+//         {
+//             stats_entry = plugin->stats + i;
 
-            if ((stats_entry->output)(stats_entry->state) < 0)
-            {
-                printf("ERROR failed to stats_entry->output()\n");
-                // make sure do all output
-            }
-        }
-    }
-}
+//             if ((stats_entry->output)(stats_entry->state) < 0)
+//             {
+//                 printf("ERROR failed to stats_entry->output()\n");
+//                 // make sure do all output
+//             }
+//         }
+//     }
+// }
 
 
 int start_stats() {
-    uv_timer_t* t = &master.stats_timer;
-    uv_timer_init(master.master_loop, t);
-    uv_timer_start(t, do_stats_per_sec, 1000, 1000);
+    // uv_timer_t* t = &master.stats_timer;
+    // uv_timer_init(master.master_loop, t);
+    // uv_timer_start(t, do_stats_per_sec, 1000, 1000);
 
     return 0;
 }

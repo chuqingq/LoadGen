@@ -5,9 +5,11 @@
 #include "ls_utils.h"
 #include "ls_master.h"
 #include "ls_plugin.h"
+#include "ls_task_script.h"
+#include "ls_task_setting.h"
 
 
-ls_plugin_t* find_entry_by_name(const char* plugin_name, ls_plugin_t* plugins, size_t num_plugins) {
+static ls_plugin_t* find_entry_by_name(const char* plugin_name, ls_plugin_t* plugins, size_t num_plugins) {
     ls_plugin_t* plugin;
     for (size_t i = 0; i < num_plugins; ++i)
     {
@@ -40,14 +42,14 @@ int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins,
     return 0;
 }
 
-int plugins_unload_task_setting(ls_plugin_t* plugins, size_t num_plugins) {
+int plugins_unload_task_setting(ls_task_setting_t* setting, ls_plugin_t* plugins, size_t num_plugins) {
     printf("==== plugins_unload_task_setting()\n");
 
     ls_plugin_t* plugin;
     for (size_t i = 0; i < num_plugins; ++i)
     {
         plugin = plugins + i;
-        if ((plugin->task_terminate)() < 0) {
+        if ((plugin->task_terminate)(setting) < 0) {
             printf("ERROR failed to task_terminate()\n");
             return -1;
         }
@@ -56,7 +58,7 @@ int plugins_unload_task_setting(ls_plugin_t* plugins, size_t num_plugins) {
     return 0;
 }
 
-ls_plugin_api_t* find_api_entry_by_name(const char* name, ls_plugin_api_t* apis, size_t num_apis) {
+static ls_plugin_api_t* find_api_entry_by_name(const char* name, ls_plugin_api_t* apis, size_t num_apis) {
     ls_plugin_api_t* api;
     for (size_t i = 0; i < num_apis; ++i)
     {
@@ -105,7 +107,7 @@ int plugins_load_task_script(ls_task_script_t* script, ls_plugin_t* plugins, siz
         }
 
         // 设置api和args
-        script_entry->api = (void*)api_entry->run;
+        script_entry->api = api_entry;
         script_entry->args = args;
     }
 
@@ -144,3 +146,42 @@ int plugins_unload_task_script(ls_task_script_t* script, ls_plugin_t* plugins, s
 
     return 0;
 }
+
+
+
+// int plugins_load_task(ls_task_setting_t* settings, ls_task_script_t* script, ls_plugin_t* plugins, size_t num_plugins) {
+//     printf("==== plugins_load_task\n");
+
+//     if (plugins_load_task_setting(settings, plugins, num_plugins) < 0)
+//     {
+//         printf("ERROR failed to plugins_load_task_setting()\n");
+//         return -1;
+//     }
+
+//     if (plugins_load_task_script(script, plugins, num_plugins) < 0)
+//     {
+//         printf("ERROR failed to plugins_load_task_setting()\n");
+//         return -1;
+//     }
+
+//     return 0;
+// }
+
+
+// int plugins_unload_task(ls_task_setting_t* setting, ls_task_script_t* script, ls_plugin_t* plugins, size_t num_plugins) {
+//     printf("==== plugins_unload_task_setting()\n");
+
+//     if (plugins_unload_task_script(script, plugins, num_plugins) < 0)
+//     {
+//         printf("ERROR failed to plugins_unload_task_script()\n");
+//         return -1;
+//     }
+
+//     if (plugins_unload_task_setting(setting, plugins, num_plugins) < 0)
+//     {
+//         printf("ERROR failed to plugins_unload_task_setting()\n");
+//         return -1;
+//     }
+
+//     return 0;
+// }

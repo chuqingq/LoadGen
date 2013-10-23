@@ -44,14 +44,14 @@ static int worker_terminate(struct ls_worker_s*) {
 }
 
 // static int plugin_task_init(const Json::Value* setting) {
-static int plugin_task_init(ls_task_setting_t* setting) {
+static int plugin_task_init(ls_task_setting_t* setting/*, ls_task_script_t**/) {
     printf("  >>>> plugin_demo plugin_task_init()\n");
 
     plugin_demo_setting.ignore_think_time = (*setting)["ignore_think_time"].asBool();
     return 0;
 }
 
-static int plugin_task_terminate() {
+static int plugin_task_terminate(ls_task_setting_t*/*, ls_task_script_t**/) {
     printf("  >>>> plugin_demo plugin_task_terminate()\n");
     
     return 0;
