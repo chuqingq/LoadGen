@@ -47,8 +47,8 @@ int plugins_unload_task_setting(ls_plugin_t* plugins, size_t num_plugins) {
     for (size_t i = 0; i < num_plugins; ++i)
     {
         plugin = plugins + i;
-        if ((plugin->task_destroy)() < 0) {
-            printf("ERROR failed to task_destroy()\n");
+        if ((plugin->task_terminate)() < 0) {
+            printf("ERROR failed to task_terminate()\n");
             return -1;
         }
     }
@@ -135,9 +135,9 @@ int plugins_unload_task_script(ls_task_script_t* script, ls_plugin_t* plugins, s
             return -1;
         }
 
-        if ((api_entry->destroy)(&script_entry->args) < 0)
+        if ((api_entry->terminate)(&script_entry->args) < 0)
         {
-            printf("  api %s destroy error\n", script_entry->api_name.c_str());
+            printf("  api %s terminate error\n", script_entry->api_name.c_str());
             return -1;
         }
     }

@@ -35,7 +35,7 @@ int load_plugins(ls_master_t* master) {
             return -1;
         }
 
-        if ((plugin->plugin_load)() < 0)
+        if ((plugin->master_init)(master) < 0)
         {
             printf("ERROR failed to plugin_load()\n");
             return -1;
@@ -55,7 +55,7 @@ int unload_plugins(ls_master_t* master) {
         printf("  plugin=%s\n", plugin->plugin_name);
 
         // 1. 调用plugin_unload()
-        if ((plugin->plugin_unload)() < 0)
+        if ((plugin->master_terminate)(master) < 0)
         {
             printf("ERROR failed to plugin_unload()\n");
             // return -1;// 确保所有插件都正常卸载
@@ -70,6 +70,11 @@ int unload_plugins(ls_master_t* master) {
     return 0;
 }
 
+typedef void (*ls_master_async_cb)(void* data);
+
+void master_async_stats_handle(void* data) {
+    // handle_stats(xxx, yyy); // TODO
+}
 
 static void master_async_callback(uv_async_t* handle, int status) {
     printf("  master_async_callback()\n");
@@ -175,6 +180,8 @@ static int notify_worker_start_new_session(ls_worker_t* w, int num) {
         printf("ERROR failed to worker_set_callmodel_delta()\n");
         return -1;
     }
+
+    w->worker_async.data = (void*)worker_do_callmodel;
 
     printf("  before master uv_async_send()\n");
     return uv_async_send(&(w->worker_async));

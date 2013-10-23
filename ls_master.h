@@ -11,13 +11,16 @@
 #include "ls_task_var.h"
 #include "ls_task_script.h"
 
-typedef struct {
+typedef struct ls_master_s {
     uv_loop_t* master_loop;
 
     ls_config_t config;
 
     ls_plugin_t* plugins;
     size_t num_plugins;
+
+    void** plugin_stats;// TODO
+    size_t num_plugin_stats;
 
     ls_task_callmodel_t callmodel;
     ls_task_setting_t settings;

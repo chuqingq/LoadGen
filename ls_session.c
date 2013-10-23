@@ -39,7 +39,8 @@ int finish_session(ls_session_t* s) {
     {
         e = master.plugins + i;
 
-        if ((e->session_destroy)(s->states + i) < 0)
+        // if ((e->session_terminate)(s->states + i) < 0)
+        if ((e->session_terminate)(s) < 0)
         {
             printf("ERROR failed to session_destroy()\n");
             return -1;

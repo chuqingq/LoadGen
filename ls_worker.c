@@ -19,10 +19,8 @@ static int worker_stop_all_sessions(ls_worker_t* w) {
     return 0;
 }
 
-static void worker_async_callback(uv_async_t* async, int status) {
-    printf("  ==== worker_async_callback()\n");
-
-    ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
+void worker_do_callmodel(ls_worker_t* w) {
+    printf("  worker_do_callmodel()\n");
     // worker收到master的消息
     // int delta = *((int*)async->data);
     // delete (int*)async->data;
@@ -52,6 +50,17 @@ static void worker_async_callback(uv_async_t* async, int status) {
     {
         worker_start_new_session(w, delta);
     }
+}
+
+typedef void (*ls_worker_async_cb)(ls_worker_t* worker);
+
+static void worker_async_callback(uv_async_t* async, int status) {
+    printf("  ==== worker_async_callback()\n");
+
+    ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
+    printf("  before do worker_async_callback(): worker:%lu\n", (unsigned long)w);
+    ls_worker_async_cb cb = ls_worker_async_cb(async->data);
+    cb(w);
 }
 
 static void worker_thread(void* arg) {
@@ -90,7 +99,8 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s = new ls_session_t;
         s->states = (void**)malloc(master.config.plugins_num * sizeof(void*));
 
-        s->loop = w->worker_loop;
+        // s->loop = w->worker_loop;
+        s->worker = (void*)w;
         s->script = &(master.script);// 只读
         s->script_cur = -1;
         
@@ -99,7 +109,8 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         {
             e = master.plugins + i;
 
-            if ((e->session_init)(s->states + i) < 0)
+            // if ((e->session_init)(s->states + i) < 0)
+            if ((e->session_init)(s) < 0)
             {
                 printf("ERROR failed to session_init()\n");
                 return -1;

@@ -12,8 +12,8 @@ using namespace std;
 #include "ls_session.h"
 
 
-typedef struct {
-    int worker_started;
+typedef struct ls_worker_s {
+    int worker_started;// specify worker already started
     uv_thread_t thread;
     uv_loop_t* worker_loop;
 
@@ -22,18 +22,24 @@ typedef struct {
     int callmodel_delta;
     uv_rwlock_t callmodel_delta_lock;
 
-    vector<ls_session_t*>* sessions;
-    int next_session_id;
+    vector<ls_session_t*>* sessions;// TODO reuse. use QUEUE
+
+    void** plugin_stats;
+    size_t num_plugin_stats;
+
+    // int next_session_id;
 } ls_worker_t;
 
-int init_worker(ls_worker_t* w);
-int reap_worker(ls_worker_t* w);
-int notify_worker(const string& cmd);
+int init_worker(ls_worker_t* w);// create thread
+int reap_worker(ls_worker_t* w);// join thread
+// int notify_worker(const string& cmd);// to delete
 
 
 int worker_start_new_session(ls_worker_t* w, int num);
 
-int worker_set_callmodel_delta(ls_worker_t* w, int delta);
+void worker_do_callmodel(ls_worker_t* w);// master send async.data
+
+int worker_set_callmodel_delta(ls_worker_t* w, int delta);// TODO ??
 int worker_get_callmodel_delta(ls_worker_t* w, int* delta);
 
 #endif
