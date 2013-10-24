@@ -49,8 +49,8 @@ int finish_session(ls_session_t* s) {
         return 0;
     }
 
-    free(s->states);
-    s->states = NULL;
+    free(s->plugin_states);
+    s->plugin_states = NULL;
 
     delete s;
     s = NULL;

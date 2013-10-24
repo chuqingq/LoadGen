@@ -97,7 +97,7 @@ int worker_start_new_session(ls_worker_t* w, int num) {
     for (int i = 0; i < num; ++i)
     {
         s = new ls_session_t;
-        s->states = (void**)malloc(master.config.plugins_num * sizeof(void*));
+        s->plugin_states = (void**)malloc(master.config.plugins_num * sizeof(void*));
 
         // s->loop = w->worker_loop;
         s->worker = w;
