@@ -37,11 +37,11 @@ typedef struct ls_plugin_entry_s {
     int (*master_init)(struct ls_master_s* master);// master启动时调用
     int (*master_terminate)(struct ls_master_s* master);// master退出前调用
 
-    int (*worker_init)(struct ls_worker_s* worker);// worker启动时调用 // TODO not used
-    int (*worker_terminate)(struct ls_worker_s* worker);// worker退出前调用
-
     int (*task_init)(ls_task_setting_t* setting/*, struct ls_task_script_s* script*/);// master在任务启动前调用。加载setting，脚本参数预处理
     int (*task_terminate)(ls_task_setting_t* setting/*, struct ls_task_script_s* script*/);// master在任务结束后调用。卸载setting
+
+    int (*worker_init)(struct ls_worker_s* worker);// worker启动时调用 // TODO not used
+    int (*worker_terminate)(struct ls_worker_s* worker);// worker退出前调用
 
     int (*session_init)(struct ls_session_s* session);
     int (*session_terminate)(struct ls_session_s* session);

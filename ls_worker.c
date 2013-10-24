@@ -100,7 +100,7 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s->states = (void**)malloc(master.config.plugins_num * sizeof(void*));
 
         // s->loop = w->worker_loop;
-        s->worker = (void*)w;
+        s->worker = w;
         s->script = &(master.script);// 只读
         s->script_cur = -1;
         

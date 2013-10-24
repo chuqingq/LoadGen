@@ -29,8 +29,6 @@ typedef struct ls_master_s {
     
     ls_worker_t* workers;
     size_t num_workers;
-
-    
 } ls_master_t;
 
 extern ls_master_t master;
