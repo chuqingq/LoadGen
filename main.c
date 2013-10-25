@@ -110,11 +110,6 @@ int main() {
         printf("ERROR failed to plugins_script_terminate()\n");
         return -1;
     }
-    // if (plugins_unload_task(&master.settings, &master.script, master.plugins, master.num_plugins) < 0)
-    // {
-    //     printf("Failed to plugins_unload_task.\n");
-    //     return -1;
-    // }
 
     if (unload_task_script(&master.script) < 0)
     {
