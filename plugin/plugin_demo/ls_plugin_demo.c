@@ -22,7 +22,6 @@ typedef struct {
 
 ls_plugin_demo_state_t plugin_demo_state;
 
-// load，协议加载。和任务无关
 static int master_init(struct ls_master_s*) {
     printf("  >>>> plugin_demo plugin_load()\n");
     return 0;

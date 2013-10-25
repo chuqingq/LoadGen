@@ -20,6 +20,8 @@ int load_plugins(ls_master_t* master) {
     for (size_t i = 0; i < master->num_plugins; ++i)
     {
         plugin = master->plugins + i;
+        plugin->plugin_index = i;
+
         if (uv_dlopen(master->config.plugin_paths[i], &(plugin->plugin_lib)) < 0) {
             printf("  Failed to uv_dlopen\n");
             return -1;
