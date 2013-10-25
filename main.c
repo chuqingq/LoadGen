@@ -76,11 +76,11 @@ int main() {
 
     printf("==== task will start...\n");
 
-    if (start_stats() < 0)
-    {
-        printf("ERROR failed to start_stats()\n");
-        return 0;
-    }
+    // if (start_stats() < 0)
+    // {
+    //     printf("ERROR failed to start_stats()\n");
+    //     return 0;
+    // }
 
     // ----------------  启动呼叫
     // master按照呼叫模型分配呼叫

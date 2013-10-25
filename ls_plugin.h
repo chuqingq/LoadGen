@@ -12,7 +12,7 @@ using namespace std;
 #include "ls_session.h"
 #include "ls_task_setting.h"
 #include "ls_task_script.h"
-#include "ls_stats.h"
+// #include "ls_stats.h"
 
 struct ls_master_s;
 struct ls_worker_s;
@@ -54,8 +54,8 @@ typedef struct ls_plugin_entry_s {
     size_t num_apis;
 
     // 4.stats
-    ls_stats_entry_t* stats;
-    size_t stats_num;
+    // ls_stats_entry_t* stats;
+    // size_t stats_num;
 
     /* private */
     uv_lib_t plugin_lib;

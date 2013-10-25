@@ -72,34 +72,33 @@ int unload_plugins(ls_master_t* master) {
     return 0;
 }
 
-typedef void (*ls_master_async_cb)(void* data);
+// typedef void (*ls_master_async_cb)(void* data);
 
-void master_async_stats_handle(void* data) {
-    // handle_stats(xxx, yyy); // TODO
-}
+// void master_async_stats_handle(void* data) {
+// }
 
 static void master_async_callback(uv_async_t* handle, int status) {
     printf("  master_async_callback()\n");
 
-    ls_master_notify_type type = *(ls_master_notify_type*)(handle->data);
+    // ls_master_notify_type type = *(ls_master_notify_type*)(handle->data);
 
     
-    switch (type) {
-        case NOTIFY_STATS:
-        {
-            ls_stats_notify_t* stats_notify = (ls_stats_notify_t*)handle->data;
-            if (handle_stats(stats_notify->data, stats_notify->entry) < 0) {
-                printf("ERROR failed to handle_stats()\n");
-            }
-        }
-        break;
-        default:
-            printf("  unknown master async\n");
-            break;
-    }
+    // switch (type) {
+    //     case NOTIFY_STATS:
+    //     {
+    //         ls_stats_notify_t* stats_notify = (ls_stats_notify_t*)handle->data;
+    //         if (handle_stats(stats_notify->data, stats_notify->entry) < 0) {
+    //             printf("ERROR failed to handle_stats()\n");
+    //         }
+    //     }
+    //     break;
+    //     default:
+    //         printf("  unknown master async\n");
+    //         break;
+    // }
 
-    free(handle->data);
-    handle->data = NULL;
+    // free(handle->data);
+    // handle->data = NULL;
 }
 
 int start_workers(ls_master_t* master) {
@@ -248,10 +247,10 @@ int start_new_session(int num) {
 // }
 
 
-int start_stats() {
-    // uv_timer_t* t = &master.stats_timer;
-    // uv_timer_init(master.master_loop, t);
-    // uv_timer_start(t, do_stats_per_sec, 1000, 1000);
+// int start_stats() {
+//     // uv_timer_t* t = &master.stats_timer;
+//     // uv_timer_init(master.master_loop, t);
+//     // uv_timer_start(t, do_stats_per_sec, 1000, 1000);
 
-    return 0;
-}
+//     return 0;
+// }

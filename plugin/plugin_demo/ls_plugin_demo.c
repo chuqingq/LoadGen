@@ -182,17 +182,17 @@ static int ls_end_transaction(const void* args, ls_session_t* session, map<strin
     return 0;
 }
 
-static int plugin_demo_stats_handle(void* one_data, void* state) {
-    printf("  >>>> plugin_demo_stats_handle()\n");
-    // TODO
-    return 0;
-}
+// static int plugin_demo_stats_handle(void* one_data, void* state) {
+//     printf("  >>>> plugin_demo_stats_handle()\n");
+//     // TODO
+//     return 0;
+// }
 
-static int plugin_demo_stats_output(void* state) {
-    printf("  >>>> plugin_demo_stats_output()\n");
-    // TODO
-    return 0;
-}
+// static int plugin_demo_stats_output(void* state) {
+//     printf("  >>>> plugin_demo_stats_output()\n");
+//     // TODO
+//     return 0;
+// }
 
 extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_t* plugin_entry) {
     char* plugin_name = (char*)"ls_plugin_demo";
@@ -217,17 +217,17 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_t* plugin
     plugin_entry->session_init = plugin_session_init;
     plugin_entry->session_terminate = plugin_session_terminate;
 
-    // 3.stats
-    plugin_entry->stats_num = 1;
-    plugin_entry->stats = (ls_stats_entry_t*)malloc(plugin_entry->stats_num * sizeof(ls_stats_entry_t));
-    if (plugin_entry->stats == NULL) {
-        printf("  ERRROR plugin_demo failed to malloc stats\n");
-        return -1;
-    }
+    // // 3.stats
+    // plugin_entry->stats_num = 1;
+    // plugin_entry->stats = (ls_stats_entry_t*)malloc(plugin_entry->stats_num * sizeof(ls_stats_entry_t));
+    // if (plugin_entry->stats == NULL) {
+    //     printf("  ERRROR plugin_demo failed to malloc stats\n");
+    //     return -1;
+    // }
 
-    plugin_entry->stats[0].state = NULL;
-    plugin_entry->stats[0].handler = plugin_demo_stats_handle;
-    plugin_entry->stats[0].output = plugin_demo_stats_output;
+    // plugin_entry->stats[0].state = NULL;
+    // plugin_entry->stats[0].handler = plugin_demo_stats_handle;
+    // plugin_entry->stats[0].output = plugin_demo_stats_output;
 
     // 4.apis
     plugin_entry->num_apis = 4;
