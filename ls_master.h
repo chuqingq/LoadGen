@@ -19,9 +19,6 @@ typedef struct ls_master_s {
     ls_plugin_t* plugins;
     size_t num_plugins;
 
-    // void** plugin_stats;// plugin在master_init/terminate中自行维护
-    // size_t num_plugin_stats;
-
     ls_task_callmodel_t callmodel;
     ls_task_setting_t settings;
     ls_task_var_t vars;// 变量，master读取，master不需要，worker只读
@@ -42,15 +39,7 @@ int start_new_session(int num);
 int load_plugins(ls_master_t* master);
 int unload_plugins(ls_master_t* master);
 
-// TODO
-// typedef enum ls_master_notify_type {
-//     NOTIFY_STATS = 0,
-//     NOTIFY_OTHER
-// } ls_master_notify_type;
-
 int notify_master();
 int do_notify();
-
-// int start_stats();
 
 #endif

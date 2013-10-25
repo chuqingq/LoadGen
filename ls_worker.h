@@ -18,9 +18,6 @@ typedef struct ls_worker_s {
 
     vector<ls_session_t*>* sessions;// TODO reuse. use QUEUE
 
-    // void** plugin_stats;// plugin在worker_init/terminate中自行维护
-    // size_t num_plugin_stats;
-
     /* private */
     int worker_started;// specify worker already started
 
