@@ -104,13 +104,12 @@ int worker_start_new_session(ls_worker_t* w, int num) {
         s->script = &(master.script);// 只读
         s->script_cur = -1;
         
-        ls_plugin_t* e;
+        ls_plugin_t* plugin;
         for (size_t i = 0; i < master.num_plugins; ++i)
         {
-            e = master.plugins + i;
+            plugin = master.plugins + i;
 
-            // if ((e->session_init)(s->states + i) < 0)
-            if ((e->session_init)(s) < 0)
+            if (plugin->session_init != NULL && (plugin->session_init)(s) < 0)
             {
                 printf("ERROR failed to session_init()\n");
                 return -1;

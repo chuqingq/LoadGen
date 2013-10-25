@@ -33,14 +33,13 @@ int process_session(ls_session_t* s) {
 int finish_session(ls_session_t* s) {
     printf("  ==== finish_session()\n");
 
-    ls_plugin_t* e;
+    ls_plugin_t* plugin;
     // 调用session中相关的所有plugin的session_destroy()
     for (size_t i = 0; i < master.config.plugins_num; ++i)
     {
-        e = master.plugins + i;
+        plugin = master.plugins + i;
 
-        // if ((e->session_terminate)(s->states + i) < 0)
-        if ((e->session_terminate)(s) < 0)
+        if ((plugin->session_terminate)(s) < 0)
         {
             printf("ERROR failed to session_destroy()\n");
             return -1;

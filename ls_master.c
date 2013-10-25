@@ -37,9 +37,9 @@ int load_plugins(ls_master_t* master) {
             return -1;
         }
 
-        if ((plugin->master_init)(master) < 0)
+        if (plugin->master_init != NULL && (plugin->master_init)(master) < 0)
         {
-            printf("ERROR failed to plugin_load()\n");
+            printf("ERROR failed to master_init()\n");
             return -1;
         }
     }
@@ -56,10 +56,10 @@ int unload_plugins(ls_master_t* master) {
         plugin = master->plugins + i;
         printf("  plugin=%s\n", plugin->plugin_name);
 
-        // 1. 调用plugin_unload()
-        if ((plugin->master_terminate)(master) < 0)
+        // 1. 调用master_terminate()
+        if (plugin->master_terminate != NULL && (plugin->master_terminate)(master) < 0)
         {
-            printf("ERROR failed to plugin_unload()\n");
+            printf("ERROR failed to master_terminate()\n");
             // return -1;// 确保所有插件都正常卸载
         }
         uv_dlclose(&plugin->plugin_lib);

@@ -23,31 +23,6 @@ static ls_plugin_t* find_entry_by_name(const char* plugin_name, ls_plugin_t* plu
     return NULL;
 }
 
-// // int plugins_load_task_setting(ls_task_setting_t* settings, ls_plugin_t* plugins, size_t num_plugins) {
-// int plugins_script_init(ls_task_setting_t* settings,
-//                         ls_task_script_t* script,
-//                         ls_plugin_t* plugins,
-//                         size_t num_plugins) {
-//     printf("==== plugins_load_task_setting\n");
-
-//     ls_plugin_t* plugin;
-//     for (size_t i = 0; i < num_plugins; ++i)
-//     {
-//         plugin = plugins + i;
-
-//         Json::Value* setting = &(*setting)[plugin->plugin_name];
-//         // maybe Json::Value::null
-//         if ((plugin->task_init)(setting) < 0) {
-//             printf("ERROR task_init error\n");
-//             return -1;
-//         }
-//     }
-
-//     return 0;
-// }
-
-// int plugins_unload_task_setting(ls_task_setting_t* setting, ls_plugin_t* plugins, size_t num_plugins) {
-
 static ls_plugin_api_t* find_api_entry_by_name(const char* name, ls_plugin_api_t* apis, size_t num_apis) {
     ls_plugin_api_t* api;
     for (size_t i = 0; i < num_apis; ++i)
@@ -77,7 +52,7 @@ int plugins_script_init(ls_task_setting_t* setting,
     for (size_t i = 0; i < num_plugins; ++i)
     {
         plugin = plugins + i;
-        if ((plugin->script_init)(setting) < 0) {
+        if (plugin->script_init != NULL && (plugin->script_init)(setting) < 0) {
             printf("ERROR failed to script_init()\n");
             return -1;
         }
@@ -132,7 +107,7 @@ int plugins_script_terminate(ls_task_setting_t* setting,
     for (size_t i = 0; i < num_plugins; ++i)
     {
         plugin = plugins + i;
-        if ((plugin->script_terminate)(setting) < 0) {
+        if (plugin->script_terminate != NULL && (plugin->script_terminate)(setting) < 0) {
             printf("ERROR failed to script_terminate()\n");
             return -1;
         }
@@ -183,7 +158,7 @@ int plugins_task_init(ls_plugin_t* plugins, size_t num_plugins) {
     {
         plugin = plugins + i;
 
-        if ((plugin->task_init)() < 0) {
+        if (plugin->task_init != NULL && (plugin->task_init)() < 0) {
             printf("ERROR task_init error\n");
             return -1;
         }
@@ -199,7 +174,7 @@ int plugins_task_terminate(ls_plugin_t* plugins, size_t num_plugins) {
     for (size_t i = 0; i < num_plugins; ++i)
     {
         plugin = plugins + i;
-        if ((plugin->task_terminate)() < 0) {
+        if (plugin->task_terminate != NULL && (plugin->task_terminate)() < 0) {
             printf("ERROR failed to task_terminate()\n");
             return -1;
         }

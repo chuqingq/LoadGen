@@ -23,7 +23,7 @@ int main() {
         return -1;
     }
 
-    // 加载协议 // plugin_load
+    // 加载协议 // master_init
     if (load_plugins(&master) < 0) {
         printf("Failed to load_plugins.\n");
         return -1;
@@ -117,7 +117,7 @@ int main() {
         return -1;
     }
 
-    if (unload_plugins(&master) < 0) // plugin_unload
+    if (unload_plugins(&master) < 0) // master_terminate
     {
         printf("ERROR failed to unload_plugins()\n");
         return -1;

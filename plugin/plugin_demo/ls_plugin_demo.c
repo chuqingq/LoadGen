@@ -23,7 +23,7 @@ typedef struct {
 ls_plugin_demo_state_t plugin_demo_state;
 
 static int master_init(struct ls_master_s*) {
-    printf("  >>>> plugin_demo plugin_load()\n");
+    printf("  >>>> plugin_demo master_init()\n");
     return 0;
 }
 
