@@ -30,12 +30,12 @@ typedef struct ls_plugin_api_s {
 
 typedef struct ls_plugin_entry_s {
     // 1.plugin_id/name
-    size_t plugin_index;// TODO
+    size_t plugin_index;
     char* plugin_name;
 
     // 2.callbacks
-    int (*master_init)(struct ls_master_s* master);// master启动时调用
-    int (*master_terminate)(struct ls_master_s* master);// master退出前调用
+    int (*master_init)(struct ls_master_s* master);
+    int (*master_terminate)(struct ls_master_s* master);
 
     int (*script_init)(ls_task_setting_t* setting);
     int (*script_terminate)(ls_task_setting_t* setting);
