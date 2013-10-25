@@ -9,7 +9,7 @@ using namespace std;
 #include "ls_plugin.h"
 #include "ls_worker.h"
 #include "ls_session.h"
-#include "ls_stats.h"
+// #include "ls_stats.h"
 
 typedef struct {
     bool ignore_think_time;
