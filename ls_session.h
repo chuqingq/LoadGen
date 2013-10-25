@@ -21,15 +21,13 @@ typedef struct ls_session_s {
     const struct ls_task_script_s* script;
     size_t script_cur;
 
-    // void** states;// states of plugins, one by one
-    void** plugin_states;// TODO delete stats above
+    void** plugin_states;
     size_t num_plugin_states;
 
     ls_task_var_t cur_vars;
 
-    ls_session_process_t process;
-    ls_session_process_t finish;
-    // TODO report_stats()
+    ls_session_process_t process;// TODO
+    ls_session_process_t finish;// TODO
 } ls_session_t;
 
 

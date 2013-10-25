@@ -55,22 +55,17 @@ int main() {
     }
 
     // -------------- 插件加载
-    // 插件加载任务设置 // task_init()
-    if (plugins_load_task_setting(&master.settings, master.plugins, master.num_plugins) < 0) {
-        printf("Failed to plugins_load_task_setting.\n");
+    // 插件加载任务脚本 // script_init() and api.init()
+    if (plugins_script_init(&master.settings, &master.script, master.plugins, master.num_plugins) < 0) {
+        printf("Failed to plugins_script_init.\n");
         return -1;
     }
 
-    // 插件加载任务脚本
-    if (plugins_load_task_script(&master.script, master.plugins, master.num_plugins) < 0) {
-        printf("Failed to plugins_load_task_script.\n");
+    // 插件加载任务设置 // task_init()
+    if (plugins_task_init(master.plugins, master.num_plugins) < 0) {
+        printf("Failed to plugins_task_init.\n");
         return -1;
     }
-    // if (plugins_load_task(&master.settings, &master.script, master.plugins, master.num_plugins) < 0)
-    // {
-    //     printf("Failed to plugins_load_task.\n");
-    //     return -1;
-    // }
 
     // ---------------  启动worker
     // 启动worker
@@ -102,15 +97,17 @@ int main() {
         return -1;
     }
 
-    if (plugins_unload_task_script(&master.script, master.plugins, master.num_plugins) < 0)
+    // task_terminate()
+    if (plugins_task_terminate(master.plugins, master.num_plugins) < 0)
     {
-        printf("ERROR failed to plugins_unload_task_script()\n");
+        printf("ERROR failed to plugins_task_terminate()\n");
         return -1;
     }
 
-    if (plugins_unload_task_setting(&master.settings, master.plugins, master.num_plugins) < 0) // task_terminate()
+    // 任务脚本 // script_terminate() and api.terminate()
+    if (plugins_script_terminate(&master.settings, &master.script, master.plugins, master.num_plugins) < 0) // task_terminate()
     {
-        printf("ERROR failed to plugins_unload_task_setting()\n");
+        printf("ERROR failed to plugins_script_terminate()\n");
         return -1;
     }
     // if (plugins_unload_task(&master.settings, &master.script, master.plugins, master.num_plugins) < 0)

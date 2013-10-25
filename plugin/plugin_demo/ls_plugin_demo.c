@@ -33,6 +33,31 @@ static int master_terminate(struct ls_master_s*) {
     return 0;
 }
 
+static int plugin_script_init(ls_task_setting_t* /* setting*/) {
+    printf("  >>>> plugin_script_init()\n");
+    return 0;
+}
+
+static int plugin_script_terminate(ls_task_setting_t* /* setting */) {
+    printf("  >>>> plugin_script_terminate()\n");
+    return 0;
+}
+
+// static int plugin_task_init(const Json::Value* setting) {
+static int plugin_task_init(/*ls_task_setting_t* setting, ls_task_script_t**/) {
+    printf("  >>>> plugin_demo plugin_task_init()\n");
+
+    // TODO
+    // plugin_demo_setting.ignore_think_time = (*setting)["ignore_think_time"].asBool();
+    return 0;
+}
+
+static int plugin_task_terminate(/*ls_task_setting_t*, ls_task_script_t**/) {
+    printf("  >>>> plugin_demo plugin_task_terminate()\n");
+    
+    return 0;
+}
+
 static int worker_init(struct ls_worker_s*) {
     printf("  >>>> plugin_demo worker_init()\n");
     return 0;
@@ -40,20 +65,6 @@ static int worker_init(struct ls_worker_s*) {
 
 static int worker_terminate(struct ls_worker_s*) {
     printf("  >>>> plugin_demo worker_terminate()\n");
-    return 0;
-}
-
-// static int plugin_task_init(const Json::Value* setting) {
-static int plugin_task_init(ls_task_setting_t* setting/*, ls_task_script_t**/) {
-    printf("  >>>> plugin_demo plugin_task_init()\n");
-
-    plugin_demo_setting.ignore_think_time = (*setting)["ignore_think_time"].asBool();
-    return 0;
-}
-
-static int plugin_task_terminate(ls_task_setting_t*/*, ls_task_script_t**/) {
-    printf("  >>>> plugin_demo plugin_task_terminate()\n");
-    
     return 0;
 }
 
@@ -195,11 +206,14 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_t* plugin
     plugin_entry->master_init = master_init;
     plugin_entry->master_terminate = master_terminate;
 
-    plugin_entry->worker_init = worker_init;
-    plugin_entry->worker_terminate = worker_terminate;
+    plugin_entry->script_init = plugin_script_init;
+    plugin_entry->script_terminate = plugin_script_terminate;
 
     plugin_entry->task_init = plugin_task_init;
     plugin_entry->task_terminate = plugin_task_terminate;
+
+    plugin_entry->worker_init = worker_init;
+    plugin_entry->worker_terminate = worker_terminate;
 
     plugin_entry->session_init = plugin_session_init;
     plugin_entry->session_terminate = plugin_session_terminate;
