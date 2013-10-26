@@ -6,8 +6,62 @@
 #include "ls_worker.h"
 
 
+static void worker_async_callback(uv_async_t* async, int status) {
+    printf("  ==== worker_async_callback()\n");
+
+    ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
+    printf("  before do worker_async_callback(): worker:%lu\n", (unsigned long)w);
+    printf("  cb = %lu\n", (unsigned long )async->data);
+
+    typedef int (*ls_worker_async_cb)(ls_worker_t*);
+    ls_worker_async_cb cb = ls_worker_async_cb(async->data);
+    if (cb(w) < 0) {
+        printf("ERROR failed to ls_worker_async_cb()\n");
+    }
+}
+
+static void worker_thread(void* arg) {
+    ls_worker_t* w = (ls_worker_t*)arg;
+
+    w->worker_loop = uv_loop_new();
+    uv_async_init(w->worker_loop, &(w->worker_async), worker_async_callback);
+    w->worker_started = 1;
+    // printf("  worker_thread() thread:%d, loop:%d\n", w->thread, w->worker_loop);
+
+    uv_run(w->worker_loop, UV_RUN_DEFAULT);
+    printf("  ==== worker_thread() thread terminate\n");
+}
+
+int worker_start(ls_worker_t* w) {
+    printf("  worker_start(%lu)\n", (unsigned long)w);
+
+    uv_rwlock_init(&w->callmodel_delta_lock);
+    w->sessions = new vector<ls_session_t*>();// TODO
+
+    // master_async在master中初始化
+    return uv_thread_create(&(w->thread), worker_thread, (void*)w);
+}
+
+// worker主动调用finish_session
+int worker_stop(ls_worker_t* w) {
+    printf("  ==== worker_stop()\n");
+
+    // stop all sessions in the worker
+    for (size_t i = 0; i < w->sessions->size(); ++i)
+    {
+        if (finish_session((*w->sessions)[i]) < 0) {
+            printf("ERROR failed to finish_session()\n");
+            // return -1;// 确保所有session都执行了session_destroy()
+        }
+    }
+
+    uv_stop(w->worker_loop);
+
+    return 0;
+}
+
 // 在一个worker上启动num个会话
-int worker_start_new_session(ls_worker_t* w, int num) {
+static int worker_start_new_session(ls_worker_t* w, int num) {
     printf("  ==== worker_start_new_session(%d)\n", num);
 
     ls_session_t* s;
@@ -47,24 +101,6 @@ int worker_start_new_session(ls_worker_t* w, int num) {
 }
 
 
-// worker主动调用finish_session
-int worker_stop(ls_worker_t* w) {
-    printf("  ==== worker_stop()\n");
-
-    // stop all sessions in the worker
-    for (size_t i = 0; i < w->sessions->size(); ++i)
-    {
-        if (finish_session((*w->sessions)[i]) < 0) {
-            printf("ERROR failed to finish_session()\n");
-            // return -1;// 确保所有session都执行了session_destroy()
-        }
-    }
-
-    uv_stop(w->worker_loop);
-
-    return 0;
-}
-
 int worker_do_callmodel(ls_worker_t* w) {
     printf("  worker_do_callmodel()\n");
     // worker收到master的消息
@@ -93,46 +129,9 @@ int worker_do_callmodel(ls_worker_t* w) {
     return 0;
 }
 
-typedef int (*ls_worker_async_cb)(ls_worker_t* worker);
-
-static void worker_async_callback(uv_async_t* async, int status) {
-    printf("  ==== worker_async_callback()\n");
-
-    ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
-    printf("  before do worker_async_callback(): worker:%lu\n", (unsigned long)w);
-    printf("  cb = %lu\n", (unsigned long )async->data);
-    ls_worker_async_cb cb = ls_worker_async_cb(async->data);
-    if (cb(w) < 0) {
-        printf("ERROR failed to ls_worker_async_cb()\n");
-    }
-}
-
-static void worker_thread(void* arg) {
-    ls_worker_t* w = (ls_worker_t*)arg;
-
-    w->worker_loop = uv_loop_new();
-    uv_async_init(w->worker_loop, &(w->worker_async), worker_async_callback);
-    w->worker_started = 1;
-    // printf("  worker_thread() thread:%d, loop:%d\n", w->thread, w->worker_loop);
-
-    uv_run(w->worker_loop, UV_RUN_DEFAULT);
-    printf("  ==== worker_thread() thread terminate\n");
-}
-
-int worker_start(ls_worker_t* w) {
-    printf("  worker_start(%lu)\n", (unsigned long)w);
-
-    uv_rwlock_init(&w->callmodel_delta_lock);
-    w->sessions = new vector<ls_session_t*>();// TODO
-
-    // master_async在master中初始化
-    return uv_thread_create(&(w->thread), worker_thread, (void*)w);
-}
-
 int worker_reap(ls_worker_t* w) {
     return uv_thread_join(&(w->thread));
 }
-
 
 int worker_set_callmodel_delta(ls_worker_t* w, int delta) {
     printf("    worker_set_callmodel_delta()\n");

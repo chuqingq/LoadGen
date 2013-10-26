@@ -17,12 +17,15 @@ typedef struct ls_worker_s {
 
     vector<ls_session_t*>* sessions;// TODO reuse. use QUEUE
 
-    // ==================== private
-    volatile int worker_started;// TODO private specify worker already started
-
     // worker和master的通信
     uv_async_t master_async;
     uv_async_t worker_async;
+
+    // ==== private
+
+    volatile int worker_started;// specify worker already started. set to 1 after worker_async inited
+    
+    // callmodel
     int callmodel_delta;// 目前-1表示worker停止，其他值表示worker启动/停止相应个session TODO 0:stop
     uv_rwlock_t callmodel_delta_lock;
 } ls_worker_t;
@@ -30,6 +33,7 @@ typedef struct ls_worker_s {
 int worker_start(ls_worker_t* w);// create thread
 int worker_stop(ls_worker_t* w);// finish all sessions and stop eventloop
 int worker_reap(ls_worker_t* w);// join thread
+// TODO stop和reap是否能合并
 
 int worker_do_callmodel(ls_worker_t* w);// async callbacks
 
