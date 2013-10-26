@@ -80,12 +80,12 @@ int worker_do_callmodel(ls_worker_t* w) {
 
     printf("  worker[%lu] session_num delta=%d\n", w->thread, delta);
 
-    if (delta == -1)
+    /*if (delta == -1)
     {
         worker_stop(w);// TODO
         return 0;
     }
-    else if (delta > 0)
+    else*/ if (delta > 0)
     {
         worker_start_new_session(w, delta);
     }

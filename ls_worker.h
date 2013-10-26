@@ -11,15 +11,14 @@ using namespace std;
 #include "ls_task_var.h"
 #include "ls_session.h"
 
-
 typedef struct ls_worker_s {
     uv_thread_t thread;
     uv_loop_t* worker_loop;
 
     vector<ls_session_t*>* sessions;// TODO reuse. use QUEUE
 
-    /* private */
-    int worker_started;// specify worker already started
+    // ==================== private
+    volatile int worker_started;// TODO private specify worker already started
 
     // worker和master的通信
     uv_async_t master_async;
@@ -28,14 +27,13 @@ typedef struct ls_worker_s {
     uv_rwlock_t callmodel_delta_lock;
 } ls_worker_t;
 
-int worker_start(ls_worker_t* w);// create thread// TODO -> worker_start
+int worker_start(ls_worker_t* w);// create thread
 int worker_stop(ls_worker_t* w);// finish all sessions and stop eventloop
 int worker_reap(ls_worker_t* w);// join thread
 
-// async callbacks
-int worker_do_callmodel(ls_worker_t* w);// TODO return value
+int worker_do_callmodel(ls_worker_t* w);// async callbacks
 
-int worker_set_callmodel_delta(ls_worker_t* w, int delta);// TODO ??
+int worker_set_callmodel_delta(ls_worker_t* w, int delta);
 int worker_get_callmodel_delta(ls_worker_t* w, int* delta);
 
 #endif
