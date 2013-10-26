@@ -24,7 +24,7 @@ typedef struct ls_worker_s {
     // worker和master的通信
     uv_async_t master_async;
     uv_async_t worker_async;
-    int callmodel_delta;
+    int callmodel_delta;// 目前-1表示worker停止，其他值表示worker启动/停止相应个session TODO 0:stop
     uv_rwlock_t callmodel_delta_lock;
 } ls_worker_t;
 
@@ -32,10 +32,10 @@ int init_worker(ls_worker_t* w);// create thread
 int reap_worker(ls_worker_t* w);// join thread
 // int notify_worker(const string& cmd);// to delete
 
-
 int worker_start_new_session(ls_worker_t* w, int num);
 
-void worker_do_callmodel(ls_worker_t* w);// master send async.data
+// async callbacks
+void worker_do_callmodel(ls_worker_t* w);
 
 int worker_set_callmodel_delta(ls_worker_t* w, int delta);// TODO ??
 int worker_get_callmodel_delta(ls_worker_t* w, int* delta);

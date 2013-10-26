@@ -109,6 +109,7 @@ int start_workers(ls_master_t* master) {
     return 0;
 }
 
+// 通知worker自己停止
 int stop_workers(ls_master_t* master) {
     printf("==== stop_workers()\n");
 
@@ -122,6 +123,8 @@ int stop_workers(ls_master_t* master) {
             return -1;
         }
 
+        w->worker_async.data = (void*)worker_do_callmodel;
+        
         if (uv_async_send(&(w->worker_async)) < 0)
         {
             printf("ERROR failed to uv_async_send()\n");
@@ -158,6 +161,7 @@ static int notify_worker_start_new_session(ls_worker_t* w, int num) {
     }
 
     w->worker_async.data = (void*)worker_do_callmodel;
+    printf("  worker_do_callmodel = %lu\n", (unsigned long)worker_do_callmodel);
 
     printf("  before master uv_async_send()\n");
     return uv_async_send(&(w->worker_async));

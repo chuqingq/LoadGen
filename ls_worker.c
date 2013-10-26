@@ -5,6 +5,7 @@
 #include "ls_master.h"
 #include "ls_worker.h"
 
+// worker主动调用finish_session
 static int worker_stop_all_sessions(ls_worker_t* w) {
     printf("  ==== worker_stop_all_sessions()\n");
 
@@ -59,6 +60,7 @@ static void worker_async_callback(uv_async_t* async, int status) {
 
     ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
     printf("  before do worker_async_callback(): worker:%lu\n", (unsigned long)w);
+    printf("  cb = %lu\n", (unsigned long )async->data);
     ls_worker_async_cb cb = ls_worker_async_cb(async->data);
     cb(w);
 }
