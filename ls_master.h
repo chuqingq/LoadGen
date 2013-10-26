@@ -30,16 +30,13 @@ typedef struct ls_master_s {
 
 extern ls_master_t master;
 
-int start_workers(ls_master_t* master);
-int stop_workers(ls_master_t* master);
-int reap_workers(ls_master_t* master);
-
-int start_new_session(int num);
-
 int load_plugins(ls_master_t* master);
 int unload_plugins(ls_master_t* master);
 
-int notify_master();
-int do_notify();
+int start_workers(ls_master_t* master);// -> worker_start()
+int stop_workers(ls_master_t* master);// -> worker_stop()
+int reap_workers(ls_master_t* master);// -> worker_reap()
+
+int start_new_session(int num);// TODO
 
 #endif

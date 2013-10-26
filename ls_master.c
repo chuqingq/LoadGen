@@ -116,16 +116,9 @@ int stop_workers(ls_master_t* master) {
     for (size_t i = 0; i < master->num_workers; ++i)
     {
         ls_worker_t* w = master->workers + i;
-
-        // if (worker_set_callmodel_delta(w, -1) < 0)
-        // {
-        //     printf("ERROR failed to worker_set_callmodel_delta()\n");
-        //     return -1;
-        // }
-
         w->worker_async.data = (void*)worker_stop;
 
-        if (uv_async_send(&(w->worker_async)) < 0)
+        if (uv_async_send(&w->worker_async) < 0)
         {
             printf("ERROR failed to uv_async_send()\n");
             return -1;
@@ -151,8 +144,8 @@ int reap_workers(ls_master_t* master) {
     return 0;
 }
 
-static int notify_worker_start_new_session(ls_worker_t* w, int num) {
-    printf("  ==== notify_worker_start_new_session(%lu, %d)\n", (unsigned long)w, num);
+static int notify_worker_do_callmodel(ls_worker_t* w, int num) {
+    printf("  ==== notify_worker_do_callmodel(%lu, %d)\n", (unsigned long)w, num);
 
     if (worker_set_callmodel_delta(w, num) < 0)
     {
@@ -178,7 +171,7 @@ int start_new_session(int num) {
 
     for (int i = 0; i < add; ++i)
     {
-        if (notify_worker_start_new_session(master.workers + i, avg) < 0)
+        if (notify_worker_do_callmodel(master.workers + i, avg) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");
             return -1;
@@ -192,7 +185,7 @@ int start_new_session(int num) {
 
     for (int i = add; i < workers_num; ++i)
     {
-        if (notify_worker_start_new_session(master.workers + i, avg-1) < 0)
+        if (notify_worker_do_callmodel(master.workers + i, avg-1) < 0)
         {
             printf("  Failed to worker_start_new_session()\n");
             return -1;
