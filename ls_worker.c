@@ -13,6 +13,12 @@ static void worker_async_callback(uv_async_t* async, int status) {
     printf("  before do worker_async_callback(): worker:%lu\n", (unsigned long)w);
     printf("  cb = %lu\n", (unsigned long )async->data);
 
+    if (async->data  == NULL)
+    {
+        printf("ERROR ls_worker_async_cb is NULL\n");
+        return;
+    }
+
     typedef int (*ls_worker_async_cb)(ls_worker_t*);
     ls_worker_async_cb cb = ls_worker_async_cb(async->data);
     if (cb(w) < 0) {

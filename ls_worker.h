@@ -33,7 +33,6 @@ typedef struct ls_worker_s {
 int worker_start(ls_worker_t* w);// create thread
 int worker_stop(ls_worker_t* w);// finish all sessions and stop eventloop
 int worker_reap(ls_worker_t* w);// join thread
-// TODO stop和reap是否能合并
 
 int worker_do_callmodel(ls_worker_t* w);// async callbacks
 
