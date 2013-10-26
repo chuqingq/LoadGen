@@ -97,9 +97,9 @@ int start_workers(ls_master_t* master) {
             return -1;
         }
 
-        if (init_worker(w) < 0)// start worker thread
+        if (worker_start(w) < 0)// start worker thread
         {
-            printf("ERROR failed to init_worker()\n");
+            printf("ERROR failed to worker_start()\n");
             return -1;
         }
 
@@ -142,8 +142,8 @@ int reap_workers(ls_master_t* master) {
     {
         printf("  before reap_workers(%d)\n", i);
 
-        if (reap_worker(master->workers + i) < 0) {
-            printf("ERROR failed to read_worker(%d)\n", i);
+        if (worker_reap(master->workers + i) < 0) {
+            printf("ERROR failed to worker_reap(%d)\n", i);
             return -1;
         }
     }

@@ -28,15 +28,12 @@ typedef struct ls_worker_s {
     uv_rwlock_t callmodel_delta_lock;
 } ls_worker_t;
 
-int init_worker(ls_worker_t* w);// create thread
-int reap_worker(ls_worker_t* w);// join thread
-// int notify_worker(const string& cmd);// to delete
-
-int worker_start_new_session(ls_worker_t* w, int num);
+int worker_start(ls_worker_t* w);// create thread// TODO -> worker_start
+int worker_stop(ls_worker_t* w);// finish all sessions and stop eventloop
+int worker_reap(ls_worker_t* w);// join thread
 
 // async callbacks
 int worker_do_callmodel(ls_worker_t* w);// TODO return value
-int worker_stop(ls_worker_t* w);
 
 int worker_set_callmodel_delta(ls_worker_t* w, int delta);// TODO ??
 int worker_get_callmodel_delta(ls_worker_t* w, int* delta);

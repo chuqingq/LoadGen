@@ -5,6 +5,48 @@
 #include "ls_master.h"
 #include "ls_worker.h"
 
+
+// 在一个worker上启动num个会话
+int worker_start_new_session(ls_worker_t* w, int num) {
+    printf("  ==== worker_start_new_session(%d)\n", num);
+
+    ls_session_t* s;
+    for (int i = 0; i < num; ++i)
+    {
+        s = new ls_session_t;
+        s->plugin_states = (void**)malloc(master.config.plugins_num * sizeof(void*));
+
+        // s->loop = w->worker_loop;
+        s->worker = w;
+        s->script = &(master.script);// 只读
+        s->script_cur = -1;
+        
+        ls_plugin_t* plugin;
+        for (size_t i = 0; i < master.num_plugins; ++i)
+        {
+            plugin = master.plugins + i;
+
+            if (plugin->session_init != NULL && (plugin->session_init)(s) < 0)
+            {
+                printf("ERROR failed to session_init()\n");
+                return -1;
+            }
+        }
+
+        s->cur_vars = master.vars;// TODO 拷贝
+
+        s->process = process_session;
+        s->finish = finish_session;
+
+        w->sessions->push_back(s);
+
+        process_session(s);
+    }
+
+    return 0;
+}
+
+
 // worker主动调用finish_session
 int worker_stop(ls_worker_t* w) {
     printf("  ==== worker_stop()\n");
@@ -77,8 +119,8 @@ static void worker_thread(void* arg) {
     printf("  ==== worker_thread() thread terminate\n");
 }
 
-int init_worker(ls_worker_t* w) {
-    printf("  init_worker(%lu)\n", (unsigned long)w);
+int worker_start(ls_worker_t* w) {
+    printf("  worker_start(%lu)\n", (unsigned long)w);
 
     uv_rwlock_init(&w->callmodel_delta_lock);
     w->sessions = new vector<ls_session_t*>();// TODO
@@ -87,48 +129,8 @@ int init_worker(ls_worker_t* w) {
     return uv_thread_create(&(w->thread), worker_thread, (void*)w);
 }
 
-int reap_worker(ls_worker_t* w) {
+int worker_reap(ls_worker_t* w) {
     return uv_thread_join(&(w->thread));
-}
-
-// 在一个worker上启动num个会话
-int worker_start_new_session(ls_worker_t* w, int num) {
-    printf("  ==== worker_start_new_session(%d)\n", num);
-
-    ls_session_t* s;
-    for (int i = 0; i < num; ++i)
-    {
-        s = new ls_session_t;
-        s->plugin_states = (void**)malloc(master.config.plugins_num * sizeof(void*));
-
-        // s->loop = w->worker_loop;
-        s->worker = w;
-        s->script = &(master.script);// 只读
-        s->script_cur = -1;
-        
-        ls_plugin_t* plugin;
-        for (size_t i = 0; i < master.num_plugins; ++i)
-        {
-            plugin = master.plugins + i;
-
-            if (plugin->session_init != NULL && (plugin->session_init)(s) < 0)
-            {
-                printf("ERROR failed to session_init()\n");
-                return -1;
-            }
-        }
-
-        s->cur_vars = master.vars;// TODO 拷贝
-
-        s->process = process_session;
-        s->finish = finish_session;
-
-        w->sessions->push_back(s);
-
-        process_session(s);
-    }
-
-    return 0;
 }
 
 
