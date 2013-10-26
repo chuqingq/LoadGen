@@ -35,7 +35,8 @@ int reap_worker(ls_worker_t* w);// join thread
 int worker_start_new_session(ls_worker_t* w, int num);
 
 // async callbacks
-void worker_do_callmodel(ls_worker_t* w);
+int worker_do_callmodel(ls_worker_t* w);// TODO return value
+int worker_stop(ls_worker_t* w);
 
 int worker_set_callmodel_delta(ls_worker_t* w, int delta);// TODO ??
 int worker_get_callmodel_delta(ls_worker_t* w, int* delta);

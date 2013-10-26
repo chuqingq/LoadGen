@@ -117,14 +117,14 @@ int stop_workers(ls_master_t* master) {
     {
         ls_worker_t* w = master->workers + i;
 
-        if (worker_set_callmodel_delta(w, -1) < 0)
-        {
-            printf("ERROR failed to worker_set_callmodel_delta()\n");
-            return -1;
-        }
+        // if (worker_set_callmodel_delta(w, -1) < 0)
+        // {
+        //     printf("ERROR failed to worker_set_callmodel_delta()\n");
+        //     return -1;
+        // }
 
-        w->worker_async.data = (void*)worker_do_callmodel;
-        
+        w->worker_async.data = (void*)worker_stop;
+
         if (uv_async_send(&(w->worker_async)) < 0)
         {
             printf("ERROR failed to uv_async_send()\n");

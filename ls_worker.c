@@ -6,9 +6,10 @@
 #include "ls_worker.h"
 
 // worker主动调用finish_session
-static int worker_stop_all_sessions(ls_worker_t* w) {
-    printf("  ==== worker_stop_all_sessions()\n");
+int worker_stop(ls_worker_t* w) {
+    printf("  ==== worker_stop()\n");
 
+    // stop all sessions in the worker
     for (size_t i = 0; i < w->sessions->size(); ++i)
     {
         if (finish_session((*w->sessions)[i]) < 0) {
@@ -17,10 +18,12 @@ static int worker_stop_all_sessions(ls_worker_t* w) {
         }
     }
 
+    uv_stop(w->worker_loop);
+
     return 0;
 }
 
-void worker_do_callmodel(ls_worker_t* w) {
+int worker_do_callmodel(ls_worker_t* w) {
     printf("  worker_do_callmodel()\n");
     // worker收到master的消息
     // int delta = *((int*)async->data);
@@ -30,30 +33,25 @@ void worker_do_callmodel(ls_worker_t* w) {
     if (worker_get_callmodel_delta(w, &delta) < 0)
     {
         printf("ERROR failed to worker_get_callmodel_delta()\n");
-        return;
+        return -1;
     }
 
     printf("  worker[%lu] session_num delta=%d\n", w->thread, delta);
 
     if (delta == -1)
     {
-        // worker停止自己的所有session
-        if (worker_stop_all_sessions(w) < 0) {
-            printf("ERROR failed to worker_stop_all_sessions()\n");
-        }
-
-        // -1表示master要停止worker
-        uv_stop(w->worker_loop);
-        return;
+        worker_stop(w);// TODO
+        return 0;
     }
-
-    if (delta > 0)
+    else if (delta > 0)
     {
         worker_start_new_session(w, delta);
     }
+
+    return 0;
 }
 
-typedef void (*ls_worker_async_cb)(ls_worker_t* worker);
+typedef int (*ls_worker_async_cb)(ls_worker_t* worker);
 
 static void worker_async_callback(uv_async_t* async, int status) {
     printf("  ==== worker_async_callback()\n");
@@ -62,7 +60,9 @@ static void worker_async_callback(uv_async_t* async, int status) {
     printf("  before do worker_async_callback(): worker:%lu\n", (unsigned long)w);
     printf("  cb = %lu\n", (unsigned long )async->data);
     ls_worker_async_cb cb = ls_worker_async_cb(async->data);
-    cb(w);
+    if (cb(w) < 0) {
+        printf("ERROR failed to ls_worker_async_cb()\n");
+    }
 }
 
 static void worker_thread(void* arg) {
