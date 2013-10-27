@@ -8,7 +8,7 @@ using namespace std;
 #include "ls_task_setting.h"
 
 int load_task_setting(ls_task_setting_t* setting) {
-    LOG("==== load_task_setting()\n");
+    LOG("load_task_setting()\n");
     const char* setting_file = "task/setting.json";
     ifstream ifs;
     

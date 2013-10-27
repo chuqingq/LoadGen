@@ -45,7 +45,7 @@ int plugins_script_init(ls_task_setting_t* setting,
                         ls_task_script_t* script,
                         ls_plugin_t* plugins,
                         size_t num_plugins) {
-    LOG("==== plugins_script_init\n");
+    LOG("plugins_script_init\n");
 
     // 遍历所有plugins，执行script_init()
     ls_plugin_t* plugin;
@@ -53,7 +53,7 @@ int plugins_script_init(ls_task_setting_t* setting,
     {
         plugin = plugins + i;
         if (plugin->script_init != NULL && (plugin->script_init)(setting) < 0) {
-            LOG("ERROR failed to script_init()\n");
+            LOG("ERROR failed to %s.script_init()\n", plugin->plugin_name);
             return -1;
         }
     }
@@ -67,7 +67,7 @@ int plugins_script_init(ls_task_setting_t* setting,
         ls_plugin_t* plugin = find_entry_by_name(script_entry->plugin_name.c_str(), plugins, num_plugins);
         if (plugin == NULL)
         {
-            LOG("  plugin_name %s not found\n", script_entry->plugin_name.c_str());
+            LOG("  plugin %s not found\n", script_entry->plugin_name.c_str());
             return -1;
         }
 
@@ -99,7 +99,7 @@ int plugins_script_terminate(ls_task_setting_t* setting,
                              ls_task_script_t* script,
                              ls_plugin_t* plugins,
                              size_t num_plugins) {
-    LOG("==== plugins_script_terminate()\n");
+    LOG("plugins_script_terminate()\n");
 
     // TODO 目前流程是一样的，实际可以有差异。例如已经有了api，就不用再查找，直接执行api.terminate()即可
     // 遍历所有plugins，执行script_init()
@@ -108,12 +108,12 @@ int plugins_script_terminate(ls_task_setting_t* setting,
     {
         plugin = plugins + i;
         if (plugin->script_terminate != NULL && (plugin->script_terminate)(setting) < 0) {
-            LOG("ERROR failed to script_terminate()\n");
+            LOG("ERROR failed to %s.script_terminate()\n", plugin->plugin_name);
             return -1;
         }
     }
 
-    // 遍历所有script所有项，执行api.init()
+    // 遍历所有script所有项，执行api.terminate()
     ls_task_script_entry_t* script_entry;
     for (size_t i = 0; i < script->entries_num; ++i)
     {
@@ -122,10 +122,11 @@ int plugins_script_terminate(ls_task_setting_t* setting,
         ls_plugin_t* plugin = find_entry_by_name(script_entry->plugin_name.c_str(), plugins, num_plugins);
         if (plugin == NULL)
         {
-            LOG("  plugin_name %s not found\n", script_entry->plugin_name.c_str());
+            LOG("  plugin %s not found\n", script_entry->plugin_name.c_str());
             return -1;
         }
 
+        // TODO not nessesary use find_api_entry_by_name()
         // set api of script_entry in plugins
         ls_plugin_api_t* api_entry = find_api_entry_by_name(script_entry->api_name.c_str(), plugin->apis, plugin->num_apis);
         if (api_entry == NULL)
@@ -134,16 +135,15 @@ int plugins_script_terminate(ls_task_setting_t* setting,
             return -1;
         }
 
-        void* args = NULL;
-        if ((api_entry->init)(&script_entry->json_args, &args) < 0)
+        if ((api_entry->terminate)(&script_entry->args) < 0)
         {
-            LOG("  api %s init error\n", script_entry->api_name.c_str());
+            LOG("  api %s terminate error\n", script_entry->api_name.c_str());
             return -1;
         }
 
         // 设置api和args
         script_entry->api = api_entry;
-        script_entry->args = args;
+        // script_entry->args = args;
     }
 
     return 0;
@@ -151,7 +151,7 @@ int plugins_script_terminate(ls_task_setting_t* setting,
 
 
 int plugins_task_init(ls_plugin_t* plugins, size_t num_plugins) {
-    LOG("==== plugins_task_init\n");
+    LOG("plugins_task_init\n");
 
     ls_plugin_t* plugin;
     for (size_t i = 0; i < num_plugins; ++i)
@@ -159,7 +159,7 @@ int plugins_task_init(ls_plugin_t* plugins, size_t num_plugins) {
         plugin = plugins + i;
 
         if (plugin->task_init != NULL && (plugin->task_init)() < 0) {
-            LOG("ERROR task_init error\n");
+            LOG("ERROR failed to %s.task_init()\n", plugin->plugin_name);
             return -1;
         }
     }
@@ -168,18 +168,17 @@ int plugins_task_init(ls_plugin_t* plugins, size_t num_plugins) {
 }
 
 int plugins_task_terminate(ls_plugin_t* plugins, size_t num_plugins) {
-    LOG("==== plugins_unload_task_setting()\n");
+    LOG("plugins_unload_task_setting()\n");
 
     ls_plugin_t* plugin;
     for (size_t i = 0; i < num_plugins; ++i)
     {
         plugin = plugins + i;
         if (plugin->task_terminate != NULL && (plugin->task_terminate)() < 0) {
-            LOG("ERROR failed to task_terminate()\n");
+            LOG("ERROR failed to %s.task_terminate()\n", plugin->plugin_name);
             return -1;
         }
     }
 
     return 0;
 }
-

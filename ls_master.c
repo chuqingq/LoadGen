@@ -10,7 +10,7 @@
 ls_master_t master;
 
 int load_plugins(ls_master_t* master) {
-    LOG("==== load_plugins()\n");
+    LOG("load_plugins()\n");
 
     master->num_plugins = master->config.plugins_num;
 
@@ -43,13 +43,15 @@ int load_plugins(ls_master_t* master) {
             LOG("ERROR failed to master_init()\n");
             return -1;
         }
+
+        LOG("  load plugin[%s] success\n", plugin->plugin_name);
     }
 
     return 0;
 }
 
 int unload_plugins(ls_master_t* master) {
-    LOG("==== unload_plugins()\n");
+    LOG("unload_plugins()\n");
 
     ls_plugin_t* plugin;
     for (size_t i = 0; i < master->num_plugins; ++i)
@@ -64,6 +66,8 @@ int unload_plugins(ls_master_t* master) {
             // return -1;// 确保所有插件都正常卸载
         }
         uv_dlclose(&plugin->plugin_lib);
+
+        LOG("  unload plugin success\n");
     }
 
     free(master->plugins);
@@ -78,7 +82,7 @@ static void master_async_callback(uv_async_t* handle, int status) {
 }
 
 int start_workers(ls_master_t* master) {
-    LOG("==== start_workers()\n");
+    LOG("start_workers()\n");
 
     master->num_workers = master->config.workers_num;
     master->workers = (ls_worker_t*)malloc(master->num_workers * sizeof(ls_worker_t));
@@ -112,7 +116,7 @@ int start_workers(ls_master_t* master) {
 
 // 通知worker自己停止
 int stop_workers(ls_master_t* master) {
-    LOG("==== stop_workers()\n");
+    LOG("stop_workers()\n");
 
     for (size_t i = 0; i < master->num_workers; ++i)
     {
@@ -130,12 +134,10 @@ int stop_workers(ls_master_t* master) {
 }
 
 int reap_workers(ls_master_t* master) {
-    LOG("==== reap_workers()\n");
+    LOG("reap_workers()\n");
 
     for (size_t i = 0; i< master->num_workers; ++i)
     {
-        LOG("  before reap_workers(%d)\n", i);
-
         if (worker_reap(master->workers + i) < 0) {
             LOG("ERROR failed to worker_reap(%d)\n", i);
             return -1;
@@ -146,7 +148,7 @@ int reap_workers(ls_master_t* master) {
 }
 
 static int notify_worker_do_callmodel(ls_worker_t* w, int num) {
-    LOG("  ==== notify_worker_do_callmodel(%lu, %d)\n", (unsigned long)w, num);
+    LOG("  notify_worker_do_callmodel(%lu, %d)\n", (unsigned long)w, num);
 
     if (worker_set_callmodel_delta(w, num) < 0)
     {
@@ -155,14 +157,11 @@ static int notify_worker_do_callmodel(ls_worker_t* w, int num) {
     }
 
     w->worker_async.data = (void*)worker_do_callmodel;
-    LOG("  worker_do_callmodel = %lu\n", (unsigned long)worker_do_callmodel);
-
-    LOG("  before master uv_async_send()\n");
     return uv_async_send(&(w->worker_async));
 }
 
 int start_new_session(int num) {
-    LOG("  ==== start_new_session(%d)\n", num);
+    LOG("  start_new_session(%d)\n", num);
     
     // 先按简单的方式来：num尽量平均分给每个worker，不考虑worker当前的会话数
     int workers_num = master.num_workers;
@@ -174,7 +173,7 @@ int start_new_session(int num) {
     {
         if (notify_worker_do_callmodel(master.workers + i, avg) < 0)
         {
-            LOG("  Failed to worker_start_new_session()\n");
+            LOG("ERROR failed to worker_start_new_session()\n");
             return -1;
         }
     }
@@ -188,7 +187,7 @@ int start_new_session(int num) {
     {
         if (notify_worker_do_callmodel(master.workers + i, avg-1) < 0)
         {
-            LOG("  Failed to worker_start_new_session()\n");
+            LOG("ERROR failed to worker_start_new_session()\n");
             return -1;
         }
     }

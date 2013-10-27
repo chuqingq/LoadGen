@@ -12,7 +12,7 @@ using namespace std;
 
 
 int load_task_callmodel(ls_task_callmodel_t* callmodel) {
-    LOG("==== load_task_callmodel()\n");
+    LOG("load_task_callmodel()\n");
     const char* cm_file = "task/callmodel.json";
     ifstream ifs;
     
@@ -57,7 +57,7 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
 }
 
 static void duration_timeout(uv_timer_t* handle, int status) {
-    LOG("==== duration_timeout(): callmodel end\n");
+    LOG("duration_timeout(): callmodel end\n");
 
     uv_timer_stop(handle);
     stop_workers(&master);
@@ -66,21 +66,21 @@ static void duration_timeout(uv_timer_t* handle, int status) {
 }
 
 static void accelerate_per_sec(uv_timer_t* handle, int status) {
-    LOG("  ==== accelerate_per_sec()\n");
+    LOG("  accelerate_per_sec()\n");
 
     ls_task_callmodel_t* cm = container_of(handle, struct ls_task_callmodel_s, accelerate_timer);
 
     // TODO 每秒钟需要增加的accelerate/CPU分配给worker
     // TODO callmodel_worker(config.worker_num);
 
-    LOG("  accelerate=%d\n", cm->accelerate);
-    LOG("  current=%d\n", cm->current);
-    LOG("  dest=%d\n", cm->dest);
+    LOG("    accelerate=%d\n", cm->accelerate);
+    LOG("    current=%d\n", cm->current);
+    LOG("    dest=%d\n", cm->dest);
 
     // 启动cm->accelerate个session
     if (start_new_session(cm->accelerate) < 0)
     {
-        LOG("  Failed to start_new_session()\n");
+        LOG("ERROR failed to start_new_session()\n");
         return;// TODO 退出
     }
     cm->current += cm->accelerate;
@@ -99,7 +99,7 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
 
 
 int do_task_callmodel(ls_task_callmodel_t* cm) {
-    LOG("==== do_task_callmodel()\n");
+    LOG("  do_task_callmodel()\n");
 
     // ls_master_t* master = container_of(cm, ls_master_t, callmodel);
 
@@ -107,7 +107,7 @@ int do_task_callmodel(ls_task_callmodel_t* cm) {
     // TODO 启动init个session
     if (start_new_session(cm->init) < 0)
     {
-        LOG("  Failed to start_new_session()\n");
+        LOG("ERROR failed to start_new_session()\n");
         return -1;
     }
 

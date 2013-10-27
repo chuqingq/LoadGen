@@ -12,7 +12,7 @@ static int handle_session(ls_session_t* s) {
     map<string, string> vars;
     if ((api->run)(e->args, s, &vars) < 0)
     {
-        LOG("==== API [%s] error\n", e->api_name.c_str());
+        LOG("  ERROR failed to run api [%s]\n", e->api_name.c_str());
         return -1;
     }
 
@@ -32,7 +32,7 @@ int process_session(ls_session_t* s) {
 }
 
 int finish_session(ls_session_t* s) {
-    LOG("  ==== finish_session()\n");
+    LOG("finish_session()\n");
 
     ls_plugin_t* plugin;
     // 调用session中相关的所有plugin的session_destroy()
@@ -42,7 +42,7 @@ int finish_session(ls_session_t* s) {
 
         if ((plugin->session_terminate)(s) < 0)
         {
-            LOG("ERROR failed to session_destroy()\n");
+            LOG("ERROR failed to %s.session_destroy()\n", plugin->plugin_name);
             return -1;
         }
 

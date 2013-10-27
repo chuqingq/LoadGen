@@ -7,11 +7,9 @@
 
 
 static void worker_async_callback(uv_async_t* async, int status) {
-    LOG("  ==== worker_async_callback()\n");
+    LOG("  worker_async_callback()\n");
 
     ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
-    LOG("  before do worker_async_callback(): worker:%lu\n", (unsigned long)w);
-    LOG("  cb = %lu\n", (unsigned long )async->data);
 
     if (async->data  == NULL)
     {
@@ -32,10 +30,9 @@ static void worker_thread(void* arg) {
     w->worker_loop = uv_loop_new();
     uv_async_init(w->worker_loop, &(w->worker_async), worker_async_callback);
     w->worker_started = 1;
-    // LOG("  worker_thread() thread:%d, loop:%d\n", w->thread, w->worker_loop);
 
     uv_run(w->worker_loop, UV_RUN_DEFAULT);
-    LOG("  ==== worker_thread() thread terminate\n");
+    LOG("  worker_thread[%u] terminate\n", (unsigned int)w->thread);
 }
 
 int worker_start(ls_worker_t* w) {
@@ -50,7 +47,7 @@ int worker_start(ls_worker_t* w) {
 
 // worker主动调用finish_session
 int worker_stop(ls_worker_t* w) {
-    LOG("  ==== worker_stop()\n");
+    LOG("  worker_stop()\n");
 
     // stop all sessions in the worker
     for (size_t i = 0; i < w->sessions->size(); ++i)
@@ -68,7 +65,7 @@ int worker_stop(ls_worker_t* w) {
 
 // 在一个worker上启动num个会话
 static int worker_start_new_session(ls_worker_t* w, int num) {
-    LOG("  ==== worker_start_new_session(%d)\n", num);
+    LOG("  worker_start_new_session(%d)\n", num);
 
     ls_session_t* s;
     for (int i = 0; i < num; ++i)
@@ -88,7 +85,7 @@ static int worker_start_new_session(ls_worker_t* w, int num) {
 
             if (plugin->session_init != NULL && (plugin->session_init)(s) < 0)
             {
-                LOG("ERROR failed to session_init()\n");
+                LOG("ERROR failed to %s.session_init()\n", plugin->plugin_name);
                 return -1;
             }
         }
@@ -140,9 +137,7 @@ int worker_reap(ls_worker_t* w) {
 }
 
 int worker_set_callmodel_delta(ls_worker_t* w, int delta) {
-    LOG("    worker_set_callmodel_delta()\n");
     uv_rwlock_wrlock(&w->callmodel_delta_lock);
-    LOG("    after wrlock()\n");
     w->callmodel_delta = delta;
     uv_rwlock_wrunlock(&w->callmodel_delta_lock);
 

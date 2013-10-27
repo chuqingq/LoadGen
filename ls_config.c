@@ -11,7 +11,7 @@ using namespace std;
 #include "ls_config.h"
 
 int load_config(ls_config_t* config) {
-    LOG("==== load_config()\n");
+    LOG("load_config()\n");
 
     const char* config_file = "config.json";
     ifstream ifs;
@@ -58,7 +58,7 @@ int load_config(ls_config_t* config) {
 }
 
 int unload_config(ls_config_t* config) {
-    LOG("==== unload_config()\n");
+    LOG("()\n");
     
     for (size_t i = 0; i < config->plugins_num; ++i)
     {

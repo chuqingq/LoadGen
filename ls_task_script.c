@@ -10,7 +10,7 @@ using namespace std;
 #include "ls_task_script.h"
 
 int load_task_script(ls_task_script_t* script) {
-    LOG("==== load_task_script()\n");
+    LOG("load_task_script()\n");
     
     const char* script_file = "task/script.json";
     ifstream ifs;
@@ -44,7 +44,7 @@ int load_task_script(ls_task_script_t* script) {
 }
 
 int unload_task_script(ls_task_script_t* script) {
-    LOG("==== unload_task_script()\n");
+    LOG("unload_task_script()\n");
 
     delete[] script->entries;
     script->entries = NULL;
