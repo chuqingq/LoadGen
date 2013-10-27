@@ -6,10 +6,11 @@ using namespace std;
 
 #include "jsoncpp/json/json.h"
 
+#include "ls_utils.h"
 #include "ls_task_script.h"
 
 int load_task_script(ls_task_script_t* script) {
-    printf("==== load_task_script()\n");
+    LOG("==== load_task_script()\n");
     
     const char* script_file = "task/script.json";
     ifstream ifs;
@@ -35,7 +36,7 @@ int load_task_script(ls_task_script_t* script) {
         entry->plugin_name = root[i]["plugin"].asString();
         entry->json_args = root[i]["args"];
 
-        printf("  api=%s, plugin_name=%s, json_args=xxx\n", entry->api_name.c_str(), entry->plugin_name.c_str());
+        LOG("  api=%s, plugin_name=%s, json_args=xxx\n", entry->api_name.c_str(), entry->plugin_name.c_str());
     }
 
     ifs.close();// should after parsing
@@ -43,7 +44,7 @@ int load_task_script(ls_task_script_t* script) {
 }
 
 int unload_task_script(ls_task_script_t* script) {
-    printf("==== unload_task_script()\n");
+    LOG("==== unload_task_script()\n");
 
     delete[] script->entries;
     script->entries = NULL;

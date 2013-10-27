@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "ls_utils.h"
 #include "ls_master.h"
 #include "ls_session.h"
 #include "ls_plugin.h"
@@ -11,7 +12,7 @@ static int handle_session(ls_session_t* s) {
     map<string, string> vars;
     if ((api->run)(e->args, s, &vars) < 0)
     {
-        printf("==== API [%s] error\n", e->api_name.c_str());
+        LOG("==== API [%s] error\n", e->api_name.c_str());
         return -1;
     }
 
@@ -31,7 +32,7 @@ int process_session(ls_session_t* s) {
 }
 
 int finish_session(ls_session_t* s) {
-    printf("  ==== finish_session()\n");
+    LOG("  ==== finish_session()\n");
 
     ls_plugin_t* plugin;
     // 调用session中相关的所有plugin的session_destroy()
@@ -41,7 +42,7 @@ int finish_session(ls_session_t* s) {
 
         if ((plugin->session_terminate)(s) < 0)
         {
-            printf("ERROR failed to session_destroy()\n");
+            LOG("ERROR failed to session_destroy()\n");
             return -1;
         }
 

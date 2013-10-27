@@ -37,6 +37,6 @@ int start_workers(ls_master_t* master);// -> worker_start()
 int stop_workers(ls_master_t* master);// -> worker_stop()
 int reap_workers(ls_master_t* master);// -> worker_reap()
 
-int start_new_session(int num);// TODO
+int start_new_session(int num);// TODO change name to master_do_callmodel() ??
 
 #endif

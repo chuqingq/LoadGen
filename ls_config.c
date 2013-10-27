@@ -7,10 +7,11 @@ using namespace std;
 
 #include "jsoncpp/json/json.h"
 
+#include "ls_utils.h"
 #include "ls_config.h"
 
 int load_config(ls_config_t* config) {
-    printf("==== load_config()\n");
+    LOG("==== load_config()\n");
 
     const char* config_file = "config.json";
     ifstream ifs;
@@ -25,13 +26,13 @@ int load_config(ls_config_t* config) {
 
     // workers_num
     config->workers_num = root["workers_num"].asInt();
-    printf("  workers_num = %d\n", config->workers_num);
+    LOG("  workers_num = %d\n", config->workers_num);
 
     // allocate plugin_paths
     config->plugin_paths = (char**) malloc((config->workers_num + 1) * sizeof(char*));
     if (config->plugin_paths == NULL)
     {
-        printf("ERROR failed to malloc plugin_paths.\n");
+        LOG("ERROR failed to malloc plugin_paths.\n");
         return -1;
     }
 
@@ -41,7 +42,7 @@ int load_config(ls_config_t* config) {
     size_t i;
     for (i = 0; i < config->plugins_num; ++i)
     {
-        printf("  plugin_paths[%d] = %s\n", i, plugin_paths[i].asString().c_str());
+        LOG("  plugin_paths[%d] = %s\n", i, plugin_paths[i].asString().c_str());
         
         string path = plugin_paths[i].asString();
         int len = path.length();
@@ -57,7 +58,7 @@ int load_config(ls_config_t* config) {
 }
 
 int unload_config(ls_config_t* config) {
-    printf("==== unload_config()\n");
+    LOG("==== unload_config()\n");
     
     for (size_t i = 0; i < config->plugins_num; ++i)
     {
