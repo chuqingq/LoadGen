@@ -39,3 +39,4 @@ int log_terminate() {
 
     return 0;
 }
+
