@@ -137,27 +137,26 @@ static int ls_think_time(const void* args, ls_session_t* session, map<string, st
     return 0;
 }
 
-// ls_error_message
-static int ls_error_message_init(const Json::Value* json_args, void** args) {
-    LOGP("%s.ls_error_message_init()\n", plugin_name);
+// ls_output_message
+static int ls_output_message_init(const Json::Value* json_args, void** args) {
+    LOGP("%s.ls_output_message_init()\n", plugin_name);
 
     *args = (void*)json_args;
     return 0;
 }
 
-static int ls_error_message_terminate(void** args) {
-    LOGP("%s.ls_error_message_terminate()\n", plugin_name);
+static int ls_output_message_terminate(void** args) {
+    LOGP("%s.ls_output_message_terminate()\n", plugin_name);
 
     return 0;
 }
 
-static int ls_error_message(const void* args, ls_session_t* session, map<string, string> * vars) {
-    LOGP("%s.ls_error_message()\n", plugin_name);
+static int ls_output_message(const void* args, ls_session_t* session, map<string, string> * vars) {
+    LOGP("%s.ls_output_message()\n", plugin_name);
 
     Json::Value* json_args = (Json::Value*)args;
-    LOGP("    ls_error_message output: %s\n", (*json_args)["message"].asString().c_str());
+    LOGP("    ls_output_message output: %s\n", (*json_args)["message"].asString().c_str());
 
-    // (session->process)(session);
     process_session(session);
     return 0;
 }
@@ -189,7 +188,6 @@ static int ls_start_transaction(const void* args, ls_session_t* session, map<str
     system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
     state->trans.insert(make_pair(name, start));
 
-    // (session->process)(session);
     process_session(session);
     return 0;
 }
@@ -261,11 +259,11 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_t* plugin
     plugin_entry->apis[0].run = ls_think_time;
     plugin_entry->apis[0].terminate = ls_think_time_terminate;
 
-    // ls_error_message
-    plugin_entry->apis[1].name = (char*)"ls_error_message";
-    plugin_entry->apis[1].init = ls_error_message_init;
-    plugin_entry->apis[1].run = ls_error_message;
-    plugin_entry->apis[1].terminate = ls_error_message_terminate;
+    // ls_output_message
+    plugin_entry->apis[1].name = (char*)"ls_output_message";
+    plugin_entry->apis[1].init = ls_output_message_init;
+    plugin_entry->apis[1].run = ls_output_message;
+    plugin_entry->apis[1].terminate = ls_output_message_terminate;
 
     // ls_start_transaction
     plugin_entry->apis[2].name = (char*)"ls_start_transaction";

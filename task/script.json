@@ -25,7 +25,7 @@
     },
 
     {
-        "api": "ls_error_message",
+        "api": "ls_output_message",
         "plugin": "ls_plugin_system",
         "args": {
             "message": "hello world"
