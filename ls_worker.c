@@ -92,8 +92,8 @@ static int worker_start_new_session(ls_worker_t* w, int num) {
 
         s->cur_vars = master.vars;// TODO 拷贝
 
-        s->process = process_session;
-        s->finish = finish_session;
+        // s->process = process_session;
+        // s->finish = finish_session;
 
         w->sessions->push_back(s);
 

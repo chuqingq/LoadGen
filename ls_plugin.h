@@ -30,7 +30,7 @@ typedef struct ls_plugin_api_s {
 typedef struct ls_plugin_entry_s {
     // 1.plugin_id/name
     size_t plugin_index;
-    char* plugin_name;
+    const char* plugin_name;
 
     // 2.callbacks
     int (*master_init)(struct ls_master_s* master);

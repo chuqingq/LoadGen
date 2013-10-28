@@ -26,8 +26,8 @@ typedef struct ls_session_s {
 
     ls_task_var_t cur_vars;
 
-    ls_session_process_t process;// TODO
-    ls_session_process_t finish;// TODO
+    // ls_session_process_t process;// TODO
+    // ls_session_process_t finish;// TODO
 } ls_session_t;
 
 
