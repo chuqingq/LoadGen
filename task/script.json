@@ -1,25 +1,17 @@
 [
     {
-        "api": "ls_think_time",
-        "plugin": "ls_plugin_system",
-        "args": {
-            "time": 3000
-        }
-    },
-
-    {
-        "api": "ls_error_message",
-        "plugin": "ls_plugin_system",
-        "args": {
-            "message": "hello world"
-        }
-    },
-
-    {
         "api": "ls_start_transaction",
         "plugin": "ls_plugin_system",
         "args": {
             "transaction_name": "trans_1"
+        }
+    },
+
+    {
+        "api": "ls_think_time",
+        "plugin": "ls_plugin_system",
+        "args": {
+            "time": 3000
         }
     },
 
@@ -29,6 +21,14 @@
         "args": {
             "transaction_name": "trans_1",
             "status": "pass"
+        }
+    },
+
+    {
+        "api": "ls_error_message",
+        "plugin": "ls_plugin_system",
+        "args": {
+            "message": "hello world"
         }
     }
 ]

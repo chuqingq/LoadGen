@@ -112,7 +112,7 @@ static int ls_think_time_terminate(void** args) {
 }
 
 static void timer_cb(uv_timer_t* handle, int status) {
-    LOGP(" %s.timer_cb()\n", plugin_name);
+    LOGP("  %s.timer_cb()\n", plugin_name);
 
     // 根据handle获取到session
     ls_session_t* s = (ls_session_t*) handle->data;
@@ -183,9 +183,11 @@ static int ls_start_transaction(const void* args, ls_session_t* session, map<str
     Json::Value* json_args = (Json::Value*)args;
     string name = (*json_args)["transaction_name"].asString();
 
-    uint64_t now = uv_now(session->worker->worker_loop);
+    uint64_t start = uv_now(session->worker->worker_loop);
+    LOGP("  start: %llu\n", start);
+
     system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
-    state->trans.insert(make_pair(name, now));
+    state->trans.insert(make_pair(name, start));
 
     // (session->process)(session);
     process_session(session);
@@ -216,9 +218,13 @@ static int ls_end_transaction(const void* args, ls_session_t* session, map<strin
 
     system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
     uint64_t start = state->trans[name];
+    LOGP("  start:%llu, stop:%llu\n", start, stop);
+    state->trans.erase(name);
 
     LOGP("  ls_end_transaction(): %s: %lld\n", name.c_str(), stop-start);
     // TODO 向worker统计
+
+    process_session(session);
     return 0;
 }
 
