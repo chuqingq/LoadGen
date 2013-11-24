@@ -1,17 +1,28 @@
 ﻿
 ## plan
 
+TODO statistics
+TODO system插件已经能够统计事务，但是master要怎么计算并处理？？
+    需要system在master_init中在master注册回调：每秒获取所有worker的数据（需要加锁）
+    并“上报”（如何上报）
+    事务统计项：当前一秒：通过失败个数
+        各个事务响应时延：{TransName, Pass, Duration}
+
 HUNG 暂时不处理。有了plugin_declare()貌似就不用plugin_demo plugin_load()了
 TODO The plugins need worker's notify_master() to report stats in API
-TODO async interface between worker and master
+TODO async interface between worker and master // master和worker互相通知时data设置为接口int async_cb(ls_worker_t*)
 
 TODO callmodel avg
 TODO callmodel complex
-TODO statistics
-TODO UI
-TODO master.workers改为数组，动态申请
-TODO plugin从vector改为数组，states也改为数组
 
+TODO 脚本中如何支持for/while/if这种逻辑分支和循环
+
+TODO 集合点ls_rendevous
+    master的state做变量，达到目标后。。。
+
+TODO 在util中重定义malloc和free，检查是否有内存泄漏
+
+TODO front-UI
 TODO vars
         
 worker中区分只读和改动的内容，只读的内容尽量使用master的；改动的内容按session保存，plugin的个数固定
