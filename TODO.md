@@ -34,10 +34,10 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
 ## static
 
     master
-        config // DONE vector<string>改为char*。需要unload_config时释放
-        plugins // name, 回调、api、统计项, setting. all readonly
+        config // config of master, 'config.json'. load_config/unload_config. TODO whether json?
+        plugins // name, callback, api, stats, setting
 
-        task_callmodel // 只有master关注
+        task_callmodel // master cares only
 
         task_setting // Json::Value.plugins_load_task_setting时调用plugin_task_init分发到plugin->settings
         task_vars // TODO 9

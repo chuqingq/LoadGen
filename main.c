@@ -29,7 +29,7 @@ int main() {
         LOG("ERROR failed to load_config.\n");
         return -1;
     }
-    
+
     // 加载协议 // master_init
     if (load_plugins(&master) < 0) {
         LOG("ERROR failed to load_plugins.\n");

@@ -1,5 +1,6 @@
 #include "ls_logger.h"
 
+// TODO add static before ??
 FILE* _loadgen_log = NULL;
 FILE* _plugin_log = NULL;
 
