@@ -80,7 +80,7 @@ int plugins_script_init(ls_task_setting_t* setting,
             return -1;
         }
 
-        if ((script_entry->api->init)(&script_entry->json_args, &script_entry->args) < 0)
+        if ((script_entry->api->init)((const JSONNODE**) &script_entry->json_args, &script_entry->args) < 0)
         {
             LOG("  api %s init error\n", script_entry->api_name.c_str());
             return -1;

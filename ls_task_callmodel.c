@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stddef.h>
+#include <string.h>
 
 #include <cassert>
 #include <fstream>
@@ -14,43 +16,110 @@ using namespace std;
 int load_task_callmodel(ls_task_callmodel_t* callmodel) {
     LOG("load_task_callmodel()\n");
     const char* cm_file = "task/callmodel.json";
-    ifstream ifs;
+    // ifstream ifs;
     
-    ifs.open(cm_file);
-    assert(ifs.is_open());
+    // ifs.open(cm_file);
+    // assert(ifs.is_open());
 
-    Json::Reader reader;
-    Json::Value root;
+    // Json::Reader reader;
+    // Json::Value root;
 
-    assert(reader.parse(ifs, root, false));
+    // assert(reader.parse(ifs, root, false));
 
-    // type
-    if (root["type"].asString() == string("CALLMODEL_VUSER"))
+    // // type
+    // if (root["type"].asString() == string("CALLMODEL_VUSER"))
+    // {
+    //     callmodel->type = CALLMODEL_VUSER;
+    // }
+    // else
+    // {
+    //     callmodel->type = CALLMODEL_CAPS;
+    // }
+
+    // // init // TODO 没有做有效性校验
+    // callmodel->init = root["init"].asInt();
+    // LOG("  init=%d\n", callmodel->init);
+
+    // // accelerate
+    // callmodel->accelerate = root["accelerate"].asInt();
+    // LOG("  accelerate=%d\n", callmodel->accelerate);
+
+    // // dest
+    // callmodel->dest = root["dest"].asInt();
+    // LOG("  dest=%d\n", callmodel->dest);
+
+    // // duration
+    // callmodel->duration = root["duration"].asInt() * 1000;
+    // LOG("  duration=%d\n", callmodel->duration);
+
+    // // current 当前设置为0，第一次直接控制时设置为init值
+    // callmodel->current = 0;
+
+    char* buf;
+    long len;
+    FILE* f = fopen(cm_file, "r");
+    if (f == NULL)
     {
-        callmodel->type = CALLMODEL_VUSER;
+        printf("Failed to open cm_file: %s\n", cm_file);// TODO errno
+        return -1;
     }
-    else
+
+    fseek(f, 0, SEEK_END);
+    len = ftell(f);
+    rewind(f);
+
+    buf = (char*) malloc(len + 1);
+    if (buf == NULL)
     {
-        callmodel->type = CALLMODEL_CAPS;
+        printf("Failed to malloc for cm_file\n");// TODO errno
+        return -1;
     }
 
-    // init // TODO 没有做有效性校验
-    callmodel->init = root["init"].asInt();
-    LOG("  init=%d\n", callmodel->init);
+    len = fread(buf, 1, len, f);
+    buf[len] = '\0';
 
-    // accelerate
-    callmodel->accelerate = root["accelerate"].asInt();
-    LOG("  accelerate=%d\n", callmodel->accelerate);
+    JSONNODE* n = json_parse(buf);
 
-    // dest
-    callmodel->dest = root["dest"].asInt();
-    LOG("  dest=%d\n", callmodel->dest);
-
-    // duration
-    callmodel->duration = root["duration"].asInt() * 1000;
-    LOG("  duration=%d\n", callmodel->duration);
-
-    // current 当前设置为0，第一次直接控制时设置为init值
+    for (JSONNODE_ITERATOR i = json_begin(n); i != json_end(n); ++i)
+    {
+        json_char* name = json_name(*i);
+        if (strcmp(name, "type") == 0)
+        {
+            json_char* type = json_as_string(*i);
+            if (strcmp(type, "CALLMODEL_VUSER") == 0)
+            {
+                callmodel->type = CALLMODEL_VUSER;
+            }
+            else if (strcmp(type, "CALLMODEL_CAPS"))
+            {
+                callmodel->type = CALLMODEL_CAPS;
+            }
+            else
+            {
+                printf("CALLMODEL type invalid\n");
+            }
+        }
+        else if (strcmp(name, "init") == 0)
+        {
+            callmodel->init = json_as_int(*i);
+        }
+        else if (strcmp(name, "accelerate") == 0)
+        {
+            callmodel->accelerate = json_as_int(*i);
+        }
+        else if (strcmp(name, "dest") == 0)
+        {
+            callmodel->dest = json_as_int(*i);
+        }
+        else if (strcmp(name, "duration") == 0)
+        {
+            callmodel->duration = json_as_int(*i);
+        }
+        else
+        {
+            printf("call_model name invalid\n");
+        }
+    }
     callmodel->current = 0;
 
     return 0;

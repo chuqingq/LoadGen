@@ -6,7 +6,8 @@
 using namespace std;
 
 #include "lib/libuv/include/uv.h"
-#include "jsoncpp/json/json.h"
+// #include "jsoncpp/json/json.h"
+#include "lib/libjson/include/libjson.h"
 
 #include "ls_worker.h"
 #include "ls_session.h"
@@ -22,7 +23,8 @@ struct ls_plugin_entry_s;
 typedef struct ls_plugin_api_s {
     char* name;
 
-    int (*init)(const Json::Value* json_args, void** args);
+    // int (*init)(const Json::Value* json_args, void** args);
+    int (*init)(const JSONNODE** json_args, void** args);
     int (*run)(const void* args, ls_session_t* session, map<string, string> * vars);
     int (*terminate)(void** args);
 } ls_plugin_api_t;

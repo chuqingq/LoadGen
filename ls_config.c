@@ -5,7 +5,8 @@
 #include <fstream>
 using namespace std;
 
-#include "jsoncpp/json/json.h"
+// #include "jsoncpp/json/json.h"
+#include "lib/libjson/include/libjson.h"
 
 #include "ls_utils.h"
 #include "ls_config.h"
@@ -90,7 +91,7 @@ int load_config(ls_config_t* config) {
 
         if (strcmp(name, "workers_num") == 0)
         {
-            config->worker_num = json_as_int(*i);
+            config->workers_num = json_as_int(*i);
         }
         else if (strcmp(name, "plugin_paths") == 0)
         {
