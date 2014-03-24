@@ -45,6 +45,7 @@ typedef intptr_t ssize_t;
 #endif
 
 #include "tree.h"
+#include "ngx-queue.h"
 
 #define MAX_PIPENAME_LEN 256
 
@@ -206,6 +207,8 @@ typedef struct uv_buf_t {
 
 typedef int uv_file;
 
+typedef struct _stati64 uv_statbuf_t;
+
 typedef SOCKET uv_os_sock_t;
 
 typedef HANDLE uv_thread_t;
@@ -275,8 +278,6 @@ RB_HEAD(uv_timer_tree_s, uv_timer_s);
   HANDLE iocp;                                                                \
   /* The current time according to the event loop. in msecs. */               \
   uint64_t time;                                                              \
-  /* GetTickCount() result when the event loop time was last updated. */      \
-  DWORD last_tick_count;                                                      \
   /* Tail of a single-linked circular queue of pending reqs. If the queue */  \
   /* is empty, tail_ is NULL. If there is only one item, */                   \
   /* tail_->next_req == tail_ */                                              \
