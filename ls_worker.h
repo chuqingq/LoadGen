@@ -4,7 +4,7 @@
 #include <map>
 using namespace std;
 
-#include "libuv/include/uv.h"
+#include "lib/libuv/include/uv.h"
 
 #include "ls_task_script.h"
 #include "ls_task_setting.h"

@@ -7,7 +7,7 @@ using namespace std;
 #include "ls_worker.h"
 #include "ls_task_script.h"
 #include "ls_task_var.h"
-#include "libuv/include/uv.h"
+#include "lib/libuv/include/uv.h"
 
 struct ls_task_script_s;
 struct ls_worker_s;

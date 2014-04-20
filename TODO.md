@@ -34,10 +34,11 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
 ## static
 
     master
-        config // config of master, 'config.json'. load_config/unload_config. TODO whether json?
-        plugins // name, callback, api, stats, setting
+        config // config of master, 'config.json'. load_config/unload_config. 
+                // TODO 去掉plugin信息，加载task脚本时再加载plugin
+        plugins // name, callback, api, stats, setting // TODO 只保留相关的，加载后应该就不用了
 
-        task_callmodel // master cares only
+        task_callmodel // master关注。只支持主叫（线形组合）和被叫（被拉起session）
 
         task_setting // Json::Value.plugins_load_task_setting时调用plugin_task_init分发到plugin->settings
         task_vars // TODO 9

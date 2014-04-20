@@ -1,7 +1,7 @@
 #ifndef LS_MASTER_H_
 #define LS_MASTER_H_
 
-#include "libuv/include/uv.h"
+#include "lib/libuv/include/uv.h"
 
 #include "ls_worker.h"
 #include "ls_config.h"
