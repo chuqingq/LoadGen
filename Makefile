@@ -5,7 +5,7 @@ OBJS=ls_config.o ls_master.o ls_session.o ls_task_script.o ls_task_var.o \
 loadgen: $(OBJS)
 	g++ -o $@ $^ -Llib/libuv/lib -luv -Llib/libjson/lib -ljson -DNDEBUG -lpthread -ldl -g -Wall -Werror -Wl,-export-dynamic
 
-%.o: %.c
+%.o: %.c %.h
 	g++ -c $< -o $@ -DNDEBUG -g -Wall -Werror -Wl,-export-dynamic
 
 clean:
