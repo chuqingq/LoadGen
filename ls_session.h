@@ -1,5 +1,4 @@
-#ifndef LS_SESSION_H_
-#define LS_SESSION_H_
+#pragma once
 
 #include <map>
 using namespace std;
@@ -31,5 +30,3 @@ typedef struct ls_session_s {
 int process_session(ls_session_t* session);
 
 int finish_session(ls_session_t* session);
-
-#endif

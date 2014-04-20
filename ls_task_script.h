@@ -1,5 +1,4 @@
-#ifndef LS_TASK_SCRIPT_H_
-#define LS_TASK_SCRIPT_H_
+#pragma once
 
 #include <string>
 #include <vector>
@@ -34,5 +33,3 @@ typedef struct ls_task_script_s {
 
 int load_task_script(ls_task_script_t* script);
 int unload_task_script(ls_task_script_t* script);
-
-#endif

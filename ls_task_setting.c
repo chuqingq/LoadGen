@@ -40,7 +40,7 @@ int load_task_setting(ls_task_setting_t* setting) {
     FILE* f = fopen(setting_file, "r");
     if (f == NULL)
     {
-        printf("Failed to open setting_file: %s\n", setting_file);// TODO errno
+        LOGE("Failed to open setting_file: %s\n", setting_file);// TODO errno
         return -1;
     }
 
@@ -51,7 +51,7 @@ int load_task_setting(ls_task_setting_t* setting) {
     buf = (char*) malloc(len + 1);
     if (buf == NULL)
     {
-        printf("Failed to malloc for setting_file\n");// TODO errno
+        LOGE("Failed to malloc for setting_file\n");// TODO errno
         return -1;
     }
 

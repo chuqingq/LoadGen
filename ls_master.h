@@ -1,5 +1,4 @@
-#ifndef LS_MASTER_H_
-#define LS_MASTER_H_
+#pragma once
 
 #include "lib/libuv/include/uv.h"
 
@@ -38,5 +37,3 @@ int stop_workers(ls_master_t* master);// -> worker_stop()
 int reap_workers(ls_master_t* master);// -> worker_reap()
 
 int start_new_session(int num);// TODO change name to master_do_callmodel() ??
-
-#endif

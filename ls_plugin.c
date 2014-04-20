@@ -62,6 +62,7 @@ int plugins_script_init(ls_task_setting_t* setting,
     ls_task_script_entry_t* script_entry;
     for (size_t i = 0; i < script->entries_num; ++i)
     {
+        LOG(" script_entry[%u]\n", i);
         // find plugin_name of script_entry in plugins
         script_entry = script->entries + i;
         ls_plugin_t* plugin = find_entry_by_name(script_entry->plugin_name.c_str(), plugins, num_plugins);

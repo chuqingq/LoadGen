@@ -1,5 +1,4 @@
-#ifndef LS_TASK_SETTING_H_
-#define LS_TASK_SETTING_H_
+#pragma once
 
 #include <string>
 #include <map>
@@ -15,5 +14,3 @@ typedef JSONNODE* ls_task_setting_t;// TODO 需要修改函数实现
 
 int load_task_setting(ls_task_setting_t* setting);
 int unload_task_setting(ls_task_setting_t* setting);
-
-#endif

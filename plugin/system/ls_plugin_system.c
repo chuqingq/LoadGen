@@ -38,22 +38,22 @@ const static char* plugin_name = "ls_plugin_system";
 static size_t plugin_id;
 
 
-static int system_trans_add(system_trans_t* worker_trans, const char* trans_name, int trans_flag, uint64_t trans_duration) {
-    // TODO
-    system_trans_t::iterator it = worker_trans->find(trans_name);
-    if (it != worker_trans->end())
-    {
-        printf("ERROR sss\n");
-        return -1;
-    }
+// static int system_trans_add(system_trans_t* worker_trans, const char* trans_name, int trans_flag, uint64_t trans_duration) {
+//     // TODO
+//     system_trans_t::iterator it = worker_trans->find(trans_name);
+//     if (it != worker_trans->end())
+//     {
+//         printf("ERROR system_trans_add\n");
+//         return -1;
+//     }
 
-    it->second.count++;
-    it->second.total += trans_duration;
+//     it->second.count++;
+//     it->second.total += trans_duration;
 
-    printf("  avg = %llu\n", it->second.total/it->second.count);
+//     printf("  avg = %llu\n", it->second.total/it->second.count);
 
-    return 0;
-}
+//     return 0;
+// }
 
 // ls_start_transaction
 // static int ls_start_transaction_init(const Json::Value* json_args, void** args) {
@@ -73,8 +73,9 @@ static int ls_start_transaction_terminate(void** args) {
 static int ls_start_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
     LOGP("%s.ls_start_transaction()\n", plugin_name);
 
-    JSONNODE** json_args = (JSONNODE**)args;
-    string name = (*json_args)["transaction_name"].asString();
+    // JSONNODE** json_args = (JSONNODE**)args;
+    // string name = (*json_args)["transaction_name"].asString();
+    string name = string("transaction_name_todo");
 
     uint64_t start = uv_now(session->worker->worker_loop);
     LOGP("  start: %llu\n", start);
@@ -103,8 +104,9 @@ static int ls_end_transaction_terminate(void** args) {
 static int ls_end_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
     LOGP("%s.ls_end_transaction()\n", plugin_name);
 
-    JSONNODE** json_args = (JSONNODE**)args;
-    string name = (*json_args)["transaction_name"].asString();
+    // JSONNODE** json_args = (JSONNODE**)args;
+    // string name = (*json_args)["transaction_name"].asString();
+    string name = "transaction_name_todo";
 
     uint64_t stop = uv_now(session->worker->worker_loop);
 
@@ -115,8 +117,8 @@ static int ls_end_transaction(const void* args, ls_session_t* session, map<strin
 
     LOGP("  ls_end_transaction(): %s: %lld\n", name.c_str(), stop-start);
     // TODO 向worker统计
-    ls_worker_t* w = session->worker;
-    system_worker_state_t* workerstate = w->plugin_states[plugin_id];
+    // ls_worker_t* w = session->worker;
+    // system_worker_state_t* workerstate = w->plugin_states[plugin_id];
 
 
     process_session(session);
@@ -171,15 +173,15 @@ static int worker_init(struct ls_worker_s* w) {
 
     state->trans = system_trans_t();
 
-    w->plugin_states[plugin_id] = (void*)state;
+    // w->plugin_states[plugin_id] = (void*)state;
     return 0;
 }
 
 static int worker_terminate(struct ls_worker_s* w) {
     LOGP("%s.worker_terminate()\n", plugin_name);
 
-    free(w->plugin_states[plugin_id]);
-    w->plugin_states[plugin_id] = NULL;
+    // free(w->plugin_states[plugin_id]);
+    // w->plugin_states[plugin_id] = NULL;
     return 0;
 }
 
@@ -212,7 +214,8 @@ static int plugin_session_terminate(ls_session_t* session) {
 static int ls_think_time_init(const JSONNODE** json_args, void** args) {
     LOGP("%s.ls_think_time_init()\n", plugin_name);
 
-    int time = (*json_args)["time"].asInt();
+    // int time = (*json_args)["time"].asInt();
+    int time = 1000;
     *args = (void*)time;
     LOGP("  time=%d\n", time);
     return 0;
@@ -267,8 +270,9 @@ static int ls_output_message_terminate(void** args) {
 static int ls_output_message(const void* args, ls_session_t* session, map<string, string> * vars) {
     LOGP("%s.ls_output_message()\n", plugin_name);
 
-    JSONNODE** json_args = (JSONNODE**)args;
-    LOGP("    ls_output_message output: %s\n", (*json_args)["message"].asString().c_str());
+    // JSONNODE** json_args = (JSONNODE**)args;
+    // LOGP("    ls_output_message output: %s\n", (*json_args)["message"].asString().c_str());
+    LOGP("    ls_output_message output todo\n");
 
     process_session(session);
     return 0;

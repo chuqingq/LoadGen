@@ -1,5 +1,4 @@
-#ifndef LS_WORKER_H_
-#define LS_WORKER_H_
+#pragma once
 
 #include <map>
 using namespace std;
@@ -38,5 +37,3 @@ int worker_do_callmodel(ls_worker_t* w);// async callbacks
 
 int worker_set_callmodel_delta(ls_worker_t* w, int delta);
 int worker_get_callmodel_delta(ls_worker_t* w, int* delta);
-
-#endif

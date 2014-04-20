@@ -1,5 +1,4 @@
-#ifndef LS_PLUGIN_H_
-#define LS_PLUGIN_H_
+#pragma once
 
 #include <string>
 #include <map>
@@ -23,7 +22,6 @@ struct ls_plugin_entry_s;
 typedef struct ls_plugin_api_s {
     char* name;
 
-    // int (*init)(const Json::Value* json_args, void** args);
     int (*init)(const JSONNODE** json_args, void** args);
     int (*run)(const void* args, ls_session_t* session, map<string, string> * vars);
     int (*terminate)(void** args);
@@ -64,5 +62,3 @@ int plugins_script_terminate(ls_task_setting_t* settings, struct ls_task_script_
 
 int plugins_task_init(ls_plugin_t* plugins, size_t num_plugins);
 int plugins_task_terminate(ls_plugin_t* plugins, size_t num_plugins);
-
-#endif

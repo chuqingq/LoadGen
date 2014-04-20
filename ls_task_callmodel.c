@@ -60,7 +60,7 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
     FILE* f = fopen(cm_file, "r");
     if (f == NULL)
     {
-        printf("Failed to open cm_file: %s\n", cm_file);// TODO errno
+        LOGE("Failed to open callmodel file: %s\n", cm_file);// TODO errno
         return -1;
     }
 
@@ -71,7 +71,7 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
     buf = (char*) malloc(len + 1);
     if (buf == NULL)
     {
-        printf("Failed to malloc for cm_file\n");// TODO errno
+        LOGE("Failed to malloc for call model\n");// TODO errno
         return -1;
     }
 
@@ -96,7 +96,7 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
             }
             else
             {
-                printf("CALLMODEL type invalid\n");
+                LOGE("CALLMODEL type invalid\n");
             }
         }
         else if (strcmp(name, "init") == 0)
@@ -117,7 +117,7 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
         }
         else
         {
-            printf("call_model name invalid\n");
+            LOGE("call_model name invalid\n");
         }
     }
     callmodel->current = 0;

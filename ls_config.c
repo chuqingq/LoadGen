@@ -61,7 +61,7 @@ int load_config(ls_config_t* config) {
     FILE* f = fopen(config_file, "r");
     if (f == NULL)
     {
-        printf("Failed to open config_file: %s\n", config_file);// TODO errno
+        LOGE("Failed to open config_file: %s\n", config_file);// TODO errno
         return -1;
     }
 
@@ -72,7 +72,7 @@ int load_config(ls_config_t* config) {
     buf = (char*) malloc(len + 1);
     if (buf == NULL)
     {
-        printf("Failed to malloc for config_file\n");// TODO errno
+        LOGE("Failed to malloc for config_file\n");// TODO errno
         return -1;
     }
 

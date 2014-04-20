@@ -49,7 +49,7 @@ int load_task_script(ls_task_script_t* script) {
     FILE* f = fopen(script_file, "r");
     if (f == NULL)
     {
-        printf("Failed to open script_file: %s\n", script_file);// TODO errno
+        LOGE("Failed to open script_file: %s\n", script_file);// TODO errno
         return -1;
     }
 
@@ -60,7 +60,7 @@ int load_task_script(ls_task_script_t* script) {
     buf = (char*) malloc(len + 1);
     if (buf == NULL)
     {
-        printf("Failed to malloc for script_file\n");// TODO errno
+        LOGE("Failed to malloc for script_file\n");// TODO errno
         return -1;
     }
 
@@ -75,7 +75,7 @@ int load_task_script(ls_task_script_t* script) {
 
     ls_task_script_entry_t* entry;
     int ind = 0;
-    for (JSONNODE_ITERATOR i = json_begin(root); i != json_end(root); ++i)
+    for (JSONNODE_ITERATOR i = json_begin(root); i != json_end(root); ++i, ++ind)
     {
         entry = script->entries + ind;
         JSONNODE* c = *i;
@@ -86,12 +86,12 @@ int load_task_script(ls_task_script_t* script) {
             if (strcmp(name, "api") == 0)
             {
                 entry->api_name = string(json_as_string(*j));
-                printf("api_name: %s\n", entry->api_name.c_str());
+                LOG("  api: %s, ", entry->api_name.c_str());
             }
             else if (strcmp(name, "plugin") == 0)
             {
                 entry->plugin_name = string(json_as_string(*j));
-                printf("plugin_name: %s\n", entry->plugin_name.c_str());
+                LOG("  plugin: %s\n", entry->plugin_name.c_str());
             }
             else if (strcmp(name, "args") == 0)
             {
@@ -99,7 +99,7 @@ int load_task_script(ls_task_script_t* script) {
             }
             else
             {
-                printf("script_file not support %s\n", name);
+                LOGE("script_file node not support: %s\n", name);
                 return -1;
             }
         }

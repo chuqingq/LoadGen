@@ -30,7 +30,7 @@ int main() {
         return -1;
     }
 
-    // 加载协议 // master_init
+    // 加载协议 // master_init()
     if (load_plugins(&master) < 0) {
         LOG("ERROR failed to load_plugins.\n");
         return -1;
@@ -81,7 +81,7 @@ int main() {
         return -1;
     }
 
-    LOG("task will start...\n");
+    LOG("==== task is starting...\n");
 
     // ----------------  启动呼叫
     // master按照呼叫模型分配呼叫

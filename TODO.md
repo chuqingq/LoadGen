@@ -80,7 +80,7 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
         setting // Json::Value
         script // Array
         vars // TODO
-    plugin_load_task
+    plugin_load_task // 让plugin对task进行预处理
         setting // void**
         script // api, args
         vars
@@ -95,6 +95,10 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
     unload_plugins
     unload_config
     
+## TODO
+
+增加Makefile提升编译速度
+
 ## loadgen_stats
 
 统计模块的设计

@@ -1,6 +1,4 @@
-#ifndef LS_TASK_CALLMODEL_H_
-#define LS_TASK_CALLMODEL_H_
-
+#pragma once
 
 #include "lib/libuv/include/uv.h"
 
@@ -30,5 +28,3 @@ typedef struct ls_task_callmodel_s {
 int load_task_callmodel(ls_task_callmodel_t* callmodel);
 
 int do_task_callmodel(ls_task_callmodel_t* callmodel);
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef LS_CONFIG_H_
-#define LS_CONFIG_H_
+#pragma once
 
 typedef struct {
     int workers_num;
@@ -9,5 +8,3 @@ typedef struct {
 
 int load_config(ls_config_t* config);
 int unload_config(ls_config_t* config);
-
-#endif
