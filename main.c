@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "lib/libuv/include/uv.h"
 
 #include "ls_utils.h"
@@ -18,8 +16,7 @@ int main() {
     master.master_loop = uv_default_loop();
 
     // logger
-    if (log_init() < 0)
-    {
+    if (log_init() < 0) {
         return -1;
     }
 
@@ -99,39 +96,35 @@ int main() {
     }
 
     // task_terminate()
-    if (plugins_task_terminate(master.plugins, master.num_plugins) < 0)
-    {
+    if (plugins_task_terminate(master.plugins, master.num_plugins) < 0) {
         LOG("ERROR failed to plugins_task_terminate()\n");
         return -1;
     }
 
     // 任务脚本 // script_terminate() and api.terminate()
-    if (plugins_script_terminate(&master.settings, &master.script, master.plugins, master.num_plugins) < 0) // task_terminate()
-    {
+    if (plugins_script_terminate(&master.settings, &master.script, 
+        master.plugins, master.num_plugins) < 0) {
         LOG("ERROR failed to plugins_script_terminate()\n");
         return -1;
     }
 
-    if (unload_task_script(&master.script) < 0)
-    {
+    if (unload_task_script(&master.script) < 0) {
         LOG("ERROR failed to unload_task_script()\n");
         return -1;
     }
 
-    if (unload_plugins(&master) < 0) // master_terminate
-    {
+    // master_terminate
+    if (unload_plugins(&master) < 0) {
         LOG("ERROR failed to unload_plugins()\n");
         return -1;
     }
 
-    if (unload_config(&master.config) < 0)
-    {
+    if (unload_config(&master.config) < 0) {
         LOG("ERROR failed to unload_config()\n");
         return -1;
     }
 
-    if (log_terminate() < 0)
-    {
+    if (log_terminate() < 0) {
         return -1;
     }
 
