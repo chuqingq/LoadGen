@@ -20,7 +20,7 @@ struct ls_task_script_s;
 struct ls_plugin_entry_s;
 
 typedef struct ls_plugin_api_s {
-    char* name;
+    const char* name;
 
     int (*init)(const JSONNODE** json_args, void** args);
     int (*run)(const void* args, ls_session_t* session, map<string, string> * vars);
