@@ -139,7 +139,7 @@ int reap_workers(ls_master_t* master) {
     for (size_t i = 0; i< master->num_workers; ++i)
     {
         if (worker_reap(master->workers + i) < 0) {
-            LOG("ERROR failed to worker_reap(%d)\n", i);
+            LOG("ERROR failed to worker_reap(%zu)\n", i);
             return -1;
         }
     }
