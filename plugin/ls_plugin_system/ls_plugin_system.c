@@ -115,6 +115,82 @@ static int ls_end_transaction(const void* args, void* sessionstate, map<string, 
 }
 
 
+// ls_think_time
+// static int ls_think_time_init(const S::Value* json_args, void** args) {
+static int ls_think_time_init(const JSONNODE* json_args, void** args) {
+    LOGP("%s.ls_think_time_init()\n", plugin_name);
+
+    // int time = (*json_args)["time"].asInt();
+    int time = 1000;
+    *args = (void*)time;
+    LOGP("  time=%d\n", time);
+    return 0;
+}
+
+static int ls_think_time_terminate(void** args) {
+    LOGP("%s.ls_think_time_terminate()\n", plugin_name);
+
+    return 0;
+}
+
+static void timer_cb(uv_timer_t* handle, int status) {
+    LOGP("  %s.timer_cb()\n", plugin_name);
+
+    // 根据handle获取到session
+    ls_session_t* s = (ls_session_t*) handle->data;
+    uv_timer_stop(handle);
+    delete handle;
+
+    process_session(s);
+}
+
+// static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
+static int ls_think_time(const void* args, void* sessionstate, map<string, string> * vars) {
+    int time = (int)args;
+    LOGP("%s.ls_think_time(%d)\n", plugin_name, time);
+    LOGP("  ignore_think_time=%d\n", (int)system_setting.ignore_think_time);
+
+	system_session_state_t* state = (system_session_state_t*)sessionstate;
+
+    uv_timer_t* timer = new uv_timer_t;// delete at line 77
+    ls_worker_t* w = (ls_worker_t*)state->session->worker;
+    uv_timer_init(w->worker_loop, timer);
+
+    timer->data = state->session;
+    uv_timer_start(timer, timer_cb, time, 0);
+
+    return 0;
+}
+
+// ls_output_message
+static int ls_output_message_init(const JSONNODE* json_args, void** args) {
+    LOGP("%s.ls_output_message_init()\n", plugin_name);
+
+    *args = (void*)json_args;
+    return 0;
+}
+
+static int ls_output_message_terminate(void** args) {
+    LOGP("%s.ls_output_message_terminate()\n", plugin_name);
+
+    return 0;
+}
+
+// static int ls_output_message(const void* args, ls_session_t* session, map<string, string> * vars) {
+static int ls_output_message(const void* args, void* sessionstate, map<string, string> * vars) {
+    LOGP("%s.ls_output_message()\n", plugin_name);
+
+    system_session_state_t* state = (system_session_state_t*)sessionstate;
+
+    // JSONNODE** json_args = (JSONNODE**)args;
+    // LOGP("    ls_output_message output: %s\n", (*json_args)["message"].asString().c_str());
+    LOGP("    ls_output_message output todo\n");
+
+    process_session(state->session);
+    return 0;
+}
+
+
 static int master_init(struct ls_master_s*, const JSONNODE* setting) {
     LOGP("%s.master_init()\n", plugin_name);
     return 0;
@@ -196,81 +272,6 @@ static int plugin_session_terminate(ls_session_t* session) {
     free(session->plugin_states[plugin_id]);
     session->plugin_states[plugin_id] = NULL;
 
-    return 0;
-}
-
-// ls_think_time
-// static int ls_think_time_init(const S::Value* json_args, void** args) {
-static int ls_think_time_init(const JSONNODE* json_args, void** args) {
-    LOGP("%s.ls_think_time_init()\n", plugin_name);
-
-    // int time = (*json_args)["time"].asInt();
-    int time = 1000;
-    *args = (void*)time;
-    LOGP("  time=%d\n", time);
-    return 0;
-}
-
-static int ls_think_time_terminate(void** args) {
-    LOGP("%s.ls_think_time_terminate()\n", plugin_name);
-
-    return 0;
-}
-
-static void timer_cb(uv_timer_t* handle, int status) {
-    LOGP("  %s.timer_cb()\n", plugin_name);
-
-    // 根据handle获取到session
-    ls_session_t* s = (ls_session_t*) handle->data;
-    uv_timer_stop(handle);
-    delete handle;
-
-    process_session(s);
-}
-
-// static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
-static int ls_think_time(const void* args, void* sessionstate, map<string, string> * vars) {
-    int time = (int)args;
-    LOGP("%s.ls_think_time(%d)\n", plugin_name, time);
-    LOGP("  ignore_think_time=%d\n", (int)system_setting.ignore_think_time);
-
-	system_session_state_t* state = (system_session_state_t*)sessionstate;
-
-    uv_timer_t* timer = new uv_timer_t;// delete at line 77
-    ls_worker_t* w = (ls_worker_t*)state->session->worker;
-    uv_timer_init(w->worker_loop, timer);
-
-    timer->data = state->session;
-    uv_timer_start(timer, timer_cb, time, 0);
-
-    return 0;
-}
-
-// ls_output_message
-static int ls_output_message_init(const JSONNODE* json_args, void** args) {
-    LOGP("%s.ls_output_message_init()\n", plugin_name);
-
-    *args = (void*)json_args;
-    return 0;
-}
-
-static int ls_output_message_terminate(void** args) {
-    LOGP("%s.ls_output_message_terminate()\n", plugin_name);
-
-    return 0;
-}
-
-// static int ls_output_message(const void* args, ls_session_t* session, map<string, string> * vars) {
-static int ls_output_message(const void* args, void* sessionstate, map<string, string> * vars) {
-    LOGP("%s.ls_output_message()\n", plugin_name);
-
-    system_session_state_t* state = (system_session_state_t*)sessionstate;
-
-    // JSONNODE** json_args = (JSONNODE**)args;
-    // LOGP("    ls_output_message output: %s\n", (*json_args)["message"].asString().c_str());
-    LOGP("    ls_output_message output todo\n");
-
-    process_session(state->session);
     return 0;
 }
 
