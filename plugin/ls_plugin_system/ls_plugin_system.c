@@ -32,55 +32,46 @@ typedef struct {
 typedef struct {
 	ls_session_t* session;
     map<string, uint64_t> trans;
-} system_session_state_t;// TODO session
-
-// ls_system_state_t system_state;
+} system_session_state_t;
 
 const static char* plugin_name = "ls_plugin_system";
 static size_t plugin_id;
 
-// static uv_timer trans_stats_timer;
 static void collect_trans_stats(uv_timer_t* timer, int status) {
     // TODO
     printf("collect_trans_stats\n");
 }
 
-// ls_start_transaction
-// static int ls_start_transaction_init(const Json::Value* json_args, void** args) {
+
 static int ls_start_transaction_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_start_transaction_init()\n", plugin_name);
-
     *args = (void*)json_args;
     return 0;
 }
 
+
 static int ls_start_transaction_terminate(void** args) {
     LOGP("%s.ls_start_transaction_terminate()\n", plugin_name);
-
     return 0;
 }
 
-// static int ls_start_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
+
 static int ls_start_transaction(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_start_transaction()\n", plugin_name);
 	system_session_state_t* state = (system_session_state_t*)sessionstate;
 	
-
-    // JSONNODE** json_args = (JSONNODE**)args;
-    // string name = (*json_args)["transaction_name"].asString();
     string name = string("transaction_name_todo");
 
     uint64_t start = uv_now(state->session->worker->worker_loop);
     LOGP("  start: %llu\n", start);
 
-    // system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
     state->trans.insert(make_pair(name, start));
 
     process_session(state->session);
     return 0;
 }
 
-// ls_end_transaction
+
 static int ls_end_transaction_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_end_transaction_init()\n", plugin_name);
 
@@ -88,42 +79,33 @@ static int ls_end_transaction_init(const JSONNODE* json_args, void** args) {
     return 0;
 }
 
+
 static int ls_end_transaction_terminate(void** args) {
     LOGP("%s.ls_end_transaction_terminate()\n", plugin_name);
-
     return 0;
 }
 
-// static int ls_end_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
+
 static int ls_end_transaction(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_end_transaction()\n", plugin_name);
 
     system_session_state_t* state = (system_session_state_t*)sessionstate;
-
-    // JSONNODE** json_args = (JSONNODE**)args;
-    // string name = (*json_args)["transaction_name"].asString();
     string name = "transaction_name_todo";
 
     uint64_t stop = uv_now(state->session->worker->worker_loop);
 
-    // system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
     uint64_t start = state->trans[name];
     LOGP("  start:%llu, stop:%llu\n", start, stop);
     state->trans.erase(name);
 
     LOGP("  ls_end_transaction(): %s: %lld\n", name.c_str(), stop-start);
     // TODO 向worker统计
-    // ls_worker_t* w = session->worker;
-    // system_worker_state_t* workerstate = w->plugin_states[plugin_id];
-
 
     process_session(state->session);
     return 0;
 }
 
 
-// ls_think_time
-// static int ls_think_time_init(const S::Value* json_args, void** args) {
 static int ls_think_time_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_think_time_init()\n", plugin_name);
 
@@ -134,11 +116,13 @@ static int ls_think_time_init(const JSONNODE* json_args, void** args) {
     return 0;
 }
 
+
 static int ls_think_time_terminate(void** args) {
     LOGP("%s.ls_think_time_terminate()\n", plugin_name);
 
     return 0;
 }
+
 
 static void timer_cb(uv_timer_t* handle, int status) {
     LOGP("  %s.timer_cb()\n", plugin_name);
@@ -151,7 +135,7 @@ static void timer_cb(uv_timer_t* handle, int status) {
     process_session(s);
 }
 
-// static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
+
 static int ls_think_time(const void* args, void* sessionstate, map<string, string> * vars) {
     int time = (int)args;
     LOGP("%s.ls_think_time(%d)\n", plugin_name, time);
@@ -169,7 +153,7 @@ static int ls_think_time(const void* args, void* sessionstate, map<string, strin
     return 0;
 }
 
-// ls_output_message
+
 static int ls_output_message_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_output_message_init()\n", plugin_name);
 
@@ -177,20 +161,19 @@ static int ls_output_message_init(const JSONNODE* json_args, void** args) {
     return 0;
 }
 
+
 static int ls_output_message_terminate(void** args) {
     LOGP("%s.ls_output_message_terminate()\n", plugin_name);
 
     return 0;
 }
 
-// static int ls_output_message(const void* args, ls_session_t* session, map<string, string> * vars) {
+
 static int ls_output_message(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_output_message()\n", plugin_name);
 
     system_session_state_t* state = (system_session_state_t*)sessionstate;
 
-    // JSONNODE** json_args = (JSONNODE**)args;
-    // LOGP("    ls_output_message output: %s\n", (*json_args)["message"].asString().c_str());
     LOGP("    ls_output_message output todo\n");
 
     process_session(state->session);
@@ -208,7 +191,6 @@ static int plugin_terminate() {
 }
 
 
-// static int master_init(struct ls_master_s* m, const JSONNODE* setting) {
 static int master_init(struct ls_master_s* m) {
     LOGP("%s.master_init()\n", plugin_name);
     // TODO 1. 读取setting到本地的结构
@@ -228,60 +210,24 @@ static int master_init(struct ls_master_s* m) {
     return 0;
 }
 
+
 static int master_terminate(struct ls_master_s*) {
     LOGP("%s.master_terminate()\n", plugin_name);
     return 0;
 }
 
-// static int plugin_script_init(void* /* setting*/) {
-//     LOGP("%s.script_init()\n", plugin_name);
-//     return 0;
-// }
-
-// static int plugin_script_terminate(void* /* setting */) {
-//     LOGP("%s.script_terminate()\n", plugin_name);
-//     return 0;
-// }
-
-// static int plugin_task_init(const Json::Value* setting) {
-/*
-static int plugin_task_init() {
-    LOGP("%s.task_init()\n", plugin_name);
-    return 0;
-}
-
-static int plugin_task_terminate() {
-    LOGP("%s.task_terminate()\n", plugin_name);
-    
-    return 0;
-}
-*/
 
 static int worker_init(struct ls_worker_s* w) {
     LOGP("%s.worker_init()\n", plugin_name);
-
-    // system_worker_state_t* state = (system_worker_state_t*)malloc(sizeof(system_worker_state_t));
-    // if (state == NULL)
-    // {
-    //     LOGP("ERROR failed to malloc system_worker_state\n");
-    //     return -1;
-    // }
-
-    // state->trans = system_trans_t();
-
-    // w->plugin_states[plugin_id] = (void*)state;
     return 0;
 }
 
 static int worker_terminate(struct ls_worker_s* w) {
     LOGP("%s.worker_terminate()\n", plugin_name);
-
-    // free(w->plugin_states[plugin_id]);
-    // w->plugin_states[plugin_id] = NULL;
     return 0;
 }
 
-// static int plugin_session_init(ls_session_t* session) {
+
 static int session_init(ls_session_t* session, void** sessionstate) {
     LOGP("%s.session_init()\n", plugin_name);
 
@@ -294,19 +240,14 @@ static int session_init(ls_session_t* session, void** sessionstate) {
     state->trans = map<string, uint64_t>();
 	state->session = session;
 
-    // session->plugin_states[plugin_id] = (void*)state;
     *sessionstate = (void*)state;
     return 0;
 }
 
-// static int plugin_session_terminate(ls_session_t* session) {
+
 static int session_terminate(void* sessionstate) {
     LOGP("%s.session_terminate()\n", plugin_name);
-
-    // free(session->plugin_states[plugin_id]);
     free(sessionstate);
-    // session->plugin_states[plugin_id] = NULL;
-
     return 0;
 }
 
@@ -324,12 +265,6 @@ extern "C" int plugin_declare(ls_plugin_t* plugin_entry) {
     
     plugin_entry->master_init = master_init;
     plugin_entry->master_terminate = master_terminate;
-
-    // plugin_entry->script_init = plugin_script_init;
-    // plugin_entry->script_terminate = plugin_script_terminate;
-
-    // plugin_entry->task_init = plugin_task_init;
-    // plugin_entry->task_terminate = plugin_task_terminate;
 
     plugin_entry->worker_init = worker_init;
     plugin_entry->worker_terminate = worker_terminate;
