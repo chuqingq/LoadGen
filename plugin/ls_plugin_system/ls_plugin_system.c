@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 #include <string>
@@ -34,24 +35,50 @@ typedef struct {
     map<string, uint64_t> trans;
 } system_session_state_t;
 
+
+typedef struct {
+	uv_timer_t stats_timer;// master定时2秒根据这个字段扫面trans_stats_t
+	uint64_t duration;// 平均事务响应时延
+    uint64_t count;// 通过事务数
+} trans_stats_t;
+
+
 const static char* plugin_name = "ls_plugin_system";
 static size_t plugin_id;
 
 static void collect_trans_stats(uv_timer_t* timer, int status) {
-    // TODO
-    printf("collect_trans_stats\n");
+    LOG("collect_trans_stats\n");
+    trans_stats_t* trans_stats = container_of(timer, trans_stats_t, stats_timer);
+    
+    LOG("trans_stats.duration = %llu\n", trans_stats->duration);
+    LOG("trans_stats.count = %llu\n", trans_stats->count);
 }
 
 
 static int ls_start_transaction_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_start_transaction_init()\n", plugin_name);
-    *args = (void*)json_args;
+
+    string* tran_name = NULL;
+    for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
+        json_char* name = json_name(*i);
+        if (strcmp(name, "transaction_name") == 0) {
+            tran_name = new string(json_as_string(*i));
+        }
+        json_free(name);
+    }
+    if (NULL == tran_name) {
+        LOG("ERROR failed to get param 'transaction_name'\n");
+        return -1;
+    }
+    *args = tran_name;
+    
     return 0;
 }
 
 
 static int ls_start_transaction_terminate(void** args) {
     LOGP("%s.ls_start_transaction_terminate()\n", plugin_name);
+    delete((string*)(*args));
     return 0;
 }
 
@@ -59,14 +86,12 @@ static int ls_start_transaction_terminate(void** args) {
 static int ls_start_transaction(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_start_transaction()\n", plugin_name);
 	system_session_state_t* state = (system_session_state_t*)sessionstate;
-	
-    string name = string("transaction_name_todo");
+    string* tran_name = (string*)args;
 
     uint64_t start = uv_now(state->session->worker->worker_loop);
     LOGP("  start: %llu\n", start);
 
-    state->trans.insert(make_pair(name, start));
-
+    state->trans.insert(make_pair(*tran_name, start));
     process_session(state->session);
     return 0;
 }
@@ -74,14 +99,27 @@ static int ls_start_transaction(const void* args, void* sessionstate, map<string
 
 static int ls_end_transaction_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_end_transaction_init()\n", plugin_name);
-
-    *args = (void*)json_args;
+    
+    string* tran_name = NULL;
+    for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
+        json_char* name = json_name(*i);
+        if (strcmp(name, "transaction_name") == 0) {
+            tran_name = new string(json_as_string(*i));
+        }
+        json_free(name);
+    }
+    if (NULL == tran_name) {
+        LOG("ERROR failed to get param 'transaction_name'\n");
+        return -1;
+    }
+    *args = tran_name;
     return 0;
 }
 
 
 static int ls_end_transaction_terminate(void** args) {
     LOGP("%s.ls_end_transaction_terminate()\n", plugin_name);
+    delete((string*)(*args));
     return 0;
 }
 
@@ -90,15 +128,14 @@ static int ls_end_transaction(const void* args, void* sessionstate, map<string, 
     LOGP("%s.ls_end_transaction()\n", plugin_name);
 
     system_session_state_t* state = (system_session_state_t*)sessionstate;
-    string name = "transaction_name_todo";
+    string* tran_name = (string*)args;
 
     uint64_t stop = uv_now(state->session->worker->worker_loop);
-
-    uint64_t start = state->trans[name];
+    uint64_t start = state->trans[*tran_name];
     LOGP("  start:%llu, stop:%llu\n", start, stop);
-    state->trans.erase(name);
+    state->trans.erase(*tran_name);
 
-    LOGP("  ls_end_transaction(): %s: %lld\n", name.c_str(), stop-start);
+    LOGP("  ls_end_transaction(): %s: %lld\n", tran_name->c_str(), stop-start);
     // TODO 向worker统计
 
     process_session(state->session);
@@ -196,13 +233,13 @@ static int master_init(struct ls_master_s* m) {
     // TODO 1. 读取setting到本地的结构
     
     // 2. 读注册统计回调
-    static uv_timer_t trans_stats_timer;
-    if (uv_timer_init(m->master_loop, &trans_stats_timer) < 0) {
+    trans_stats_t* trans_stats = (trans_stats_t*)malloc(sizeof(*trans_stats));
+    if (uv_timer_init(m->master_loop, &trans_stats->stats_timer) < 0) {
         printf("trans_stats_timer init error\n");
         return -1;
     }
 
-    if (uv_timer_start(&trans_stats_timer, collect_trans_stats, 5000, 3000) < 0) {
+    if (uv_timer_start(&trans_stats->stats_timer, collect_trans_stats, 3000, 2000) < 0) {
         printf("trans_stats_timer start error\n");
         return -1;
     }
