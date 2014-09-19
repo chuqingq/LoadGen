@@ -38,6 +38,15 @@ static void worker_thread(void* arg) {
 int worker_start(ls_worker_t* w) {
     LOG("  worker_start(%lu)\n", (unsigned long)w);
 
+    for (size_t i = 0; i < master.num_plugins; ++i)
+    {
+        ls_plugin_t* plugin = master.plugins + i;
+        if (plugin->worker_init(w), 0) {
+            LOGE("  %s.worker_init() error\n", plugin->plugin_name);
+            return -1;
+        }
+    }
+
     uv_rwlock_init(&w->callmodel_delta_lock);
     w->sessions = new vector<ls_session_t*>();// TODO
 
@@ -58,6 +67,15 @@ int worker_stop(ls_worker_t* w) {
         }
     }
 
+    for (size_t i = 0; i < master.num_plugins; ++i)
+    {
+        ls_plugin_t* plugin = master.plugins + i;
+        if (plugin->worker_terminate(w), 0) {
+            LOGE("  %s.worker_terminate() error\n", plugin->plugin_name);
+            // return -1;
+        }
+    }
+
     uv_stop(w->worker_loop);
 
     return 0;
@@ -71,11 +89,11 @@ static int worker_start_new_session(ls_worker_t* w, int num) {
     for (int i = 0; i < num; ++i)
     {
         s = new ls_session_t;
-        s->plugin_states = (void**)malloc(master.config.plugins_num * sizeof(void*));
+        s->plugin_states = (void**)malloc(master.num_plugins * sizeof(void*));
 
         // s->loop = w->worker_loop;
         s->worker = w;
-        s->script = &(master.script);// 只读
+        // s->script = &(master.script);// 只读
         s->script_cur = -1;
         
         ls_plugin_t* plugin;

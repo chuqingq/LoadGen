@@ -1,6 +1,3 @@
 {
-    "workers_num": 4,
-    "plugin_paths": [
-        "plugin/system/ls_plugin_system.so"
-    ]
+    "workers_num": 4
 }

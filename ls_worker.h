@@ -5,22 +5,23 @@ using namespace std;
 
 #include "lib/libuv/include/uv.h"
 
-#include "ls_task_script.h"
-#include "ls_task_setting.h"
-#include "ls_task_var.h"
+// #include "ls_task_script.h"
+// #include "ls_task_setting.h"
+// #include "ls_task_var.h"
 #include "ls_session.h"
 
 typedef struct ls_worker_s {
-    uv_thread_t thread;
     uv_loop_t* worker_loop;
 
-    vector<ls_session_t*>* sessions;// TODO reuse. use QUEUE
+    vector<ls_session_t*>* sessions;// TODO 使用内存池，可能快速增删
+
+    // ==== private
+
+    uv_thread_t thread;
 
     // worker和master的通信
     uv_async_t master_async;
     uv_async_t worker_async;
-
-    // ==== private
 
     volatile int worker_started;// specify worker already started. set to 1 after worker_async inited
     

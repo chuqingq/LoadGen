@@ -1,25 +1,28 @@
 #include "ls_logger.h"
 
-// TODO add static before ??
+#include <string.h>
+#include <errno.h>
+
 FILE* _loadgen_log = NULL;
 FILE* _plugin_log = NULL;
 
 int log_init() {
     const char* loadgen_log_path = "loadgen.log";
-    const char* plugin_log_path = "service.log";
 
     _loadgen_log = fopen(loadgen_log_path, "a+");
-    if (loadgen_log_path == NULL)
-    {
-        fprintf(stderr, "ERROR failed to fopen loadgen_log_path\n");
+    if (NULL == _loadgen_log) {
+        fprintf(stderr, "ERROR failed to fopen loadgen log[%s]: %s\n",
+            loadgen_log_path, strerror(errno));
         return -1;
     }
     setlinebuf(_loadgen_log);
 
+    const char* plugin_log_path = "service.log";
+
     _plugin_log = fopen(plugin_log_path, "a+");
-    if (_plugin_log == NULL)
-    {
-        fprintf(stderr, "ERROR failed to fopen plugin_log_path\n");
+    if (NULL == _plugin_log) {
+        fprintf(stderr, "ERROR failed to fopen service log[%s]: %s\n",
+            plugin_log_path, strerror(errno));
         return -1;
     }
     setlinebuf(_plugin_log);
@@ -28,16 +31,11 @@ int log_init() {
 }
 
 int log_terminate() {
-    if (fclose(_loadgen_log) < 0)
-    {
-        fprintf(stderr, "ERROR failed to fclose _loadgen_log\n");
-    }
+    fclose(_loadgen_log);
+    _loadgen_log = NULL;
 
-    if (fclose(_plugin_log) < 0)
-    {
-        fprintf(stderr, "ERROR failed to fclose _plugin_log\n");
-    }
-
+    fclose(_plugin_log);
+    _plugin_log = NULL;
+    
     return 0;
 }
-

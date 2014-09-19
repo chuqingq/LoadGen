@@ -7,12 +7,12 @@
 #include "ls_plugin.h"
 
 static int handle_session(ls_session_t* s) {
-    const ls_task_script_entry_t* e = s->script->entries + s->script_cur;
+    const ls_task_script_entry_t* e = master.script.entries + s->script_cur;
     ls_plugin_api_t* api = (ls_plugin_api_t*) e->api;
     map<string, string> vars;
     if ((api->run)(e->args, s, &vars) < 0)
     {
-        LOG("  ERROR failed to run api [%s]\n", e->api_name.c_str());
+        LOGE("  ERROR failed to run api [%s]\n", e->api->name);
         return -1;
     }
 
@@ -21,7 +21,7 @@ static int handle_session(ls_session_t* s) {
 }
 
 int process_session(ls_session_t* s) {
-    if (s->script_cur == s->script->entries_num-1)
+    if (s->script_cur == master.script.entries_num-1)
     {
         s->script_cur = -1;
     }
@@ -36,7 +36,7 @@ int finish_session(ls_session_t* s) {
 
     ls_plugin_t* plugin;
     // 调用session中相关的所有plugin的session_destroy()
-    for (size_t i = 0; i < master.config.plugins_num; ++i)
+    for (size_t i = 0; i < master.num_plugins; ++i)
     {
         plugin = master.plugins + i;
 

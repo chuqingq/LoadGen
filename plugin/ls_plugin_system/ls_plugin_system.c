@@ -57,7 +57,7 @@ static size_t plugin_id;
 
 // ls_start_transaction
 // static int ls_start_transaction_init(const Json::Value* json_args, void** args) {
-static int ls_start_transaction_init(const JSONNODE** json_args, void** args) {
+static int ls_start_transaction_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_start_transaction_init()\n", plugin_name);
 
     *args = (void*)json_args;
@@ -88,7 +88,7 @@ static int ls_start_transaction(const void* args, ls_session_t* session, map<str
 }
 
 // ls_end_transaction
-static int ls_end_transaction_init(const JSONNODE** json_args, void** args) {
+static int ls_end_transaction_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_end_transaction_init()\n", plugin_name);
 
     *args = (void*)json_args;
@@ -126,7 +126,7 @@ static int ls_end_transaction(const void* args, ls_session_t* session, map<strin
 }
 
 
-static int master_init(struct ls_master_s*) {
+static int master_init(struct ls_master_s*, const JSONNODE* setting) {
     LOGP("%s.master_init()\n", plugin_name);
     return 0;
 }
@@ -136,15 +136,15 @@ static int master_terminate(struct ls_master_s*) {
     return 0;
 }
 
-static int plugin_script_init(ls_task_setting_t* /* setting*/) {
-    LOGP("%s.script_init()\n", plugin_name);
-    return 0;
-}
+// static int plugin_script_init(void* /* setting*/) {
+//     LOGP("%s.script_init()\n", plugin_name);
+//     return 0;
+// }
 
-static int plugin_script_terminate(ls_task_setting_t* /* setting */) {
-    LOGP("%s.script_terminate()\n", plugin_name);
-    return 0;
-}
+// static int plugin_script_terminate(void* /* setting */) {
+//     LOGP("%s.script_terminate()\n", plugin_name);
+//     return 0;
+// }
 
 // static int plugin_task_init(const Json::Value* setting) {
 static int plugin_task_init(/*ls_task_setting_t* setting, ls_task_script_t**/) {
@@ -164,14 +164,14 @@ static int plugin_task_terminate(/*ls_task_setting_t*, ls_task_script_t**/) {
 static int worker_init(struct ls_worker_s* w) {
     LOGP("%s.worker_init()\n", plugin_name);
 
-    system_worker_state_t* state = (system_worker_state_t*)malloc(sizeof(system_worker_state_t));
-    if (state == NULL)
-    {
-        LOGP("ERROR failed to malloc system_worker_state\n");
-        return -1;
-    }
+    // system_worker_state_t* state = (system_worker_state_t*)malloc(sizeof(system_worker_state_t));
+    // if (state == NULL)
+    // {
+    //     LOGP("ERROR failed to malloc system_worker_state\n");
+    //     return -1;
+    // }
 
-    state->trans = system_trans_t();
+    // state->trans = system_trans_t();
 
     // w->plugin_states[plugin_id] = (void*)state;
     return 0;
@@ -211,7 +211,7 @@ static int plugin_session_terminate(ls_session_t* session) {
 
 // ls_think_time
 // static int ls_think_time_init(const S::Value* json_args, void** args) {
-static int ls_think_time_init(const JSONNODE** json_args, void** args) {
+static int ls_think_time_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_think_time_init()\n", plugin_name);
 
     // int time = (*json_args)["time"].asInt();
@@ -254,7 +254,7 @@ static int ls_think_time(const void* args, ls_session_t* session, map<string, st
 }
 
 // ls_output_message
-static int ls_output_message_init(const JSONNODE** json_args, void** args) {
+static int ls_output_message_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_output_message_init()\n", plugin_name);
 
     *args = (void*)json_args;
@@ -279,7 +279,7 @@ static int ls_output_message(const void* args, ls_session_t* session, map<string
 }
 
 
-extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_t* plugin_entry) {
+extern "C" int plugin_declare(ls_plugin_t* plugin_entry) {
     LOGP("%s.plugin_declare()\n", plugin_name);
 
     // 1.plugin_name
@@ -290,8 +290,8 @@ extern "C" int plugin_declare(/* const char** plugin_name, */ls_plugin_t* plugin
     plugin_entry->master_init = master_init;
     plugin_entry->master_terminate = master_terminate;
 
-    plugin_entry->script_init = plugin_script_init;
-    plugin_entry->script_terminate = plugin_script_terminate;
+    // plugin_entry->script_init = plugin_script_init;
+    // plugin_entry->script_terminate = plugin_script_terminate;
 
     plugin_entry->task_init = plugin_task_init;
     plugin_entry->task_terminate = plugin_task_terminate;

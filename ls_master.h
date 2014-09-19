@@ -15,11 +15,11 @@ typedef struct ls_master_s {
 
     ls_config_t config;
 
-    ls_plugin_t* plugins;
+    ls_plugin_t* plugins;// TODO 只保存脚本中使用的
     size_t num_plugins;
 
     ls_task_callmodel_t callmodel;
-    ls_task_setting_t settings;
+    void* settings;
     ls_task_var_t vars;// 变量，master读取，master不需要，worker只读
     ls_task_script_t script;// 脚本，master保存，worker只读
     

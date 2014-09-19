@@ -89,15 +89,11 @@ worker中区分只读和改动的内容，只读的内容尽量使用master的�
             task_script_cur // index
             plugin_states
             vars
-    stop_workers
+    stop_workers // TODO 未调用worker_init
     plugin_unload_task
     unload_task
     unload_plugins
     unload_config
-    
-## TODO
-
-增加Makefile提升编译速度
 
 ## loadgen_stats
 
@@ -113,7 +109,6 @@ TODO 可能也要回调
 3、master接收到worker的stats_id消息
 调用注册的callback，来改变结构void*
 
-plugin模块的统计
-
+## TODO plugin模块的统计
 1、declare时向master注册上面三项
 2、执行API时发送消息给master

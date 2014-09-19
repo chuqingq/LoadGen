@@ -3,9 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include <cassert>
-#include <fstream>
-using namespace std;
+#include <errno.h>
 
 #include "ls_utils.h"
 #include "ls_config.h"
@@ -15,52 +13,15 @@ using namespace std;
 
 int load_task_callmodel(ls_task_callmodel_t* callmodel) {
     LOG("load_task_callmodel()\n");
+
     const char* cm_file = "task/callmodel.json";
-    // ifstream ifs;
-    
-    // ifs.open(cm_file);
-    // assert(ifs.is_open());
-
-    // Json::Reader reader;
-    // Json::Value root;
-
-    // assert(reader.parse(ifs, root, false));
-
-    // // type
-    // if (root["type"].asString() == string("CALLMODEL_VUSER"))
-    // {
-    //     callmodel->type = CALLMODEL_VUSER;
-    // }
-    // else
-    // {
-    //     callmodel->type = CALLMODEL_CAPS;
-    // }
-
-    // // init // TODO 没有做有效性校验
-    // callmodel->init = root["init"].asInt();
-    // LOG("  init=%d\n", callmodel->init);
-
-    // // accelerate
-    // callmodel->accelerate = root["accelerate"].asInt();
-    // LOG("  accelerate=%d\n", callmodel->accelerate);
-
-    // // dest
-    // callmodel->dest = root["dest"].asInt();
-    // LOG("  dest=%d\n", callmodel->dest);
-
-    // // duration
-    // callmodel->duration = root["duration"].asInt() * 1000;
-    // LOG("  duration=%d\n", callmodel->duration);
-
-    // // current 当前设置为0，第一次直接控制时设置为init值
-    // callmodel->current = 0;
 
     char* buf;
     long len;
     FILE* f = fopen(cm_file, "r");
-    if (f == NULL)
-    {
-        LOGE("Failed to open callmodel file: %s\n", cm_file);// TODO errno
+    if (NULL == f) {
+        LOGE("Failed to fopen callmodel file[%s]: %s\n",
+            cm_file, strerror(errno));
         return -1;
     }
 
@@ -69,9 +30,8 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
     rewind(f);
 
     buf = (char*) malloc(len + 1);
-    if (buf == NULL)
-    {
-        LOGE("Failed to malloc for call model\n");// TODO errno
+    if (NULL == buf) {
+        LOGE("Failed to malloc for call model: %s\n", strerror(errno));
         return -1;
     }
 
@@ -119,9 +79,16 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
         {
             LOGE("call_model name invalid\n");
         }
+        json_free(name);
     }
     callmodel->current = 0;
 
+    return 0;
+}
+
+int unload_task_callmodel(ls_task_callmodel_t* callmodel) {
+    LOG("load_task_callmodel()\n");
+    // TODO
     return 0;
 }
 

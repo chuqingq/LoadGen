@@ -26,5 +26,6 @@ typedef struct ls_task_callmodel_s {
 } ls_task_callmodel_t;
 
 int load_task_callmodel(ls_task_callmodel_t* callmodel);
+int unload_task_callmodel(ls_task_callmodel_t* callmodel);
 
 int do_task_callmodel(ls_task_callmodel_t* callmodel);

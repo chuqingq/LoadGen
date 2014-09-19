@@ -5,7 +5,6 @@
 using namespace std;
 
 #include "lib/libuv/include/uv.h"
-// #include "jsoncpp/json/json.h"
 #include "lib/libjson/include/libjson.h"
 
 #include "ls_worker.h"
@@ -20,10 +19,11 @@ struct ls_task_script_s;
 struct ls_plugin_entry_s;
 
 typedef struct ls_plugin_api_s {
-    const char* name;
+    struct ls_plugin_entry_s* plugin;
 
-    int (*init)(const JSONNODE** json_args, void** args);
-    int (*run)(const void* args, ls_session_t* session, map<string, string> * vars);
+    const char* name;
+    int (*init)(const JSONNODE* json_args, void** args);
+    int (*run)(const void* args, struct ls_session_s* session, map<string, string> * vars); // TODO vars是map吗？
     int (*terminate)(void** args);
 } ls_plugin_api_t;
 
@@ -32,12 +32,15 @@ typedef struct ls_plugin_entry_s {
     size_t plugin_index;
     const char* plugin_name;
 
+    // setting
+    void* setting;// TODO load_task_setting时把setting.json内容保存到这里
+
     // 2.callbacks
-    int (*master_init)(struct ls_master_s* master);
+    int (*master_init)(struct ls_master_s* master, const JSONNODE* setting);
     int (*master_terminate)(struct ls_master_s* master);
 
-    int (*script_init)(ls_task_setting_t* setting);
-    int (*script_terminate)(ls_task_setting_t* setting);
+    // int (*script_init)(ls_task_setting_t* setting);
+    // int (*script_terminate)(ls_task_setting_t* setting);
 
     int (*task_init)();
     int (*task_terminate)();
@@ -57,8 +60,9 @@ typedef struct ls_plugin_entry_s {
     int (*plugin_declare)(struct ls_plugin_entry_s* plugin_entry);
 } ls_plugin_t;
 
-int plugins_script_init(ls_task_setting_t* settings, struct ls_task_script_s* script, ls_plugin_t* plugins, size_t num_plugins);
-int plugins_script_terminate(ls_task_setting_t* settings, struct ls_task_script_s* script, ls_plugin_t* plugins, size_t num_plugins);
+// int plugins_script_init(ls_task_setting_t* settings, struct ls_task_script_s* script, ls_plugin_t* plugins, size_t num_plugins);
+// int plugins_script_terminate(ls_task_setting_t* settings, struct ls_task_script_s* script, ls_plugin_t* plugins, size_t num_plugins);
+ls_plugin_api_t* find_api_by_name(const char* name, ls_plugin_t* plugins, size_t num_plugins);
 
 int plugins_task_init(ls_plugin_t* plugins, size_t num_plugins);
 int plugins_task_terminate(ls_plugin_t* plugins, size_t num_plugins);

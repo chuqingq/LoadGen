@@ -1,5 +1,4 @@
-#ifndef LS_TASK_VAR_H_
-#define LS_TASK_VAR_H_
+#pragma once
 
 #include <string>
 #include <map>
@@ -20,5 +19,4 @@ typedef struct {
 typedef map<string, ls_task_var_entry_t> ls_task_var_t;// 变量，master读取，master不需要，worker只读
 
 int load_task_vars(ls_task_var_t* vars);
-
-#endif
+int unload_task_vars(ls_task_var_t* vars);

@@ -1,3 +1,5 @@
+#include "ls_task_script.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -5,45 +7,15 @@
 #include <fstream>
 using namespace std;
 
-// #include "jsoncpp/json/json.h"
 #include "lib/libjson/include/libjson.h"
 
 #include "ls_utils.h"
-#include "ls_task_script.h"
+#include "ls_master.h"
 
 int load_task_script(ls_task_script_t* script) {
     LOG("load_task_script()\n");
     
     const char* script_file = "task/script.json";
-    // ifstream ifs;
-    
-    // ifs.open(script_file);
-    // assert(ifs.is_open());
-
-    // Json::Reader reader;
-    // Json::Value root;
-
-    // assert(reader.parse(ifs, root, false));
-
-    // script->script = root;
-    // script->entries_num = script->script.size();
-    // script->entries = new ls_task_script_entry_t[script->entries_num];
-
-    // ls_task_script_entry_t* entry;
-    // for (size_t i = 0; i < script->entries_num; ++i)
-    // {
-    //     entry = script->entries + i;
-
-    //     entry->api_name = root[i]["api"].asString();
-    //     entry->plugin_name = root[i]["plugin"].asString();
-    //     entry->json_args = root[i]["args"];
-
-    //     LOG("  api=%s, plugin_name=%s, json_args=xxx\n", entry->api_name.c_str(), entry->plugin_name.c_str());
-    // }
-
-    // ifs.close();// should after parsing
-
-    // TODO 换用libjson
     char* buf;
     long len;
     FILE* f = fopen(script_file, "r");
@@ -58,50 +30,51 @@ int load_task_script(ls_task_script_t* script) {
     rewind(f);
 
     buf = (char*) malloc(len + 1);
-    if (buf == NULL)
-    {
-        LOGE("Failed to malloc for script_file\n");// TODO errno
-        return -1;
-    }
+    assert(NULL != buf);
 
     len = fread(buf, 1, len, f);
     buf[len] = '\0';
 
     JSONNODE* root = json_parse(buf);
 
-    script->script = root;
+    // script->script = root;
     script->entries_num = json_size(root);
-    script->entries = new ls_task_script_entry_t[script->entries_num];
+    script->entries = new ls_task_script_entry_t[script->entries_num];// TODO
 
     ls_task_script_entry_t* entry;
     int ind = 0;
-    for (JSONNODE_ITERATOR i = json_begin(root); i != json_end(root); ++i, ++ind)
-    {
+    for (JSONNODE_ITERATOR i = json_begin(root); i != json_end(root); ++i, ++ind) {
         entry = script->entries + ind;
         JSONNODE* c = *i;
-        for (JSONNODE_ITERATOR j = json_begin(c); j != json_end(c); ++j)
-        {
+        for (JSONNODE_ITERATOR j = json_begin(c); j != json_end(c); ++j) {
             json_char* name = json_name(*j);
-
-            if (strcmp(name, "api") == 0)
-            {
-                entry->api_name = string(json_as_string(*j));
-                LOG("  api: %s, ", entry->api_name.c_str());
+            if (strcmp(name, "api") == 0) {
+                // entry->api_name = string(json_as_string(*j));
+                // TODO 不保存到api_name，而是直接设置api
+                const char* api_name = json_as_string(*j);
+                // if (NULL == entry->plugin) {
+                //     LOGE("  plugin not define\n");
+                //     return -1;
+                // }
+                entry->api = find_api_by_name(api_name, master.plugins, master.num_plugins);
+                if (NULL == entry->api) {
+                    LOGE("  api %s not found\n", api_name);
+                    return -1;
+                }
+                LOG("  api=%s\n", entry->api->name);
             }
-            else if (strcmp(name, "plugin") == 0)
-            {
-                entry->plugin_name = string(json_as_string(*j));
-                LOG("  plugin: %s\n", entry->plugin_name.c_str());
+            else if (strcmp(name, "args") == 0) {
+                JSONNODE* args = json_as_node(*j);
+                if ((entry->api->init)(args, &entry->args) < 0) {
+                    LOGE("  api %s.init() error\n", entry->api->name);
+                    return -1;
+                }
             }
-            else if (strcmp(name, "args") == 0)
-            {
-                entry->json_args = json_as_node(*j);
-            }
-            else
-            {
+            else {
                 LOGE("script_file node not support: %s\n", name);
                 return -1;
             }
+            json_free(name);// TODO 上面return会有内存泄露
         }
     }
     return 0;
@@ -110,8 +83,18 @@ int load_task_script(ls_task_script_t* script) {
 int unload_task_script(ls_task_script_t* script) {
     LOG("unload_task_script()\n");
 
-    delete[] script->entries;
+    for (size_t i = 0; i < script->entries_num; ++i)
+    {
+        ls_task_script_entry_t* entry = script->entries + i;
+        if (entry->api->terminate(&entry->args) < 0) {
+            LOGE("  api %s.terminate() error\n", entry->api->name);
+            // return -1;
+        }
+    }
+    // TODO 遍历script的所有entry，调用api_terminate
+    delete[] script->entries;// TODO
     script->entries = NULL;
+    script->entries_num = 0;
 
     return 0;
 }
