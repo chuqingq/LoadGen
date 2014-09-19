@@ -25,7 +25,7 @@ ls_plugin_api_t* find_api_by_name(const char* name, ls_plugin_t* plugins, size_t
     return NULL;
 }
 
-
+/*
 int plugins_task_init(ls_plugin_t* plugins, size_t num_plugins) {
     LOG("plugins_task_init\n");
 
@@ -42,7 +42,9 @@ int plugins_task_init(ls_plugin_t* plugins, size_t num_plugins) {
 
     return 0;
 }
+*/
 
+/*
 int plugins_task_terminate(ls_plugin_t* plugins, size_t num_plugins) {
     LOG("plugins_unload_task_setting()\n");
 
@@ -58,3 +60,4 @@ int plugins_task_terminate(ls_plugin_t* plugins, size_t num_plugins) {
 
     return 0;
 }
+*/

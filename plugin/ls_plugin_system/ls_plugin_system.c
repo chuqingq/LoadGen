@@ -197,8 +197,19 @@ static int ls_output_message(const void* args, void* sessionstate, map<string, s
     return 0;
 }
 
+static int plugin_init(const JSONNODE* setting) {
+    LOGP("%s.plugin_init()\n", plugin_name);
+    return 0;
+}
 
-static int master_init(struct ls_master_s* m, const JSONNODE* setting) {
+static int plugin_terminate() {
+    LOGP("%s.plugin_terminate()\n", plugin_name);
+    return 0;
+}
+
+
+// static int master_init(struct ls_master_s* m, const JSONNODE* setting) {
+static int master_init(struct ls_master_s* m) {
     LOGP("%s.master_init()\n", plugin_name);
     // TODO 1. 读取setting到本地的结构
     
@@ -233,19 +244,18 @@ static int master_terminate(struct ls_master_s*) {
 // }
 
 // static int plugin_task_init(const Json::Value* setting) {
-static int plugin_task_init(/*ls_task_setting_t* setting, ls_task_script_t**/) {
+/*
+static int plugin_task_init() {
     LOGP("%s.task_init()\n", plugin_name);
-
-    // TODO
-    // system_setting.ignore_think_time = (*setting)["ignore_think_time"].asBool();
     return 0;
 }
 
-static int plugin_task_terminate(/*ls_task_setting_t*, ls_task_script_t**/) {
+static int plugin_task_terminate() {
     LOGP("%s.task_terminate()\n", plugin_name);
     
     return 0;
 }
+*/
 
 static int worker_init(struct ls_worker_s* w) {
     LOGP("%s.worker_init()\n", plugin_name);
@@ -272,7 +282,7 @@ static int worker_terminate(struct ls_worker_s* w) {
 }
 
 // static int plugin_session_init(ls_session_t* session) {
-static int plugin_session_init(ls_session_t* session, void** sessionstate) {
+static int session_init(ls_session_t* session, void** sessionstate) {
     LOGP("%s.session_init()\n", plugin_name);
 
     system_session_state_t* state = (system_session_state_t*)malloc(sizeof(system_session_state_t));
@@ -290,7 +300,7 @@ static int plugin_session_init(ls_session_t* session, void** sessionstate) {
 }
 
 // static int plugin_session_terminate(ls_session_t* session) {
-static int plugin_session_terminate(void* sessionstate) {
+static int session_terminate(void* sessionstate) {
     LOGP("%s.session_terminate()\n", plugin_name);
 
     // free(session->plugin_states[plugin_id]);
@@ -309,20 +319,23 @@ extern "C" int plugin_declare(ls_plugin_t* plugin_entry) {
     plugin_entry->plugin_name = plugin_name;
 
     // 2.callbacks
+    plugin_entry->plugin_init = plugin_init;
+    plugin_entry->plugin_terminate = plugin_terminate;
+    
     plugin_entry->master_init = master_init;
     plugin_entry->master_terminate = master_terminate;
 
     // plugin_entry->script_init = plugin_script_init;
     // plugin_entry->script_terminate = plugin_script_terminate;
 
-    plugin_entry->task_init = plugin_task_init;
-    plugin_entry->task_terminate = plugin_task_terminate;
+    // plugin_entry->task_init = plugin_task_init;
+    // plugin_entry->task_terminate = plugin_task_terminate;
 
     plugin_entry->worker_init = worker_init;
     plugin_entry->worker_terminate = worker_terminate;
 
-    plugin_entry->session_init = plugin_session_init;
-    plugin_entry->session_terminate = plugin_session_terminate;
+    plugin_entry->session_init = session_init;
+    plugin_entry->session_terminate = session_terminate;
 
     // 4.apis
     plugin_entry->num_apis = 4;

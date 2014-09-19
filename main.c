@@ -32,7 +32,8 @@ int main() {
         return -1;
     }
 
-    // plugin_declare()/master_init()
+    // delete master_init()
+    // plugin_declare()/plugin_init()
     if (load_task_setting(&master) < 0) {
         LOGE("ERROR failed to load_task_setting.\n");
         return -1;
@@ -44,17 +45,24 @@ int main() {
         return -1;
     }
 
+    // master_init()
+    if (start_master(&master) < 0) {
+        LOGE("ERROR failed to start_master.\n");
+        return -1;
+    }
+
     // worker_init()
     if (start_workers(&master) < 0) {
         LOGE("ERROR failed to start_workers.\n");
         return -1;
     }
 
-    // task_init()
+    /* delete task_init()
     if (plugins_task_init(master.plugins, master.num_plugins) < 0) {
         LOG("ERROR failed to plugins_task_init.\n");
         return -1;
     }
+    */
 
     LOG("==== task is starting...\n");
 
@@ -65,11 +73,12 @@ int main() {
 
     uv_run(uv_default_loop(), UV_RUN_DEFAULT);
 
-    // task_terminate()
+    /* delete task_terminate()
     if (plugins_task_terminate(master.plugins, master.num_plugins) < 0) {
         LOGE("ERROR failed to plugins_task_terminate()\n");
         // return -1;
     }
+    */
 
     // worker_terminate() 在worker_stop中调用
     if (reap_workers(&master) < 0) {
@@ -77,17 +86,23 @@ int main() {
         // return -1;
     }
 
+    // master_terminate()
+    if (stop_master(&master) < 0) {
+        LOGE("ERROR failed to stop_master()\n");
+        return -1;
+    }
+
+    // plugin_terminate
+    if (unload_task_setting(&master) < 0) {
+        LOGE("failed to unload_task_setting()\n");
+    }
+    
     // api_terminate()
     if (unload_task_script(&master.script) < 0) {
         LOGE("ERROR failed to unload_task_script()\n");
         // return -1;
     }
     
-    // master_terminate()
-    if (unload_task_setting(&master) < 0) {
-        LOGE("failed to unload_task_setting()\n");
-    }
-
     if (unload_task_vars(&master.vars) < 0) {
         LOGE("ERROR failed to unload_task_vars.\n");
     }

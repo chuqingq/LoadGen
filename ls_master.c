@@ -14,6 +14,30 @@ static void master_async_callback(uv_async_t* handle, int status) {
     LOG("  master_async_callback()\n");
 }
 
+int start_master(ls_master_t* master) {
+    ls_plugin_t* p;
+    for (size_t i = 0; i < master->num_plugins; ++i) {
+        p = master->plugins + i;
+        if (p->master_init != NULL && (p->master_init)(master) < 0) {
+            LOGE("ERROR failed to master_init()\n");
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int stop_master(ls_master_t* master) {
+    ls_plugin_t* p;
+    for (size_t i = 0; i < master->num_plugins; ++i) {
+        p = master->plugins + i;
+        if (p->master_terminate != NULL && (p->master_terminate)(master) < 0) {
+            LOGE("ERROR failed to master_terminate()\n");
+            // return -1;
+        }
+    }
+    return 0;
+}
+
 int start_workers(ls_master_t* master) {
     LOG("start_workers()\n");
 

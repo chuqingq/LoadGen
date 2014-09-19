@@ -29,8 +29,13 @@ typedef struct ls_master_s {
 
 extern ls_master_t master;
 
+/*
 int load_plugins(ls_master_t* master);
 int unload_plugins(ls_master_t* master);
+*/
+
+int start_master(ls_master_t* master);
+int stop_master(ls_master_t* master);
 
 int start_workers(ls_master_t* master);// -> worker_start()
 int stop_workers(ls_master_t* master);// -> worker_stop()

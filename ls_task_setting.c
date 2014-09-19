@@ -72,9 +72,10 @@ int load_task_setting(ls_master_t* master) {
         }
 
         JSONNODE* settings = *i;
-        if (plugin->master_init != NULL && (plugin->master_init)(master, settings) < 0)
+        // if (plugin->master_init != NULL && (plugin->master_init)(master, settings) < 0)
+        if (plugin->plugin_init != NULL && (plugin->plugin_init)(settings) < 0)
         {
-            LOGE("ERROR failed to master_init()\n");
+            LOGE("ERROR failed to plugin_init()\n");
             return -1;
         }
     }
@@ -88,9 +89,10 @@ int unload_task_setting(ls_master_t* master) {
     for (size_t i = 0; i < master->num_plugins; ++i)
     {
         plugin = master->plugins + i;
-        if (NULL != plugin->master_terminate && (plugin->master_terminate)(master) < 0)
+        // if (NULL != plugin->master_terminate && (plugin->master_terminate)(master) < 0)
+        if (NULL != plugin->plugin_terminate && (plugin->plugin_terminate)() < 0)
         {
-            LOGE("ERROR failed to master_terminate()\n");
+            LOGE("ERROR failed to plugin_terminate()\n");
         }
     }
 

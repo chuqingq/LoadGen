@@ -37,20 +37,27 @@ typedef struct ls_plugin_entry_s {
     void* setting;// TODO load_task_setting时把setting.json内容保存到这里
 
     // 2.callbacks
-    int (*master_init)(struct ls_master_s* master, const JSONNODE* setting);
+    int (*plugin_init)(const JSONNODE* setting);
+    int (*plugin_terminate)();
+
+    // api_init()
+    
+    // int (*master_init)(struct ls_master_s* master, const JSONNODE* setting);
+    int (*master_init)(struct ls_master_s* master);
     int (*master_terminate)(struct ls_master_s* master);
 
     // int (*script_init)(ls_task_setting_t* setting);
     // int (*script_terminate)(ls_task_setting_t* setting);
 
-    int (*task_init)();
-    int (*task_terminate)();
+    // int (*task_init)();
+    // int (*task_terminate)();
 
     int (*worker_init)(struct ls_worker_s* worker);
     int (*worker_terminate)(struct ls_worker_s* worker);
 
-    // int (*session_init)(struct ls_session_s* session);
+    // TODOTODO int (*session_init)(struct ls_session_s* session);
     int (*session_init)(struct ls_session_s* session, void** sessionstate);
+    int (*session_iterate)(void* sessionstate);
     // int (*session_terminate)(struct ls_session_s* session);
     int (*session_terminate)(void* sessionstate);
 
