@@ -127,8 +127,8 @@ static int ls_end_transaction(const void* args, void* sessionstate, map<string, 
 static int ls_think_time_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_think_time_init()\n", plugin_name);
 
-    // int time = (*json_args)["time"].asInt();
-    int time = 1000;
+    // TODO int time = (*json_args)["time"].asInt();
+    int time = 3000;
     *args = (void*)time;
     LOGP("  time=%d\n", time);
     return 0;

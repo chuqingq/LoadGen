@@ -23,12 +23,15 @@ static int handle_session(ls_session_t* s) {
 }
 
 int process_session(ls_session_t* s) {
+    /*
     if (s->script_cur == master.script.entries_num-1)
     {
         s->script_cur = -1;
     }
 
     s->script_cur++;
+    */
+    s->script_cur = (s->script_cur + 1) % (master.script.entries_num-1);
 
     return handle_session(s);
 }

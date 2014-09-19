@@ -129,7 +129,8 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
         uv_timer_stop(&(cm->accelerate_timer));
 
         uv_timer_init(uv_default_loop(), &(cm->duration_timer));
-        uv_timer_start(&(cm->duration_timer), duration_timeout, cm->duration, 0);
+        LOG("  duration: %d\n", cm->duration);
+        uv_timer_start(&(cm->duration_timer), duration_timeout, cm->duration*1000, 0);
     }
 }
 
