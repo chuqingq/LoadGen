@@ -1,12 +1,34 @@
-OBJS=ls_config.o ls_master.o ls_session.o ls_task_script.o ls_task_var.o \
-	main.o ls_logger.o ls_plugin.o ls_task_callmodel.o ls_task_setting.o \
-	ls_worker.o
+CC      := g++
+CFLAGS  := -DNDEBUG -g -Wall -Werror -Wl,-export-dynamic
+LDFLAGS := 
+LIBS    := -Llib/libuv/lib -luv -Llib/libjson/lib -ljson -ldl -lpthread -Wall -Werror -Wl,-export-dynamic
 
-loadgen: $(OBJS)
-	g++ -o $@ $^ -Llib/libuv/lib -luv -Llib/libjson/lib -ljson -DNDEBUG -lpthread -ldl -g -Wall -Werror -Wl,-export-dynamic
+SRC  := ls_config.c ls_master.c ls_session.c ls_task_script.c ls_task_var.c main.c ls_logger.c ls_plugin.c ls_task_callmodel.c ls_task_setting.c ls_worker.c
+BIN  := loadgen
 
-%.o: %.c %.h
-	g++ -c $< -o $@ -DNDEBUG -g -Wall -Werror -Wl,-export-dynamic
+ODIR := obj
+OBJ  := $(patsubst %.c,$(ODIR)/%.o,$(SRC))
+
+all: $(BIN)
 
 clean:
-	rm loadgen $(OBJS)
+	$(RM) $(BIN) obj/*
+
+$(BIN): $(OBJ)
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+$(OBJ): Makefile | $(ODIR)
+
+$(ODIR):
+	@mkdir $@
+
+$(ODIR)/%.o : %.c
+	$(CC) -c $< -o $@ $(CFLAGS)
+
+.PHONY: all clean
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+## vpath %.c src
+## vpath %.h src
+
