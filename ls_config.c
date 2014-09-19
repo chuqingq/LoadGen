@@ -4,7 +4,9 @@
 #include <string.h>
 
 #include <errno.h>
+#include <unistd.h>
 
+#include "lib/libuv/include/uv.h"
 #include "lib/libjson/include/libjson.h"
 #include "ls_utils.h"
 
@@ -41,6 +43,10 @@ int load_config(ls_config_t* config) {
 
         if (strcmp(name, "workers_num") == 0) {
             config->workers_num = json_as_int(*i);
+            if (config->workers_num <= 0) {
+                config->workers_num = sysconf(_SC_NPROCESSORS_ONLN);
+            }
+            LOG("config.workers_num=%d\n", config->workers_num);
         }
 
         json_free(name);
