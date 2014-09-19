@@ -29,6 +29,7 @@ typedef struct {
 } system_worker_state_t;
 
 typedef struct {
+	ls_session_t* session;
     map<string, uint64_t> trans;
 } system_session_state_t;// TODO session
 
@@ -36,24 +37,6 @@ typedef struct {
 
 const static char* plugin_name = "ls_plugin_system";
 static size_t plugin_id;
-
-
-// static int system_trans_add(system_trans_t* worker_trans, const char* trans_name, int trans_flag, uint64_t trans_duration) {
-//     // TODO
-//     system_trans_t::iterator it = worker_trans->find(trans_name);
-//     if (it != worker_trans->end())
-//     {
-//         printf("ERROR system_trans_add\n");
-//         return -1;
-//     }
-
-//     it->second.count++;
-//     it->second.total += trans_duration;
-
-//     printf("  avg = %llu\n", it->second.total/it->second.count);
-
-//     return 0;
-// }
 
 // ls_start_transaction
 // static int ls_start_transaction_init(const Json::Value* json_args, void** args) {
@@ -70,20 +53,23 @@ static int ls_start_transaction_terminate(void** args) {
     return 0;
 }
 
-static int ls_start_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
+// static int ls_start_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
+static int ls_start_transaction(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_start_transaction()\n", plugin_name);
+	system_session_state_t* state = (system_session_state_t*)sessionstate;
+	
 
     // JSONNODE** json_args = (JSONNODE**)args;
     // string name = (*json_args)["transaction_name"].asString();
     string name = string("transaction_name_todo");
 
-    uint64_t start = uv_now(session->worker->worker_loop);
+    uint64_t start = uv_now(state->session->worker->worker_loop);
     LOGP("  start: %llu\n", start);
 
-    system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
+    // system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
     state->trans.insert(make_pair(name, start));
 
-    process_session(session);
+    process_session(state->session);
     return 0;
 }
 
@@ -101,16 +87,19 @@ static int ls_end_transaction_terminate(void** args) {
     return 0;
 }
 
-static int ls_end_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
+// static int ls_end_transaction(const void* args, ls_session_t* session, map<string, string> * vars) {
+static int ls_end_transaction(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_end_transaction()\n", plugin_name);
+
+    system_session_state_t* state = (system_session_state_t*)sessionstate;
 
     // JSONNODE** json_args = (JSONNODE**)args;
     // string name = (*json_args)["transaction_name"].asString();
     string name = "transaction_name_todo";
 
-    uint64_t stop = uv_now(session->worker->worker_loop);
+    uint64_t stop = uv_now(state->session->worker->worker_loop);
 
-    system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
+    // system_session_state_t* state = (system_session_state_t*)session->plugin_states[plugin_id];
     uint64_t start = state->trans[name];
     LOGP("  start:%llu, stop:%llu\n", start, stop);
     state->trans.erase(name);
@@ -121,7 +110,7 @@ static int ls_end_transaction(const void* args, ls_session_t* session, map<strin
     // system_worker_state_t* workerstate = w->plugin_states[plugin_id];
 
 
-    process_session(session);
+    process_session(state->session);
     return 0;
 }
 
@@ -195,6 +184,7 @@ static int plugin_session_init(ls_session_t* session) {
         return -1;
     }
     state->trans = map<string, uint64_t>();
+	state->session = session;
 
     session->plugin_states[plugin_id] = (void*)state;
     return 0;
@@ -238,16 +228,19 @@ static void timer_cb(uv_timer_t* handle, int status) {
     process_session(s);
 }
 
-static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
+// static int ls_think_time(const void* args, ls_session_t* session, map<string, string> * vars) {
+static int ls_think_time(const void* args, void* sessionstate, map<string, string> * vars) {
     int time = (int)args;
     LOGP("%s.ls_think_time(%d)\n", plugin_name, time);
     LOGP("  ignore_think_time=%d\n", (int)system_setting.ignore_think_time);
 
+	system_session_state_t* state = (system_session_state_t*)sessionstate;
+
     uv_timer_t* timer = new uv_timer_t;// delete at line 77
-    ls_worker_t* w = (ls_worker_t*)session->worker;
+    ls_worker_t* w = (ls_worker_t*)state->session->worker;
     uv_timer_init(w->worker_loop, timer);
 
-    timer->data = session;
+    timer->data = state->session;
     uv_timer_start(timer, timer_cb, time, 0);
 
     return 0;
@@ -267,14 +260,17 @@ static int ls_output_message_terminate(void** args) {
     return 0;
 }
 
-static int ls_output_message(const void* args, ls_session_t* session, map<string, string> * vars) {
+// static int ls_output_message(const void* args, ls_session_t* session, map<string, string> * vars) {
+static int ls_output_message(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_output_message()\n", plugin_name);
+
+    system_session_state_t* state = (system_session_state_t*)sessionstate;
 
     // JSONNODE** json_args = (JSONNODE**)args;
     // LOGP("    ls_output_message output: %s\n", (*json_args)["message"].asString().c_str());
     LOGP("    ls_output_message output todo\n");
 
-    process_session(session);
+    process_session(state->session);
     return 0;
 }
 
@@ -307,24 +303,28 @@ extern "C" int plugin_declare(ls_plugin_t* plugin_entry) {
     plugin_entry->apis = (ls_plugin_api_t*)malloc(plugin_entry->num_apis * sizeof(ls_plugin_api_t));
 
     // ls_think_time
+    plugin_entry->apis[0].plugin = plugin_entry;
     plugin_entry->apis[0].name = (char*)"ls_think_time";
     plugin_entry->apis[0].init = ls_think_time_init;
     plugin_entry->apis[0].run = ls_think_time;
     plugin_entry->apis[0].terminate = ls_think_time_terminate;
 
     // ls_output_message
+    plugin_entry->apis[1].plugin = plugin_entry;
     plugin_entry->apis[1].name = (char*)"ls_output_message";
     plugin_entry->apis[1].init = ls_output_message_init;
     plugin_entry->apis[1].run = ls_output_message;
     plugin_entry->apis[1].terminate = ls_output_message_terminate;
 
     // ls_start_transaction
+    plugin_entry->apis[2].plugin = plugin_entry;
     plugin_entry->apis[2].name = (char*)"ls_start_transaction";
     plugin_entry->apis[2].init = ls_start_transaction_init;
     plugin_entry->apis[2].run = ls_start_transaction;
     plugin_entry->apis[2].terminate = ls_start_transaction_terminate;
 
     // ls_end_transaction
+    plugin_entry->apis[3].plugin = plugin_entry;
     plugin_entry->apis[3].name = (char*)"ls_end_transaction";
     plugin_entry->apis[3].init = ls_end_transaction_init;
     plugin_entry->apis[3].run = ls_end_transaction;

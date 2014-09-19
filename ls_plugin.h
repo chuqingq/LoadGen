@@ -23,7 +23,8 @@ typedef struct ls_plugin_api_s {
 
     const char* name;
     int (*init)(const JSONNODE* json_args, void** args);
-    int (*run)(const void* args, struct ls_session_s* session, map<string, string> * vars); // TODO vars是map吗？
+    // int (*run)(const void* args, struct ls_session_s* session, map<string, string> * vars); // TODO vars是map吗？
+    int (*run)(const void* args, void* sessionstate, map<string, string> * vars); // TODO vars是map吗？
     int (*terminate)(void** args);
 } ls_plugin_api_t;
 

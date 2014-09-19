@@ -15,6 +15,16 @@ typedef struct ls_worker_s {
 
     vector<ls_session_t*>* sessions;// TODO 使用内存池，可能快速增删
 
+    /*
+	// system中的统计值
+	typedef struct {
+	    uint64_t count;// 通过的事务个数
+		uint64_t duration;// 事务的平均时延
+		// uint64_t duration_{max,min};
+	} tran_stats_t;
+	map<string, tran_stats_t> tran_stats;
+	*/
+
     // ==== private
 
     uv_thread_t thread;
