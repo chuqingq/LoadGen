@@ -7,6 +7,7 @@ TODO system插件已经能够统计事务，但是master要怎么计算并处理
     并“上报”（如何上报）
     事务统计项：当前一秒：通过失败个数
         各个事务响应时延：{TransName, Pass, Duration}
+    TODO wrk是如何实现的? 多个worker线程给master上报数据?
 
 HUNG 暂时不处理。有了plugin_declare()貌似就不用plugin_demo plugin_load()了
 TODO The plugins need worker's notify_master() to report stats in API

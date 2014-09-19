@@ -49,8 +49,10 @@ typedef struct ls_plugin_entry_s {
     int (*worker_init)(struct ls_worker_s* worker);
     int (*worker_terminate)(struct ls_worker_s* worker);
 
-    int (*session_init)(struct ls_session_s* session);
-    int (*session_terminate)(struct ls_session_s* session);
+    // int (*session_init)(struct ls_session_s* session);
+    int (*session_init)(struct ls_session_s* session, void** sessionstate);
+    // int (*session_terminate)(struct ls_session_s* session);
+    int (*session_terminate)(void* sessionstate);
 
     // 3.APIs
     ls_plugin_api_t* apis;

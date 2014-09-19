@@ -42,11 +42,12 @@ int finish_session(ls_session_t* s) {
     {
         plugin = master.plugins + i;
 
-        if ((plugin->session_terminate)(s) < 0)
+        if ((plugin->session_terminate)(s->plugin_states[i]) < 0)
         {
             LOG("ERROR failed to %s.session_destroy()\n", plugin->plugin_name);
             return -1;
         }
+        s->plugin_states[i] = NULL;
 
         return 0;
     }

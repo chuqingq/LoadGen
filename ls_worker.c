@@ -101,7 +101,7 @@ static int worker_start_new_session(ls_worker_t* w, int num) {
         {
             plugin = master.plugins + i;
 
-            if (plugin->session_init != NULL && (plugin->session_init)(s) < 0)
+            if (plugin->session_init != NULL && (plugin->session_init)(s, &s->plugin_states[i]) < 0)
             {
                 LOG("ERROR failed to %s.session_init()\n", plugin->plugin_name);
                 return -1;

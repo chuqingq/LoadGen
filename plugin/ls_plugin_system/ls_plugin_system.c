@@ -8,6 +8,7 @@ using namespace std;
 
 #include "ls_utils.h"
 #include "ls_plugin.h"
+#include "ls_master.h"
 #include "ls_worker.h"
 #include "ls_session.h"
 
@@ -37,6 +38,12 @@ typedef struct {
 
 const static char* plugin_name = "ls_plugin_system";
 static size_t plugin_id;
+
+// static uv_timer trans_stats_timer;
+static void collect_trans_stats(uv_timer_t* timer, int status) {
+    // TODO
+    printf("collect_trans_stats\n");
+}
 
 // ls_start_transaction
 // static int ls_start_transaction_init(const Json::Value* json_args, void** args) {
@@ -191,8 +198,22 @@ static int ls_output_message(const void* args, void* sessionstate, map<string, s
 }
 
 
-static int master_init(struct ls_master_s*, const JSONNODE* setting) {
+static int master_init(struct ls_master_s* m, const JSONNODE* setting) {
     LOGP("%s.master_init()\n", plugin_name);
+    // TODO 1. 读取setting到本地的结构
+    
+    // 2. 读注册统计回调
+    static uv_timer_t trans_stats_timer;
+    if (uv_timer_init(m->master_loop, &trans_stats_timer) < 0) {
+        printf("trans_stats_timer init error\n");
+        return -1;
+    }
+
+    if (uv_timer_start(&trans_stats_timer, collect_trans_stats, 5000, 3000) < 0) {
+        printf("trans_stats_timer start error\n");
+        return -1;
+    }
+    
     return 0;
 }
 
@@ -250,7 +271,8 @@ static int worker_terminate(struct ls_worker_s* w) {
     return 0;
 }
 
-static int plugin_session_init(ls_session_t* session) {
+// static int plugin_session_init(ls_session_t* session) {
+static int plugin_session_init(ls_session_t* session, void** sessionstate) {
     LOGP("%s.session_init()\n", plugin_name);
 
     system_session_state_t* state = (system_session_state_t*)malloc(sizeof(system_session_state_t));
@@ -262,15 +284,18 @@ static int plugin_session_init(ls_session_t* session) {
     state->trans = map<string, uint64_t>();
 	state->session = session;
 
-    session->plugin_states[plugin_id] = (void*)state;
+    // session->plugin_states[plugin_id] = (void*)state;
+    *sessionstate = (void*)state;
     return 0;
 }
 
-static int plugin_session_terminate(ls_session_t* session) {
+// static int plugin_session_terminate(ls_session_t* session) {
+static int plugin_session_terminate(void* sessionstate) {
     LOGP("%s.session_terminate()\n", plugin_name);
 
-    free(session->plugin_states[plugin_id]);
-    session->plugin_states[plugin_id] = NULL;
+    // free(session->plugin_states[plugin_id]);
+    free(sessionstate);
+    // session->plugin_states[plugin_id] = NULL;
 
     return 0;
 }
