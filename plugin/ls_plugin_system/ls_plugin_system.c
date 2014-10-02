@@ -37,10 +37,15 @@ typedef struct {
 
 
 typedef struct {
+    ls_master_t* master;
 	uv_timer_t stats_timer;// master定时2秒根据这个字段扫面trans_stats_t
+
+    uv_mutex_t mutex;
 	uint64_t duration;// 平均事务响应时延
     uint64_t count;// 通过事务数
 } trans_stats_t;
+
+trans_stats_t trans_stats;
 
 
 const static char* plugin_name = "ls_plugin_system";
@@ -48,10 +53,9 @@ static size_t plugin_id;
 
 static void collect_trans_stats(uv_timer_t* timer, int status) {
     LOG("collect_trans_stats\n");
-    trans_stats_t* trans_stats = container_of(timer, trans_stats_t, stats_timer);
-    
-    LOG("trans_stats.duration = %llu\n", trans_stats->duration);
-    LOG("trans_stats.count = %llu\n", trans_stats->count);
+    // TODO
+    LOG("trans_stats.duration = %llu\n", trans_stats.duration);
+    LOG("trans_stats.count = %llu\n", trans_stats.count);
 }
 
 
@@ -130,13 +134,15 @@ static int ls_end_transaction(const void* args, void* sessionstate, map<string, 
     system_session_state_t* state = (system_session_state_t*)sessionstate;
     string* tran_name = (string*)args;
 
-    uint64_t stop = uv_now(state->session->worker->worker_loop);
-    uint64_t start = state->trans[*tran_name];
-    LOGP("  start:%llu, stop:%llu\n", start, stop);
+    uint64_t duration = uv_now(state->session->worker->worker_loop) - state->trans[*tran_name];
     state->trans.erase(*tran_name);
 
-    LOGP("  ls_end_transaction(): %s: %lld\n", tran_name->c_str(), stop-start);
-    // TODO 向worker统计
+    LOGP("  ls_end_transaction(): %s: %lld\n", tran_name->c_str(), duration);
+
+    uv_mutex_lock(&trans_stats.mutex);
+    trans_stats.count += 1;
+    trans_stats.duration += duration;
+    uv_mutex_unlock(&trans_stats.mutex);
 
     process_session(state->session);
     return 0;
@@ -231,15 +237,15 @@ static int plugin_terminate() {
 static int master_init(struct ls_master_s* m) {
     LOGP("%s.master_init()\n", plugin_name);
     // TODO 1. 读取setting到本地的结构
-    
+
     // 2. 读注册统计回调
-    trans_stats_t* trans_stats = (trans_stats_t*)malloc(sizeof(*trans_stats));
-    if (uv_timer_init(m->master_loop, &trans_stats->stats_timer) < 0) {
+    if (uv_timer_init(m->master_loop, &trans_stats.stats_timer) < 0) {
         printf("trans_stats_timer init error\n");
         return -1;
     }
+    trans_stats.master = m;
 
-    if (uv_timer_start(&trans_stats->stats_timer, collect_trans_stats, 3000, 2000) < 0) {
+    if (uv_timer_start(&trans_stats.stats_timer, collect_trans_stats, 3000, 2000) < 0) {
         printf("trans_stats_timer start error\n");
         return -1;
     }
