@@ -52,10 +52,10 @@ const static char* plugin_name = "ls_plugin_system";
 static size_t plugin_id;
 
 static void collect_trans_stats(uv_timer_t* timer, int status) {
-    LOG("collect_trans_stats\n");
+    LOGP("collect_trans_stats\n");
     // TODO
-    LOG("trans_stats.duration = %llu\n", trans_stats.duration);
-    LOG("trans_stats.count = %llu\n", trans_stats.count);
+    LOGP("trans_stats.duration = %llu\n", trans_stats.duration);
+    LOGP("trans_stats.count = %llu\n", trans_stats.count);
 }
 
 
@@ -71,7 +71,7 @@ static int ls_start_transaction_init(const JSONNODE* json_args, void** args) {
         json_free(name);
     }
     if (NULL == tran_name) {
-        LOG("ERROR failed to get param 'transaction_name'\n");
+        LOGP("ERROR failed to get param 'transaction_name'\n");
         return -1;
     }
     *args = tran_name;
@@ -114,7 +114,7 @@ static int ls_end_transaction_init(const JSONNODE* json_args, void** args) {
         json_free(name);
     }
     if (NULL == tran_name) {
-        LOG("ERROR failed to get param 'transaction_name'\n");
+        LOGP("ERROR failed to get param 'transaction_name'\n");
         return -1;
     }
     *args = tran_name;
@@ -154,7 +154,6 @@ static int ls_end_transaction(const void* args, void* sessionstate, map<string, 
 static int ls_think_time_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_think_time_init()\n", plugin_name);
 
-    // TODO int time = (*json_args)["time"].asInt();
     uint64_t* time = new uint64_t;
     for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
         json_char* name = json_name(*i);
@@ -164,7 +163,7 @@ static int ls_think_time_init(const JSONNODE* json_args, void** args) {
         json_free(name);
     }
     if (NULL == time) {
-        LOG("ERROR failed to get param 'time'\n");
+        LOGP("ERROR failed to get param 'time'\n");
         return -1;
     }
     *args = time;
@@ -214,6 +213,20 @@ static int ls_think_time(const void* args, void* sessionstate, map<string, strin
 static int ls_output_message_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_output_message_init()\n", plugin_name);
 
+    string* message = NULL;
+    for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
+        json_char* name = json_name(*i);
+        if (strcmp(name, "message") == 0) {
+            message = new string(json_as_string(*i));
+        }
+        json_free(name);
+    }
+    if (NULL == message) {
+        LOGP("ERROR failed to get param 'message'\n");
+        return -1;
+    }
+    *args = message;
+
     *args = (void*)json_args;
     return 0;
 }
@@ -221,18 +234,16 @@ static int ls_output_message_init(const JSONNODE* json_args, void** args) {
 
 static int ls_output_message_terminate(void** args) {
     LOGP("%s.ls_output_message_terminate()\n", plugin_name);
-
+    delete((string*)(*args));
+    *args = NULL;
     return 0;
 }
 
 
 static int ls_output_message(const void* args, void* sessionstate, map<string, string> * vars) {
-    LOGP("%s.ls_output_message()\n", plugin_name);
-
+    string* message = (string*)args;
     system_session_state_t* state = (system_session_state_t*)sessionstate;
-
-    LOGP("    ls_output_message output todo\n");
-
+    LOGP("  ls_output_message: %s\n", message->c_str());
     process_session(state->session);
     return 0;
 }
