@@ -9,7 +9,7 @@
     {
         "api": "ls_think_time",
         "args": {
-            "time": 3000
+            "time": 1000
         }
     },
 

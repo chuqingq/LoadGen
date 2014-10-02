@@ -83,6 +83,7 @@ static int ls_start_transaction_init(const JSONNODE* json_args, void** args) {
 static int ls_start_transaction_terminate(void** args) {
     LOGP("%s.ls_start_transaction_terminate()\n", plugin_name);
     delete((string*)(*args));
+    *args = NULL;
     return 0;
 }
 
@@ -124,6 +125,7 @@ static int ls_end_transaction_init(const JSONNODE* json_args, void** args) {
 static int ls_end_transaction_terminate(void** args) {
     LOGP("%s.ls_end_transaction_terminate()\n", plugin_name);
     delete((string*)(*args));
+    *args = NULL;
     return 0;
 }
 
@@ -153,16 +155,28 @@ static int ls_think_time_init(const JSONNODE* json_args, void** args) {
     LOGP("%s.ls_think_time_init()\n", plugin_name);
 
     // TODO int time = (*json_args)["time"].asInt();
-    int time = 3000;
-    *args = (void*)time;
-    LOGP("  time=%d\n", time);
+    uint64_t* time = new uint64_t;
+    for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
+        json_char* name = json_name(*i);
+        if (strcmp(name, "time") == 0) {
+            *time = json_as_int(*i);
+        }
+        json_free(name);
+    }
+    if (NULL == time) {
+        LOG("ERROR failed to get param 'time'\n");
+        return -1;
+    }
+    *args = time;
+    LOGP("  time=%llu\n", *time);
     return 0;
 }
 
 
 static int ls_think_time_terminate(void** args) {
     LOGP("%s.ls_think_time_terminate()\n", plugin_name);
-
+    delete((uint64_t*)*args);
+    *args = NULL;
     return 0;
 }
 
@@ -180,8 +194,8 @@ static void timer_cb(uv_timer_t* handle, int status) {
 
 
 static int ls_think_time(const void* args, void* sessionstate, map<string, string> * vars) {
-    int time = (int)args;
-    LOGP("%s.ls_think_time(%d)\n", plugin_name, time);
+    uint64_t* time = (uint64_t*)args;
+    LOGP("%s.ls_think_time(%llu)\n", plugin_name, *time);
     LOGP("  ignore_think_time=%d\n", (int)system_setting.ignore_think_time);
 
 	system_session_state_t* state = (system_session_state_t*)sessionstate;
@@ -191,7 +205,7 @@ static int ls_think_time(const void* args, void* sessionstate, map<string, strin
     uv_timer_init(w->worker_loop, timer);
 
     timer->data = state->session;
-    uv_timer_start(timer, timer_cb, time, 0);
+    uv_timer_start(timer, timer_cb, *time, 0);
 
     return 0;
 }
@@ -245,7 +259,7 @@ static int master_init(struct ls_master_s* m) {
     }
     trans_stats.master = m;
 
-    if (uv_timer_start(&trans_stats.stats_timer, collect_trans_stats, 3000, 2000) < 0) {
+    if (uv_timer_start(&trans_stats.stats_timer, collect_trans_stats, 100, 1000) < 0) {
         printf("trans_stats_timer start error\n");
         return -1;
     }
