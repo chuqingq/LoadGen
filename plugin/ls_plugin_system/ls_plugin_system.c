@@ -236,7 +236,7 @@ static int ls_output_message_init(const JSONNODE* json_args, void** args) {
         return -1;
     }
     *args = message;
-    printf("  ls_output_message: %s\n", message->c_str());
+    LOGP("  ls_output_message: %s\n", message->c_str());
     return 0;
 }
 
