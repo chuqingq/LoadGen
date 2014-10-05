@@ -49,19 +49,13 @@ int load_task_script(ls_task_script_t* script) {
         for (JSONNODE_ITERATOR j = json_begin(c); j != json_end(c); ++j) {
             json_char* name = json_name(*j);
             if (strcmp(name, "api") == 0) {
-                // entry->api_name = string(json_as_string(*j));
-                // TODO 不保存到api_name，而是直接设置api
                 const char* api_name = json_as_string(*j);
-                // if (NULL == entry->plugin) {
-                //     LOGE("  plugin not define\n");
-                //     return -1;
-                // }
                 entry->api = find_api_by_name(api_name, master.plugins, master.num_plugins);
                 if (NULL == entry->api) {
                     LOGE("  api %s not found\n", api_name);
                     return -1;
                 }
-                LOG("  api=%s\n", entry->api->name);
+                printf("  api=%s\n", entry->api->name);
             }
             else if (strcmp(name, "args") == 0) {
                 JSONNODE* args = json_as_node(*j);
