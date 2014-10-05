@@ -91,16 +91,16 @@ int main() {
         LOGE("ERROR failed to stop_master()\n");
         return -1;
     }
-
-    // plugin_terminate
-    if (unload_task_setting(&master) < 0) {
-        LOGE("failed to unload_task_setting()\n");
-    }
     
     // api_terminate()
     if (unload_task_script(&master.script) < 0) {
         LOGE("ERROR failed to unload_task_script()\n");
         // return -1;
+    }
+
+    // plugin_terminate
+    if (unload_task_setting(&master) < 0) {
+        LOGE("failed to unload_task_setting()\n");
     }
     
     if (unload_task_vars(&master.vars) < 0) {

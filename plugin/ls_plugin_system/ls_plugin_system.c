@@ -251,9 +251,8 @@ static int ls_output_message_terminate(void** args) {
 
 
 static int ls_output_message(const void* args, void* sessionstate, map<string, string> * vars) {
-    string* message = (string*)args;
     system_session_state_t* state = (system_session_state_t*)sessionstate;
-    LOGP("  ls_output_message: %s\n", message->c_str());
+    LOGP("  ls_output_message: %s\n", ((string*)args)->c_str());
     process_session(state->session);
     return 0;
 }
