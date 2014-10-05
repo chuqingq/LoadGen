@@ -53,9 +53,19 @@ static size_t plugin_id;
 
 static void collect_trans_stats(uv_timer_t* timer, int status) {
     LOGP("collect_trans_stats\n");
-    // TODO
-    LOGP("trans_stats.duration = %llu\n", trans_stats.duration);
-    LOGP("trans_stats.count = %llu\n", trans_stats.count);
+
+    uv_mutex_lock(&trans_stats.mutex);
+    // print
+    printf("  trans_stats: passed_trans = %llu\n", trans_stats.count);
+    if (0 == trans_stats.count) {
+        printf("  trans_stats: avg_duration = N/A\n");
+    } else {
+        printf("  trans_stats: avg_duration = %llu\n", trans_stats.duration/trans_stats.count);
+    }
+    // clear stats
+    trans_stats.count = 0;
+    trans_stats.duration = 0;
+    uv_mutex_unlock(&trans_stats.mutex);
 }
 
 
