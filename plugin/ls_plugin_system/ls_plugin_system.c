@@ -236,8 +236,7 @@ static int ls_output_message_init(const JSONNODE* json_args, void** args) {
         return -1;
     }
     *args = message;
-
-    *args = (void*)json_args;
+    printf("  ls_output_message: %s\n", message->c_str());
     return 0;
 }
 
@@ -274,13 +273,13 @@ static int master_init(struct ls_master_s* m) {
 
     // 2. 读注册统计回调
     if (uv_timer_init(m->master_loop, &trans_stats.stats_timer) < 0) {
-        printf("trans_stats_timer init error\n");
+        LOGE("trans_stats_timer init error\n");
         return -1;
     }
     trans_stats.master = m;
 
     if (uv_timer_start(&trans_stats.stats_timer, collect_trans_stats, 100, 1000) < 0) {
-        printf("trans_stats_timer start error\n");
+        LOGE("trans_stats_timer start error\n");
         return -1;
     }
     
