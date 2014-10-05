@@ -31,7 +31,7 @@ int process_session(ls_session_t* s) {
 
     s->script_cur++;
     */
-    s->script_cur = (s->script_cur + 1) % (master.script.entries_num-1);
+    s->script_cur = (s->script_cur + 1) % master.script.entries_num;
 
     return handle_session(s);
 }
