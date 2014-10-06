@@ -104,7 +104,7 @@ static int ls_start_transaction(const void* args, void* sessionstate, map<string
     string* tran_name = (string*)args;
 
     uint64_t start = uv_now(state->session->worker->worker_loop);
-    LOGP("  start: %llu\n", start);
+    LOGP("  tran_name: %s; start: %llu\n", tran_name->c_str(), start);
 
     state->trans.insert(make_pair(*tran_name, start));
     process_session(state->session);
