@@ -1,5 +1,9 @@
 {
     "ls_plugin_system": {
         "ignore_think_time": false
+    },
+
+    "ls_plugin_http": {
+    	
     }
 }

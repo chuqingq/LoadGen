@@ -7,6 +7,43 @@
     },
 
     {
+        "api": "ls_http_request",
+        "args": {
+            "method": "GET",
+            "url": "http://localhost:6060/pkg/builtin/",
+            "version": "HTTP/1.1",
+            "headers": {
+                "Content-Length": "123",
+                "Host": "localhost:6060"
+            },
+            "body": [
+                "body",
+                "file:/home/chuqq/a.jpg"
+            ],
+            "refers": [
+                {
+                    "method": "GET",
+                    "url": "http://localhost:6060/pkg/builtin/a.jpg",
+                    "version": "HTTP/1.1",
+                    "headers": {
+                        "Host": "localhost:6060"
+                    },
+                    "body": []
+                },
+                {
+                    "method": "GET",
+                    "url": "http://localhost:6060/pkg/builtin/b.jpg",
+                    "version": "HTTP/1.1",
+                    "headers": {
+                        "Host": "localhost:6060"
+                    },
+                    "body": []
+                }
+            ]
+        }
+    },
+
+    {
         "api": "ls_think_time",
         "args": {
             "time": 1000
