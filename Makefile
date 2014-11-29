@@ -1,7 +1,7 @@
 CC      := g++
 CFLAGS  := -DNDEBUG -g -Wall -Werror -Wl,-export-dynamic
 LDFLAGS :=  -Wall -Werror -Wl,-export-dynamic
-LIBS    := -Llib/libuv/lib -luv -Llib/libjson/lib -ljson -ldl -lpthread
+LIBS    := -Llib/libuv/lib -luv -Llib/libjson/lib -ljson -ldl -lpthread -lrt
 
 SRC  := ls_config.c ls_master.c ls_session.c ls_task_script.c ls_task_var.c main.c ls_logger.c ls_plugin.c ls_task_callmodel.c ls_task_setting.c ls_worker.c
 BIN  := loadgen

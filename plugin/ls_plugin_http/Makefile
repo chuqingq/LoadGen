@@ -1,5 +1,5 @@
 CC      := g++
-CFLAGS  := -DNDEBUG -g -Wall -Werror -I../../ -I../../lib
+CFLAGS  := -DNDEBUG -g -Wall -Werror -I../../ -I../../lib -fPIC
 LDFLAGS := -Wall -Werror -fPIC -shared
 LIBS    := -L../../lib/libuv/lib -luv
 
