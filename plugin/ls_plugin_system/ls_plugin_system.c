@@ -1,4 +1,6 @@
 #include <stdio.h>
+// #define __STDC_FORMAT_MACROS
+// #include <inttypes.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -56,11 +58,13 @@ static void collect_trans_stats(uv_timer_t* timer, int status) {
 
     uv_mutex_lock(&trans_stats.mutex);
     // print
-    printf("  trans_stats: passed_trans = %llu\n", trans_stats.count);
+    // printf("  trans_stats: passed_trans = %"PRIu64"\n", trans_stats.count);
+    cout << "  trans_stats: passed_trans = " << trans_stats.count << endl;
     if (0 == trans_stats.count) {
         printf("  trans_stats: avg_duration = N/A\n");
     } else {
-        printf("  trans_stats: avg_duration = %llu\n", trans_stats.duration/trans_stats.count);
+        // printf("  trans_stats: avg_duration = %"PRIu64"\n", (uint64_t)trans_stats.duration/trans_stats.count);
+        cout << "  trans_stats: avg_duration = " << trans_stats.duration/trans_stats.count << endl;
     }
     // clear stats
     trans_stats.count = 0;

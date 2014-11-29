@@ -1,7 +1,7 @@
 CC      := g++
-CFLAGS  := -DNDEBUG -g -Wall -Werror -I../../ -I../../lib -fPIC
+CFLAGS  := -DNDEBUG -g -Wall -Werror -fPIC -I../../ -I../../lib
 LDFLAGS := -Wall -Werror -fPIC -shared
-LIBS    := -L../../lib/libuv/lib -luv
+LIBS    := 
 
 SRC  := ls_plugin_http.c
 BIN  := ls_plugin_http.so
