@@ -3,7 +3,6 @@
 #include "lib/libuv/include/uv.h"
 
 #include "ls_worker.h"
-#include "ls_config.h"
 #include "ls_plugin.h"
 #include "ls_task_callmodel.h"
 #include "ls_task_setting.h"
@@ -13,7 +12,7 @@
 typedef struct ls_master_s {
     uv_loop_t* master_loop;
 
-    ls_config_t config;
+    // ls_config_t config;
 
     ls_plugin_t* plugins;// TODO 只保存脚本中使用的
     size_t num_plugins;

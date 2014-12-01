@@ -113,3 +113,7 @@ TODO 可能也要回调
 ## TODO plugin模块的统计
 1、declare时向master注册上面三项
 2、执行API时发送消息给master
+
+## TODO
+去掉config，监听端口等内容后续放在system插件中
+去掉log，放在utils中

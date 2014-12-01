@@ -4,7 +4,7 @@
 #include "ls_task_script.h"
 
 #include "ls_master.h"
-#include "ls_config.h"
+// #include "ls_config.h"
 #include "ls_worker.h"
 #include "ls_plugin.h"
 
@@ -17,9 +17,15 @@ int main() {
 
     log_init();
 
+    /*
     if (load_config(&master.config) < 0) {
         LOGE("ERROR failed to load_config.\n");
         return -1;
+    }
+    */
+    master.num_workers = sysconf(_SC_NPROCESSORS_ONLN);
+    if (master.num_workers < 1) {
+        LOGE("ERROR workers num invalid\n");
     }
 
     if (load_task_callmodel(&master.callmodel) < 0) {
@@ -112,9 +118,11 @@ int main() {
         LOGE("ERROR failed to load_task_callmodel.\n");
     }
 
+    /*
     if (unload_config(&master.config) < 0) {
         LOGE("ERROR failed to unload_config()\n");
     }
+    */
 
     log_terminate();
 

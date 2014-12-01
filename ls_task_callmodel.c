@@ -6,7 +6,7 @@
 #include <errno.h>
 
 #include "ls_utils.h"
-#include "ls_config.h"
+// #include "ls_config.h"
 #include "ls_master.h"
 #include "ls_task_callmodel.h"
 

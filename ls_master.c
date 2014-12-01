@@ -41,7 +41,7 @@ int stop_master(ls_master_t* master) {
 int start_workers(ls_master_t* master) {
     LOG("start_workers()\n");
 
-    master->num_workers = master->config.workers_num;
+    // master->num_workers = master->config.workers_num;
     master->workers = (ls_worker_t*)malloc(master->num_workers * sizeof(ls_worker_t));
     if (master->workers == NULL)
     {
