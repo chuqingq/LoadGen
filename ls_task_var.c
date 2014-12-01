@@ -1,6 +1,6 @@
 #include "ls_task_var.h"
 
-#include "ls_logger.h"
+#include "ls_utils.h"
 
 int load_task_vars(ls_task_var_t* vars) {
     LOG("load_task_vars()\n");

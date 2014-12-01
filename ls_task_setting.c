@@ -7,7 +7,7 @@
 
 #include "lib/libjson/include/libjson.h"
 #include "ls_master.h"
-#include "ls_logger.h"
+#include "ls_utils.h"
 
 int load_task_setting(ls_master_t* master) {
     LOG("load_task_setting()\n");
