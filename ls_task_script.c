@@ -7,6 +7,8 @@
 #include <fstream>
 using namespace std;
 
+#include <errno.h>
+
 #include "lib/libjson/include/libjson.h"
 
 #include "ls_utils.h"
@@ -21,7 +23,7 @@ int load_task_script(ls_task_script_t* script) {
     FILE* f = fopen(script_file, "r");
     if (f == NULL)
     {
-        LOGE("Failed to open script_file: %s\n", script_file);// TODO errno
+        LOGE("Failed to open script_file[%s]: %s\n", script_file, strerror(errno));
         return -1;
     }
 
@@ -37,7 +39,6 @@ int load_task_script(ls_task_script_t* script) {
 
     JSONNODE* root = json_parse(buf);
 
-    // script->script = root;
     script->entries_num = json_size(root);
     script->entries = new ls_task_script_entry_t[script->entries_num];// TODO
 
@@ -82,11 +83,10 @@ int unload_task_script(ls_task_script_t* script) {
         ls_task_script_entry_t* entry = script->entries + i;
         if (entry->api->terminate(&entry->args) < 0) {
             LOGE("  api %s.terminate() error\n", entry->api->name);
-            // return -1;
         }
     }
-    // TODO 遍历script的所有entry，调用api_terminate
-    delete[] script->entries;// TODO
+    
+    delete[] script->entries;
     script->entries = NULL;
     script->entries_num = 0;
 
