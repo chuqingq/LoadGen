@@ -10,8 +10,6 @@ static int handle_session(ls_session_t* s) {
     const ls_task_script_entry_t* e = master.script.entries + s->script_cur;
     ls_plugin_api_t* api = (ls_plugin_api_t*) e->api;
     map<string, string> vars;
-    // 把run的第二个参数改为api所在plugin的state
-    // if ((api->run)(e->args, s, &vars) < 0)
     if ((api->run)(e->args, s->plugin_states[api->plugin->plugin_index], &vars) < 0)
     {
         LOGE("  ERROR failed to run api [%s]\n", e->api->name);
@@ -23,16 +21,7 @@ static int handle_session(ls_session_t* s) {
 }
 
 int process_session(ls_session_t* s) {
-    /*
-    if (s->script_cur == master.script.entries_num-1)
-    {
-        s->script_cur = -1;
-    }
-
-    s->script_cur++;
-    */
     s->script_cur = (s->script_cur + 1) % master.script.entries_num;
-
     return handle_session(s);
 }
 

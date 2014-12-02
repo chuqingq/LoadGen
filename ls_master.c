@@ -32,7 +32,6 @@ int stop_master(ls_master_t* master) {
         p = master->plugins + i;
         if (p->master_terminate != NULL && (p->master_terminate)(master) < 0) {
             LOGE("ERROR failed to master_terminate()\n");
-            // return -1;
         }
     }
     return 0;
@@ -41,7 +40,6 @@ int stop_master(ls_master_t* master) {
 int start_workers(ls_master_t* master) {
     LOG("start_workers()\n");
 
-    // master->num_workers = master->config.workers_num;
     master->workers = (ls_worker_t*)malloc(master->num_workers * sizeof(ls_worker_t));
     if (master->workers == NULL)
     {

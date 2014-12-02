@@ -6,7 +6,7 @@
 
 struct ls_worker_s;
 
-// TODO 内存很敏感
+// 内存很敏感
 typedef struct ls_session_s {
     struct ls_worker_s* worker;
     size_t script_cur;

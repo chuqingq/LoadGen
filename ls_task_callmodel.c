@@ -40,43 +40,33 @@ int load_task_callmodel(ls_task_callmodel_t* callmodel) {
 
     JSONNODE* n = json_parse(buf);
 
-    for (JSONNODE_ITERATOR i = json_begin(n); i != json_end(n); ++i)
-    {
+    for (JSONNODE_ITERATOR i = json_begin(n); i != json_end(n); ++i) {
         json_char* name = json_name(*i);
-        if (strcmp(name, "type") == 0)
-        {
+        if (strcmp(name, "type") == 0) {
             json_char* type = json_as_string(*i);
-            if (strcmp(type, "CALLMODEL_VUSER") == 0)
-            {
+            if (strcmp(type, "CALLMODEL_VUSER") == 0) {
                 callmodel->type = CALLMODEL_VUSER;
             }
-            else if (strcmp(type, "CALLMODEL_CAPS"))
-            {
+            else if (strcmp(type, "CALLMODEL_CAPS")) {
                 callmodel->type = CALLMODEL_CAPS;
             }
-            else
-            {
+            else {
                 LOGE("CALLMODEL type invalid\n");
             }
         }
-        else if (strcmp(name, "init") == 0)
-        {
+        else if (strcmp(name, "init") == 0) {
             callmodel->init = json_as_int(*i);
         }
-        else if (strcmp(name, "accelerate") == 0)
-        {
+        else if (strcmp(name, "accelerate") == 0) {
             callmodel->accelerate = json_as_int(*i);
         }
-        else if (strcmp(name, "dest") == 0)
-        {
+        else if (strcmp(name, "dest") == 0) {
             callmodel->dest = json_as_int(*i);
         }
-        else if (strcmp(name, "duration") == 0)
-        {
+        else if (strcmp(name, "duration") == 0) {
             callmodel->duration = json_as_int(*i);
         }
-        else
-        {
+        else {
             LOGE("call_model name invalid\n");
         }
         json_free(name);
@@ -114,8 +104,7 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
     LOG("    dest=%d\n", cm->dest);
 
     // 启动cm->accelerate个session
-    if (start_new_session(cm->accelerate) < 0)
-    {
+    if (start_new_session(cm->accelerate) < 0) {
         LOG("ERROR failed to start_new_session()\n");
         return;// TODO 退出
     }
@@ -124,8 +113,7 @@ static void accelerate_per_sec(uv_timer_t* handle, int status) {
     // 如果当前值达到dest，则关闭此timer，开启另一个duration_timer
     if ((cm->current == cm->dest)
         || (cm->accelerate > 0 && cm->current > cm->dest)
-        || (cm->accelerate < 0 && cm->current < cm->dest))
-    {
+        || (cm->accelerate < 0 && cm->current < cm->dest)) {
         uv_timer_stop(&(cm->accelerate_timer));
 
         uv_timer_init(uv_default_loop(), &(cm->duration_timer));
@@ -142,8 +130,7 @@ int do_task_callmodel(ls_task_callmodel_t* cm) {
 
     // 把呼叫模型中current从0改为init
     // TODO 启动init个session
-    if (start_new_session(cm->init) < 0)
-    {
+    if (start_new_session(cm->init) < 0) {
         LOG("ERROR failed to start_new_session()\n");
         return -1;
     }

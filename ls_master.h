@@ -12,14 +12,11 @@
 typedef struct ls_master_s {
     uv_loop_t* master_loop;
 
-    // ls_config_t config;
-
-    ls_plugin_t* plugins;// TODO 只保存脚本中使用的
+    ls_plugin_t* plugins;
     size_t num_plugins;
 
     ls_task_callmodel_t callmodel;
-    // void* settings;
-    ls_task_var_t vars;// 变量，master读取，master不需要，worker只读
+    ls_task_var_t vars;     // 变量，master读取，master不需要，worker只读
     ls_task_script_t script;// 脚本，master保存，worker只读
     
     ls_worker_t* workers;
@@ -28,11 +25,6 @@ typedef struct ls_master_s {
 
 extern ls_master_t master;
 
-/*
-int load_plugins(ls_master_t* master);
-int unload_plugins(ls_master_t* master);
-*/
-
 int start_master(ls_master_t* master);
 int stop_master(ls_master_t* master);
 
@@ -40,4 +32,4 @@ int start_workers(ls_master_t* master);// -> worker_start()
 int stop_workers(ls_master_t* master);// -> worker_stop()
 int reap_workers(ls_master_t* master);// -> worker_reap()
 
-int start_new_session(int num);// TODO change name to master_do_callmodel() ??
+int start_new_session(int num);
