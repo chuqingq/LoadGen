@@ -33,17 +33,17 @@ typedef struct {
 } system_worker_state_t;
 
 typedef struct {
-	ls_session_t* session;
+    ls_session_t* session;
     map<string, uint64_t> trans;
 } system_session_state_t;
 
 
 typedef struct {
     ls_master_t* master;
-	uv_timer_t stats_timer;// master定时2秒根据这个字段扫面trans_stats_t
+    v_timer_t stats_timer;// master定时2秒根据这个字段扫面trans_stats_t
 
     uv_mutex_t mutex;
-	uint64_t duration;// 平均事务响应时延
+    int64_t duration;// 平均事务响应时延
     uint64_t count;// 通过事务数
 } trans_stats_t;
 
@@ -104,7 +104,7 @@ static int ls_start_transaction_terminate(void** args) {
 
 static int ls_start_transaction(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_start_transaction()\n", plugin_name);
-	system_session_state_t* state = (system_session_state_t*)sessionstate;
+    system_session_state_t* state = (system_session_state_t*)sessionstate;
     string* tran_name = (string*)args;
 
     uint64_t start = uv_now(state->session->worker->worker_loop);
@@ -211,7 +211,7 @@ static int ls_think_time(const void* args, void* sessionstate, map<string, strin
     LOGP("%s.ls_think_time(%llu)\n", plugin_name, *time);
     LOGP("  ignore_think_time=%d\n", (int)system_setting.ignore_think_time);
 
-	system_session_state_t* state = (system_session_state_t*)sessionstate;
+    system_session_state_t* state = (system_session_state_t*)sessionstate;
 
     uv_timer_t* timer = new uv_timer_t;// delete at line 77
     ls_worker_t* w = (ls_worker_t*)state->session->worker;
@@ -318,7 +318,7 @@ static int session_init(ls_session_t* session, void** sessionstate) {
         return -1;
     }
     state->trans = map<string, uint64_t>();
-	state->session = session;
+    state->session = session;
 
     *sessionstate = (void*)state;
     return 0;
