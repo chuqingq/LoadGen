@@ -16,5 +16,4 @@ typedef struct ls_session_s {
 
 
 int process_session(ls_session_t* session);// handle_session() -> api.run()
-
 int finish_session(ls_session_t* session);// session_terminate(), free(plugin_states)

@@ -9,6 +9,7 @@
 #include "ls_master.h"
 #include "ls_utils.h"
 
+// master不保存settings，直接传给plugin_init()
 int load_task_setting(ls_master_t* master) {
     LOG("load_task_setting()\n");
     const char* setting_file = "task/setting.json";
@@ -16,8 +17,7 @@ int load_task_setting(ls_master_t* master) {
     char* buf;
     long len;
     FILE* f = fopen(setting_file, "r");
-    if (f == NULL)
-    {
+    if (f == NULL) {
         LOGE("Failed to open setting_file: %s\n", setting_file);// TODO errno
         return -1;
     }
@@ -43,8 +43,7 @@ int load_task_setting(ls_master_t* master) {
     ls_plugin_t* plugin;
     size_t plugin_index = 0;
     char plugin_path[128];
-    for (JSONNODE_ITERATOR i = json_begin(setting); i != json_end(setting); ++i, ++plugin_index)
-    {
+    for (JSONNODE_ITERATOR i = json_begin(setting); i != json_end(setting); ++i, ++plugin_index) {
         plugin = master->plugins + plugin_index;
         plugin->plugin_index = plugin_index;
 
@@ -86,12 +85,10 @@ int load_task_setting(ls_master_t* master) {
 
 int unload_task_setting(ls_master_t* master) {
     ls_plugin_t* plugin;
-    for (size_t i = 0; i < master->num_plugins; ++i)
-    {
+    for (size_t i = 0; i < master->num_plugins; ++i) {
         plugin = master->plugins + i;
         // if (NULL != plugin->master_terminate && (plugin->master_terminate)(master) < 0)
-        if (NULL != plugin->plugin_terminate && (plugin->plugin_terminate)() < 0)
-        {
+        if (NULL != plugin->plugin_terminate && (plugin->plugin_terminate)() < 0) {
             LOGE("ERROR failed to plugin_terminate()\n");
         }
     }
