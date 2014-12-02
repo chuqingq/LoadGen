@@ -18,7 +18,7 @@ typedef struct ls_master_s {
     size_t num_plugins;
 
     ls_task_callmodel_t callmodel;
-    void* settings;
+    // void* settings;
     ls_task_var_t vars;// 变量，master读取，master不需要，worker只读
     ls_task_script_t script;// 脚本，master保存，worker只读
     
