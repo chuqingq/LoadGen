@@ -11,8 +11,7 @@ static void worker_async_callback(uv_async_t* async, int status) {
 
     ls_worker_t* w = container_of(async, ls_worker_t, worker_async);
 
-    if (async->data  == NULL)
-    {
+    if (async->data  == NULL) {
         LOG("ERROR ls_worker_async_cb is NULL\n");
         return;
     }
@@ -38,8 +37,7 @@ static void worker_thread(void* arg) {
 int worker_start(ls_worker_t* w) {
     LOG("  worker_start(%lu)\n", (unsigned long)w);
 
-    for (size_t i = 0; i < master.num_plugins; ++i)
-    {
+    for (size_t i = 0; i < master.num_plugins; ++i) {
         ls_plugin_t* plugin = master.plugins + i;
         if (plugin->worker_init(w), 0) {
             LOGE("  %s.worker_init() error\n", plugin->plugin_name);
@@ -59,16 +57,14 @@ int worker_stop(ls_worker_t* w) {
     LOG("  worker_stop()\n");
 
     // stop all sessions in the worker
-    for (size_t i = 0; i < w->sessions->size(); ++i)
-    {
+    for (size_t i = 0; i < w->sessions->size(); ++i) {
         if (finish_session((*w->sessions)[i]) < 0) {
             LOG("ERROR failed to finish_session()\n");
             // return -1;// 确保所有session都执行了session_destroy()
         }
     }
 
-    for (size_t i = 0; i < master.num_plugins; ++i)
-    {
+    for (size_t i = 0; i < master.num_plugins; ++i) {
         ls_plugin_t* plugin = master.plugins + i;
         if (plugin->worker_terminate(w), 0) {
             LOGE("  %s.worker_terminate() error\n", plugin->plugin_name);
@@ -86,8 +82,7 @@ static int worker_start_new_session(ls_worker_t* w, int num) {
     LOG("  worker_start_new_session(%d)\n", num);
 
     ls_session_t* s;
-    for (int i = 0; i < num; ++i)
-    {
+    for (int i = 0; i < num; ++i) {
         s = new ls_session_t;
         s->plugin_states = (void**)malloc(master.num_plugins * sizeof(void*));
 
@@ -97,12 +92,11 @@ static int worker_start_new_session(ls_worker_t* w, int num) {
         s->script_cur = -1;
         
         ls_plugin_t* plugin;
-        for (size_t i = 0; i < master.num_plugins; ++i)
-        {
+        for (size_t i = 0; i < master.num_plugins; ++i) {
             plugin = master.plugins + i;
 
-            if (plugin->session_init != NULL && (plugin->session_init)(s, &s->plugin_states[i]) < 0)
-            {
+            if (plugin->session_init != NULL
+                && (plugin->session_init)(s, &s->plugin_states[i]) < 0) {
                 LOG("ERROR failed to %s.session_init()\n", plugin->plugin_name);
                 return -1;
             }
@@ -125,8 +119,7 @@ int worker_do_callmodel(ls_worker_t* w) {
     // delete (int*)async->data;
     // async->data = NULL;
     int delta = 0;
-    if (worker_get_callmodel_delta(w, &delta) < 0)
-    {
+    if (worker_get_callmodel_delta(w, &delta) < 0) {
         LOG("ERROR failed to worker_get_callmodel_delta()\n");
         return -1;
     }
@@ -138,8 +131,7 @@ int worker_do_callmodel(ls_worker_t* w) {
         worker_stop(w);// TODO
         return 0;
     }
-    else*/ if (delta > 0)
-    {
+    else*/ if (delta > 0) {
         worker_start_new_session(w, delta);
     }
 

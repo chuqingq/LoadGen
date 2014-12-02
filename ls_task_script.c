@@ -21,8 +21,7 @@ int load_task_script(ls_task_script_t* script) {
     char* buf;
     long len;
     FILE* f = fopen(script_file, "r");
-    if (f == NULL)
-    {
+    if (f == NULL) {
         LOGE("Failed to open script_file[%s]: %s\n", script_file, strerror(errno));
         return -1;
     }
@@ -78,8 +77,7 @@ int load_task_script(ls_task_script_t* script) {
 int unload_task_script(ls_task_script_t* script) {
     LOG("unload_task_script()\n");
 
-    for (size_t i = 0; i < script->entries_num; ++i)
-    {
+    for (size_t i = 0; i < script->entries_num; ++i) {
         ls_task_script_entry_t* entry = script->entries + i;
         if (entry->api->terminate(&entry->args) < 0) {
             LOGE("  api %s.terminate() error\n", entry->api->name);

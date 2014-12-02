@@ -41,14 +41,12 @@ int start_workers(ls_master_t* master) {
     LOG("start_workers()\n");
 
     master->workers = (ls_worker_t*)malloc(master->num_workers * sizeof(ls_worker_t));
-    if (master->workers == NULL)
-    {
+    if (master->workers == NULL) {
         LOG("ERROR failed to malloc workers\n");
         return -1;
     }
 
-    for (size_t i = 0; i < master->num_workers; ++i)
-    {
+    for (size_t i = 0; i < master->num_workers; ++i) {
         ls_worker_t* w = master->workers + i;
         w->worker_started = 0;
 
@@ -57,8 +55,7 @@ int start_workers(ls_master_t* master) {
             return -1;
         }
 
-        if (worker_start(w) < 0)// start worker thread
-        {
+        if (worker_start(w) < 0) {
             LOG("ERROR failed to worker_start()\n");
             return -1;
         }
@@ -69,17 +66,16 @@ int start_workers(ls_master_t* master) {
     return 0;
 }
 
+
 // 通知worker自己停止
 int stop_workers(ls_master_t* master) {
     LOG("stop_workers()\n");
 
-    for (size_t i = 0; i < master->num_workers; ++i)
-    {
+    for (size_t i = 0; i < master->num_workers; ++i) {
         ls_worker_t* w = master->workers + i;
         w->worker_async.data = (void*)worker_stop;
 
-        if (uv_async_send(&w->worker_async) < 0)
-        {
+        if (uv_async_send(&w->worker_async) < 0) {
             LOG("ERROR failed to uv_async_send()\n");
             return -1;
         }
@@ -91,8 +87,7 @@ int stop_workers(ls_master_t* master) {
 int reap_workers(ls_master_t* master) {
     LOG("reap_workers()\n");
 
-    for (size_t i = 0; i< master->num_workers; ++i)
-    {
+    for (size_t i = 0; i< master->num_workers; ++i) {
         if (worker_reap(master->workers + i) < 0) {
             LOG("ERROR failed to worker_reap(%zu)\n", i);
             return -1;
@@ -105,8 +100,7 @@ int reap_workers(ls_master_t* master) {
 static int notify_worker_do_callmodel(ls_worker_t* w, int num) {
     LOG("  notify_worker_do_callmodel(%lu, %d)\n", (unsigned long)w, num);
 
-    if (worker_set_callmodel_delta(w, num) < 0)
-    {
+    if (worker_set_callmodel_delta(w, num) < 0) {
         LOG("ERROR failed to worker_set_callmodel_delta()\n");
         return -1;
     }
@@ -124,24 +118,19 @@ int start_new_session(int num) {
     int add = num%workers_num;
     LOG("  avg=%d,add=%d\n", avg, add);
 
-    for (int i = 0; i < add; ++i)
-    {
-        if (notify_worker_do_callmodel(master.workers + i, avg) < 0)
-        {
+    for (int i = 0; i < add; ++i) {
+        if (notify_worker_do_callmodel(master.workers + i, avg) < 0) {
             LOG("ERROR failed to worker_start_new_session()\n");
             return -1;
         }
     }
 
-    if ((avg - 1) == 0)
-    {
+    if ((avg - 1) == 0) {
         return 0;
     }
 
-    for (int i = add; i < workers_num; ++i)
-    {
-        if (notify_worker_do_callmodel(master.workers + i, avg-1) < 0)
-        {
+    for (int i = add; i < workers_num; ++i) {
+        if (notify_worker_do_callmodel(master.workers + i, avg-1) < 0) {
             LOG("ERROR failed to worker_start_new_session()\n");
             return -1;
         }

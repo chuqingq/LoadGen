@@ -88,8 +88,7 @@ int main() {
         LOGE("ERROR failed to unload_task_vars.\n");
     }
 
-    if (unload_task_callmodel(&master.callmodel) < 0)
-    {
+    if (unload_task_callmodel(&master.callmodel) < 0) {
         LOGE("ERROR failed to load_task_callmodel.\n");
     }
 

@@ -12,8 +12,7 @@ typedef struct ls_worker_s {
 
     vector<ls_session_t*>* sessions;// TODO 使用内存池，可能快速增删
 
-    // ==== private
-
+    // private
     uv_thread_t thread;
 
     // worker和master的通信

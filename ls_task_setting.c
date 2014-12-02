@@ -72,8 +72,7 @@ int load_task_setting(ls_master_t* master) {
 
         JSONNODE* settings = *i;
         // if (plugin->master_init != NULL && (plugin->master_init)(master, settings) < 0)
-        if (plugin->plugin_init != NULL && (plugin->plugin_init)(settings) < 0)
-        {
+        if (plugin->plugin_init != NULL && (plugin->plugin_init)(settings) < 0) {
             LOGE("ERROR failed to plugin_init()\n");
             return -1;
         }
