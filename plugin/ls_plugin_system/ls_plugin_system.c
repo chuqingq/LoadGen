@@ -40,7 +40,7 @@ typedef struct {
 
 typedef struct {
     ls_master_t* master;
-    v_timer_t stats_timer;// master定时2秒根据这个字段扫面trans_stats_t
+    uv_timer_t stats_timer;// master定时2秒根据这个字段扫面trans_stats_t
 
     uv_mutex_t mutex;
     int64_t duration;// 平均事务响应时延
