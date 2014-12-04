@@ -1,5 +1,7 @@
 #include "lib/libuv/include/uv.h"
 
+#include <unistd.h>
+
 #include "ls_utils.h"
 #include "ls_task_script.h"
 
