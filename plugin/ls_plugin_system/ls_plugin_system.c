@@ -73,11 +73,11 @@ static void collect_trans_stats(uv_timer_t* timer, int status) {
 }
 
 
-static int ls_start_transaction_init(const JSONNODE* json_args, void** args) {
+static int ls_start_transaction_init(JSONNODE* json_args, void** args) {
     LOGP("%s.ls_start_transaction_init()\n", plugin_name);
 
     string* tran_name = NULL;
-    for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
+    for (JSONNODE_ITERATOR i = json_begin(json_args); i != json_end(json_args); ++i) {
         json_char* name = json_name(*i);
         if (strcmp(name, "transaction_name") == 0) {
             tran_name = new string(json_as_string(*i));
@@ -116,11 +116,11 @@ static int ls_start_transaction(const void* args, void* sessionstate, map<string
 }
 
 
-static int ls_end_transaction_init(const JSONNODE* json_args, void** args) {
+static int ls_end_transaction_init(JSONNODE* json_args, void** args) {
     LOGP("%s.ls_end_transaction_init()\n", plugin_name);
     
     string* tran_name = NULL;
-    for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
+    for (JSONNODE_ITERATOR i = json_begin(json_args); i != json_end(json_args); ++i) {
         json_char* name = json_name(*i);
         if (strcmp(name, "transaction_name") == 0) {
             tran_name = new string(json_as_string(*i));
@@ -165,11 +165,11 @@ static int ls_end_transaction(const void* args, void* sessionstate, map<string, 
 }
 
 
-static int ls_think_time_init(const JSONNODE* json_args, void** args) {
+static int ls_think_time_init(JSONNODE* json_args, void** args) {
     LOGP("%s.ls_think_time_init()\n", plugin_name);
 
     uint64_t* time = new uint64_t;
-    for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
+    for (JSONNODE_ITERATOR i = json_begin(json_args); i != json_end(json_args); ++i) {
         json_char* name = json_name(*i);
         if (strcmp(name, "time") == 0) {
             *time = json_as_int(*i);
@@ -224,11 +224,11 @@ static int ls_think_time(const void* args, void* sessionstate, map<string, strin
 }
 
 
-static int ls_output_message_init(const JSONNODE* json_args, void** args) {
+static int ls_output_message_init(JSONNODE* json_args, void** args) {
     LOGP("%s.ls_output_message_init()\n", plugin_name);
 
     string* message = NULL;
-    for (JSONNODE_ITERATOR i = json_begin((JSONNODE*)json_args); i != json_end((JSONNODE*)json_args); ++i) {
+    for (JSONNODE_ITERATOR i = json_begin(json_args); i != json_end(json_args); ++i) {
         json_char* name = json_name(*i);
         if (strcmp(name, "message") == 0) {
             message = new string(json_as_string(*i));
@@ -260,7 +260,7 @@ static int ls_output_message(const void* args, void* sessionstate, map<string, s
     return 0;
 }
 
-static int plugin_init(const JSONNODE* setting) {
+static int plugin_init(JSONNODE* setting) {
     LOGP("%s.plugin_init()\n", plugin_name);
     return 0;
 }

@@ -22,7 +22,7 @@ typedef struct ls_plugin_api_s {
     struct ls_plugin_entry_s* plugin;
 
     const char* name;
-    int (*init)(const JSONNODE* json_args, void** args);
+    int (*init)(JSONNODE* json_args, void** args);
     int (*run)(const void* args, void* sessionstate, map<string, string> * vars); // TODO vars是map吗？
     int (*terminate)(void** args);
 } ls_plugin_api_t;
@@ -33,7 +33,7 @@ typedef struct ls_plugin_entry_s {
     const char* plugin_name;
 
     // 2.callbacks
-    int (*plugin_init)(const JSONNODE* setting);// setting由plugin自己保存
+    int (*plugin_init)(JSONNODE* setting);// setting由plugin自己保存
     int (*plugin_terminate)();
     
     int (*master_init)(struct ls_master_s* master);// master_xxx/script_xxx/task_xxx

@@ -33,7 +33,7 @@ const static char* plugin_name = "ls_plugin_http";
 static size_t plugin_id;
 
 
-static int ls_http_request_init(const JSONNODE* json_args, void** args) {
+static int ls_http_request_init(JSONNODE* json_args, void** args) {
     LOGP("%s.ls_http_request_init()\n", plugin_name);
 
     // string* tran_name = NULL;
@@ -64,7 +64,7 @@ static int ls_http_request_terminate(void** args) {
 
 static int ls_http_request(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_http_request()\n", plugin_name);
-	http_session_state_t* state = (http_session_state_t*)sessionstate;
+    http_session_state_t* state = (http_session_state_t*)sessionstate;
     //    string* tran_name = (string*)args;
 
     //    uint64_t start = uv_now(state->session->worker->worker_loop);
@@ -76,7 +76,7 @@ static int ls_http_request(const void* args, void* sessionstate, map<string, str
 }
 
 
-static int plugin_init(const JSONNODE* setting) {
+static int plugin_init(JSONNODE* setting) {
     LOGP("%s.plugin_init()\n", plugin_name);
     return 0;
 }
