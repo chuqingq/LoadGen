@@ -111,7 +111,7 @@ static int ls_start_transaction(const void* args, void* sessionstate, map<string
     LOGP("  tran_name: %s; start: %llu\n", tran_name->c_str(), start);
 
     state->trans.insert(make_pair(*tran_name, start));
-    process_session(state->session);
+    // process_session(state->session);
     return 0;
 }
 
@@ -160,7 +160,7 @@ static int ls_end_transaction(const void* args, void* sessionstate, map<string, 
     trans_stats.duration += duration;
     uv_mutex_unlock(&trans_stats.mutex);
 
-    process_session(state->session);
+    // process_session(state->session);
     return 0;
 }
 
@@ -386,3 +386,4 @@ extern "C" int plugin_declare(ls_plugin_t* plugin_entry) {
 
     return 0;
 }
+
