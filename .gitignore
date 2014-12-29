@@ -1,0 +1,4 @@
+loadgen
+*.log
+obj/*
+*.so
