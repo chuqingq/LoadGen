@@ -1,0 +1,17 @@
+[
+    {
+        "api": "ls_start_transaction",
+        "args": {
+            "transaction_name": "trans_1"
+        }
+    },
+
+    {
+        "api": "ls_end_transaction",
+        "args": {
+            "transaction_name": "trans_1",
+            "status": "pass"
+        }
+    }
+
+]
