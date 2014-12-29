@@ -1,6 +1,6 @@
 CC      := g++
-CFLAGS  := -DNDEBUG -g -Wall -Werror -fPIC -I../../ -I../../lib
-LDFLAGS := -Wall -Werror -fPIC -shared
+CFLAGS  := -DNDEBUG -g -Wall -Werror -fPIC -I../../ -I../../lib -O2
+LDFLAGS := -Wall -Werror -fPIC -shared -O2
 LIBS    := 
 
 SRC  := ls_plugin_system.c

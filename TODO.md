@@ -117,3 +117,8 @@ TODO 可能也要回调
 ## TODO
 去掉config，监听端口等内容后续放在system插件中
 去掉log，放在utils中
+
+## bench
+空转，不加-O2参数时，每秒事务约99~101w
+    加上-O2参数时，每秒111~115w
+    给system plugin加上-O2参数后，每秒293w
