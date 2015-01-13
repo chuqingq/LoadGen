@@ -64,14 +64,14 @@ static int ls_http_request_terminate(void** args) {
 
 static int ls_http_request(const void* args, void* sessionstate, map<string, string> * vars) {
     LOGP("%s.ls_http_request()\n", plugin_name);
-    http_session_state_t* state = (http_session_state_t*)sessionstate;
+    // http_session_state_t* state = (http_session_state_t*)sessionstate;
     //    string* tran_name = (string*)args;
 
     //    uint64_t start = uv_now(state->session->worker->worker_loop);
     //    LOGP("  tran_name: %s; start: %llu\n", tran_name->c_str(), start);
 
     //    state->trans.insert(make_pair(*tran_name, start));
-    process_session(state->session);
+    // process_session(state->session);
     return 0;
 }
 
