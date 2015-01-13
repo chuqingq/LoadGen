@@ -31,11 +31,11 @@ static void worker_thread(void* arg) {
     w->worker_started = 1;
 
     uv_run(w->worker_loop, UV_RUN_DEFAULT);
-    LOG("  worker_thread[%u] terminate\n", (unsigned int)w->thread);
+    LOG("  worker_thread[%p] terminate\n", w);
 }
 
 int worker_start(ls_worker_t* w) {
-    LOG("  worker_start(%lu)\n", (unsigned long)w);
+    LOG("  worker_start(%p)\n", w);
 
     for (size_t i = 0; i < master.num_plugins; ++i) {
         ls_plugin_t* plugin = master.plugins + i;
@@ -54,7 +54,7 @@ int worker_start(ls_worker_t* w) {
 
 // worker主动调用finish_session
 int worker_stop(ls_worker_t* w) {
-    LOG("  worker_stop()\n");
+    LOG("  worker_stop(%p)\n", w);
 
     // stop all sessions in the worker
     for (size_t i = 0; i < w->sessions->size(); ++i) {
