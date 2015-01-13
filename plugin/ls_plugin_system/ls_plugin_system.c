@@ -108,7 +108,7 @@ static int ls_start_transaction(const void* args, void* sessionstate, map<string
     string* tran_name = (string*)args;
 
     uint64_t start = uv_now(state->session->worker->worker_loop);
-    LOGP("  tran_name: %s; start: %llu\n", tran_name->c_str(), start);
+    LOGP("  tran_name: %s; start: %lu\n", tran_name->c_str(), start);
 
     state->trans.insert(make_pair(*tran_name, start));
     // process_session(state->session);
@@ -153,7 +153,7 @@ static int ls_end_transaction(const void* args, void* sessionstate, map<string, 
     uint64_t duration = uv_now(state->session->worker->worker_loop) - state->trans[*tran_name];
     state->trans.erase(*tran_name);
 
-    LOGP("  ls_end_transaction(): %s: %lld\n", tran_name->c_str(), duration);
+    LOGP("  ls_end_transaction(): %s: %lu\n", tran_name->c_str(), duration);
 
     uv_mutex_lock(&trans_stats.mutex);
     trans_stats.count += 1;
@@ -181,7 +181,7 @@ static int ls_think_time_init(JSONNODE* json_args, void** args) {
         return -1;
     }
     *args = time;
-    LOGP("  time=%llu\n", *time);
+    LOGP("  time=%lu\n", *time);
     return 0;
 }
 
@@ -208,7 +208,7 @@ static void timer_cb(uv_timer_t* handle, int status) {
 
 static int ls_think_time(const void* args, void* sessionstate, map<string, string> * vars) {
     uint64_t* time = (uint64_t*)args;
-    LOGP("%s.ls_think_time(%llu)\n", plugin_name, *time);
+    LOGP("%s.ls_think_time(%lu)\n", plugin_name, *time);
     LOGP("  ignore_think_time=%d\n", (int)system_setting.ignore_think_time);
 
     system_session_state_t* state = (system_session_state_t*)sessionstate;
@@ -220,7 +220,7 @@ static int ls_think_time(const void* args, void* sessionstate, map<string, strin
     timer->data = state->session;
     uv_timer_start(timer, timer_cb, *time, 0);
 
-    return 0;
+    return 1;
 }
 
 
@@ -254,9 +254,9 @@ static int ls_output_message_terminate(void** args) {
 
 
 static int ls_output_message(const void* args, void* sessionstate, map<string, string> * vars) {
-    system_session_state_t* state = (system_session_state_t*)sessionstate;
-    printf("  ls_output_message: %s\n", ((string*)args)->c_str());
-    process_session(state->session);
+    // system_session_state_t* state = (system_session_state_t*)sessionstate;
+    LOGP("  ls_output_message: %s\n", ((string*)args)->c_str());
+    // process_session(state->session);
     return 0;
 }
 
